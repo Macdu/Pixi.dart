@@ -2,6 +2,8 @@ library pixi;
 
 import 'dart:math' as Math;
 
+part 'core/Circle.dart';
+
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
  */
