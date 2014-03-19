@@ -10,6 +10,8 @@ part 'core/Point.dart';
 part 'core/Polygon.dart';
 part 'core/Rectangle.dart';
 
+part 'display/DisplayObject.dart';
+
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
  */
