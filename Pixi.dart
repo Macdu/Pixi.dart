@@ -8,6 +8,7 @@ part 'core/Ellipse.dart';
 part 'core/Matrix.dart';
 part 'core/Point.dart';
 part 'core/Polygon.dart';
+part 'core/Rectangle.dart';
 
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
