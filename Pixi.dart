@@ -3,6 +3,7 @@ library pixi;
 import 'dart:math' as Math;
 
 part 'core/Circle.dart';
+part 'core/Ellipse.dart';
 
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
