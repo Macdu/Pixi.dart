@@ -1,9 +1,11 @@
 library pixi;
 
 import 'dart:math' as Math;
+import 'dart:typed_data';
 
 part 'core/Circle.dart';
 part 'core/Ellipse.dart';
+part 'core/Matrix.dart';
 
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
