@@ -12,6 +12,7 @@ part 'core/Rectangle.dart';
 
 part 'display/DisplayObject.dart';
 part 'display/DisplayObjectContainer.dart';
+part 'display/MovieClip.dart';
 
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
