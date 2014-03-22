@@ -19,16 +19,16 @@ class Point{
   * @type Number
   * @default 0
   */
-  int x;
+  double x;
     
   /**
   * @property y
   * @type Number
   * @default 0
   */
-  int y;
+  double y;
 
-  Point([ this.x = 0 , this.y = 0 ]);
+  Point([ this.x = 0.0 , this.y = 0.0 ]);
   
   /**
    * Creates a clone of this point
@@ -41,7 +41,7 @@ class Point{
       return new Point(this.x, this.y);
   }
   
-  set([int x = 0,int y = null])
+  set([double x = 0.0,double y = null])
   {
       this.x = x;
       if (y != null)this.y = y;

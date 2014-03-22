@@ -44,7 +44,7 @@ class Sprite extends DisplayObjectContainer{
      * @type Number
      * @private
      */
-    int _width = 0;
+    double _width = 0.0;
 
     /**
      * The height of the sprite (this is initially set by the texture)
@@ -53,7 +53,7 @@ class Sprite extends DisplayObjectContainer{
      * @type Number
      * @private
      */
-    int _height = 0;
+    double _height = 0.0;
 
 
     /**
@@ -95,7 +95,7 @@ class Sprite extends DisplayObjectContainer{
       }
       else
       {
-          this.texture.stream['update'].listen( this.onTextureUpdate );
+          this.texture.stream('update').listen( this.onTextureUpdate );
       }
       
   }
@@ -107,9 +107,9 @@ class Sprite extends DisplayObjectContainer{
    * @type Number
    */
     
-  int get width => this.scale.x * this.texture.frame.width;
-      set width(int value){
-        this.scale.x = (value / this.texture.frame.width).toInt();
+  double get width => this.scale.x * this.texture.frame.width;
+      set width(double value){
+        this.scale.x = value / this.texture.frame.width;
              this._width = value;
       }
   
@@ -120,9 +120,9 @@ class Sprite extends DisplayObjectContainer{
    * @type Number
    */
       
-   int get height => this.scale.y * this.texture.frame.height;
-       set height(int value){
-          this.scale.y = (value / this.texture.frame.height).toInt();
+   double get height => this.scale.y * this.texture.frame.height;
+       set height(double value){
+          this.scale.y = value / this.texture.frame.height;
                this._height = value;
         }
   
@@ -159,8 +159,8 @@ class Sprite extends DisplayObjectContainer{
   void onTextureUpdate()
   {
       // so if _width is 0 then width was not set..
-      if(this._width != 0)this.scale.x = (this._width / this.texture.frame.width).toInt();
-      if(this._height != 0)this.scale.y = (this._height / this.texture.frame.height).toInt();
+      if(this._width != 0)this.scale.x = this._width / this.texture.frame.width;
+      if(this._height != 0)this.scale.y = this._height / this.texture.frame.height;
   
   
       this.updateFrame = true;
@@ -178,14 +178,14 @@ class Sprite extends DisplayObjectContainer{
   
       if (matrix == null) matrix = this.worldTransform;  
     
-      int width = this.texture.frame.width;
-      int height = this.texture.frame.height;
+      double width = this.texture.frame.width;
+      double height = this.texture.frame.height;
   
-      int w0 = width * (1-this.anchor.x);
-      int w1 = width * -this.anchor.x;
+      double w0 = width * (1-this.anchor.x);
+      double w1 = width * -this.anchor.x;
   
-      int h0 = height * (1-this.anchor.y);
-      int h1 = height * -this.anchor.y;
+      double h0 = height * (1-this.anchor.y);
+      double h1 = height * -this.anchor.y;
   
       Matrix worldTransform = matrix ;
   
@@ -236,11 +236,11 @@ class Sprite extends DisplayObjectContainer{
   
       Rectangle bounds = this._bounds;
   
-      bounds.x = minX.toInt();
-      bounds.width = (maxX - minX).toInt();
+      bounds.x = minX;
+      bounds.width = maxX - minX;
   
-      bounds.y = minY.toInt();
-      bounds.height = (maxY - minY).toInt();
+      bounds.y = minY;
+      bounds.height = maxY - minY;
   
       // store a reference so that if this function gets called again in the render cycle we do not have to recalculate
       this._currentBounds = bounds;
@@ -293,8 +293,8 @@ class Sprite extends DisplayObjectContainer{
           // time to stop the sprite batch as either a mask element or a filter draw will happen next
           spriteBatch.stop();
   
-          if(this._filters)renderSession.filterManager.popFilter();
-          if(this._mask)renderSession.maskManager.popMask(renderSession);
+          if(this._filters != null)renderSession.filterManager.popFilter();
+          if(this._mask != null)renderSession.maskManager.popMask(renderSession);
           
           spriteBatch.start();
       }
@@ -336,7 +336,7 @@ class Sprite extends DisplayObjectContainer{
           context.globalCompositeOperation = blendModes[renderSession.currentBlendMode];
       }
   
-      if(this._mask)
+      if(this._mask != null)
       {
           renderSession.maskManager.pushMask(this._mask, renderSession.context);
       }
@@ -458,7 +458,7 @@ class Sprite extends DisplayObjectContainer{
   static Sprite fromFrame(String frameId)
   {
       var texture = TextureCache[frameId];
-      if(!texture) throw new Exception('The frameId "' + frameId + '" does not exist in the texture cache' );
+      if(texture == null) throw new Exception('The frameId "' + frameId + '" does not exist in the texture cache' );
       return new Sprite(texture);
   }
   

@@ -21,30 +21,30 @@ class Rectangle{
    * @type Number
    * @default 0
    */
-  int x;
+  double x;
 
   /**
    * @property y
    * @type Number
    * @default 0
    */
-  int y;
+  double y;
 
   /**
    * @property width
    * @type Number
    * @default 0
    */
-  int width;
+  double width;
 
   /**
    * @property height
    * @type Number
    * @default 0
    */
-  int height;
+  double height;
 
-  Rectangle([this.x = 0 , this.y = 0, this.width = 0 , this.height = 0 ]);
+  Rectangle([this.x = 0.0 , this.y = 0.0, this.width = 0.0 , this.height = 0.0 ]);
   
   /**
    * Creates a clone of this Rectangle
@@ -65,15 +65,15 @@ class Rectangle{
    * @param y {Number} The Y coordinate of the point to test
    * @return {Boolean} Whether the x/y coords are within this Rectangle
    */
-  bool contains(x, y)
+  bool contains(double x,double  y)
   {
       if(this.width <= 0 || this.height <= 0)
           return false;
   
-      int x1 = this.x;
+      double x1 = this.x;
       if(x >= x1 && x <= x1 + this.width)
       {
-          int y1 = this.y;
+          double y1 = this.y;
   
           if(y >= y1 && y <= y1 + this.height)
           {
@@ -85,4 +85,4 @@ class Rectangle{
   }
 }
 
-Rectangle EmptyRectangle = new Rectangle(0,0,0,0);
+Rectangle EmptyRectangle = new Rectangle(0.0,0.0,0.0,0.0);

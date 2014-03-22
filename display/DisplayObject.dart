@@ -25,7 +25,7 @@ class DisplayObject
      * @property scale
      * @type Point
      */
-    Point scale = new Point(1,1);//{x:1, y:1};
+    Point scale = new Point(1.0,1.0);//{x:1, y:1};
 
     /**
      * The pivot point of the displayObject that it rotates around
@@ -33,7 +33,7 @@ class DisplayObject
      * @property pivot
      * @type Point
      */
-    Point pivot = new Point(0,0);
+    Point pivot = new Point(0.0,0.0);
 
     /**
      * The rotation of the object in radians.
@@ -168,7 +168,7 @@ class DisplayObject
      * @property filterArea
      * @type Rectangle
      */
-    Rectangle filterArea = new Rectangle(0,0,1,1);
+    Rectangle filterArea = new Rectangle(0.0,0.0,1.0,1.0);
 
     /**
      * The original, cached bounds of the object
@@ -177,7 +177,7 @@ class DisplayObject
      * @type Rectangle
      * @private
      */
-    Rectangle _bounds = new Rectangle(0, 0, 1, 1);
+    Rectangle _bounds = new Rectangle(0.0, 0.0, 1.0, 1.0);
     /**
      * The most up-to-date bounds of the object
      *
@@ -398,8 +398,8 @@ class DisplayObject
      // var localTransform = this.localTransform//.toArray();
       Matrix parentTransform = this.parent.worldTransform;//.toArray();
       Matrix worldTransform = this.worldTransform;//.toArray();
-      int px = this.pivot.x;
-      int py = this.pivot.y;
+      double px = this.pivot.x;
+      double py = this.pivot.y;
   
       double a00 = this._cr * this.scale.x,
           a01 = -this._sr * this.scale.y,
@@ -478,8 +478,8 @@ class DisplayObject
    * @property x
    * @type Number
    */
-  int get x => this.position.x;
-    set x (int value) => this.position.x = value;
+  double get x => this.position.x;
+    set x (double value) => this.position.x = value;
   
   /**
    * The position of the displayObject on the y axis relative to the local coordinates of the parent.
@@ -487,7 +487,7 @@ class DisplayObject
    * @property y
    * @type Number
    */
-  int get y => this.position.y;
-     set y (int value) => this.position.y = value;
+  double get y => this.position.y;
+     set y (double value) => this.position.y = value;
      
 }

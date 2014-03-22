@@ -21,30 +21,30 @@ class Ellipse{
   * @type Number
   * @default 0
   */
-  int x;
+  double x;
     
    /**
    * @property y
    * @type Number
    * @default 0
    */
-   int y;
+   double y;
     
   /**
    * @property width
    * @type Number
    * @default 0
    */
-  int width ;
+  double width ;
     
   /**
    * @property height
    * @type Number
    * @default 0
    */
-  int height ;
+  double height ;
   
-  Ellipse( [this.x = 0, this.y = 0, this.width = 0, this.height = 0]);
+  Ellipse( [this.x = 0.0, this.y = 0.0, this.width = 0.0, this.height = 0.0]);
       
   
   /**
@@ -66,7 +66,7 @@ class Ellipse{
    * @param y {Number} The Y coordinate of the point to test
    * @return {Boolean} Whether the x/y coords are within this ellipse
    */
-  bool contains(int x,int y)
+  bool contains(double x,double y)
   {
       if(this.width <= 0 || this.height <= 0)
           return false;

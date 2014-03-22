@@ -15,13 +15,13 @@ part of pixi;
  */
 class Circle{
   
-  int x;
+  double x;
   
-  int y;
+  double y;
   
-  int radius;
+  double radius;
 
-  Circle ([x = 0, y = 0 , radius = 0])
+  Circle ([double x = 0.0, double y = 0.0 ,double radius = 0.0])
   {
       /**
        * @property x
@@ -64,12 +64,12 @@ class Circle{
    * @param y {Number} The Y coordinate of the point to test
    * @return {Boolean} Whether the x/y coordinates are within this polygon
    */
-  bool contains (int x,int y)
+  bool contains (double x,double y)
   {
       if(this.radius <= 0)
           return false;
   
-      int dx = (this.x - x),
+      double dx = (this.x - x),
           dy = (this.y - y),
           r2 = this.radius * this.radius;
   
