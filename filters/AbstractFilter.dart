@@ -28,8 +28,10 @@ class AbstractFilter{
       Map uniforms;
       List fragmentSrc;
   
-  AbstractFilter(this.fragmentSrc, this.uniforms)
+  AbstractFilter([fragmentSrc = null, uniforms = null])
   {
+    this.fragmentSrc = (fragmentSrc != null) ? fragmentSrc : [];
+    this.uniforms = (uniforms != null) ? uniforms : [];
     /**
     * An array of passes - some filters contain a few steps this array simply stores the steps in a liniear fashion.
     * For example the blur filter has two passes blurX and blurY.

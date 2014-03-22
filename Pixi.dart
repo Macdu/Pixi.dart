@@ -26,6 +26,7 @@ part 'extras/Strip.dart';
 part 'extras/TilingSprite.dart';
 
 part 'filters/AbstractFilter.dart';
+part 'filters/AlphaMaskFilter.dart';
 
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23

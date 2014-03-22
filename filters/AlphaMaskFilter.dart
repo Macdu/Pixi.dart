@@ -1,3 +1,4 @@
+part of pixi;
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
  */
@@ -11,30 +12,29 @@
  * @contructor
  * @param texture {Texture} The texture used for the displacemtent map * must be power of 2 texture at the moment
  */
-PIXI.AlphaMaskFilter = function(texture)
-{
-    PIXI.AbstractFilter.call( this );
+class AlphaMaskFilter extends AbstractFilter{
+  
+  AlphaMaskFilter(Texture texture) : super()
+  {
 
     this.passes = [this];
     texture.baseTexture._powerOf2 = true;
 
     // set the uniforms
     this.uniforms = {
-        mask: {type: 'sampler2D', value:texture},
-        mapDimensions:   {type: '2f', value:{x:1, y:5112}},
-        dimensions:   {type: '4fv', value:[0,0,0,0]}
+        'mask': {'type': 'sampler2D', 'value':texture},
+        'mapDimensions':   {'type': '2f', 'value':{'x':1, 'y':5112}},
+        'dimensions':   {'type': '4fv', 'value':[0,0,0,0]}
     };
 
     if(texture.baseTexture.hasLoaded)
     {
-        this.uniforms.mask.value.x = texture.width;
-        this.uniforms.mask.value.y = texture.height;
+        this.uniforms['mask']['value']['x'] = texture.width;
+        this.uniforms['mask']['value']['y'] = texture.height;
     }
     else
     {
-        this.boundLoadedFunction = this.onTextureLoaded.bind(this);
-
-        texture.baseTexture.on('loaded', this.boundLoadedFunction);
+        texture.baseTexture.on('loaded', this.onTextureLoaded);
     }
 
     this.fragmentSrc = [
@@ -62,31 +62,25 @@ PIXI.AlphaMaskFilter = function(texture)
         //'   gl_FragColor = gl_FragColor;',
         '}'
     ];
-};
+}
 
-PIXI.AlphaMaskFilter.prototype = Object.create( PIXI.AbstractFilter.prototype );
-PIXI.AlphaMaskFilter.prototype.constructor = PIXI.AlphaMaskFilter;
-
-PIXI.AlphaMaskFilter.prototype.onTextureLoaded = function()
-{
-    this.uniforms.mapDimensions.value.x = this.uniforms.mask.value.width;
-    this.uniforms.mapDimensions.value.y = this.uniforms.mask.value.height;
-
-    this.uniforms.mask.value.baseTexture.off('loaded', this.boundLoadedFunction);
-};
-
-/**
- * The texture used for the displacemtent map * must be power of 2 texture at the moment
- *
- * @property map
- * @type Texture
- */
-Object.defineProperty(PIXI.AlphaMaskFilter.prototype, 'map', {
-    get: function() {
-        return this.uniforms.mask.value;
-    },
-    set: function(value) {
-        this.uniforms.mask.value = value;
-    }
-});
-
+  
+  void onTextureLoaded (_)
+  {
+      this.uniforms['mapDimensions']['value']['x'] = this.uniforms['mask']['value'].width;
+      this.uniforms['mapDimensions']['value']['y'] = this.uniforms['mask']['value'].height;
+  
+      this.uniforms['mask']['value'].baseTexture.off('loaded', this.onTextureLoaded);
+  }
+  
+  /**
+   * The texture used for the displacemtent map * must be power of 2 texture at the moment
+   *
+   * @property map
+   * @type Texture
+   */
+  Texture get map => this.uniforms['mask']['value'];
+    set map(Texture texture) => this.uniforms['mask']['value'] = texture;
+    
+}
+  
