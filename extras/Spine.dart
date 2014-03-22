@@ -1,3 +1,4 @@
+part of pixi;
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
  * based on pixi impact spine implementation made by Eemeli Kelokorpi (@ekelokorpi) https://github.com/ekelokorpi
@@ -14,45 +15,54 @@
  *
  */
 
+class BoneData{
+
+  int lenght = 0;
+  double x = 0.0,y = 0.0,rotation = 0.0, scaleX = 1.0, scaleY = 1.0;
+  
+  var parent;
+  
+  String name;
+  
+  BoneData(String name, parent) {
+      this.name = name;
+      this.parent = parent;
+  }
+
+}
 
 
-var spine = {};
+class SlotData{
+  
+  String name , attachmentName;
+  double r = 1.0,g = 1.0 ,b  = 1.0,a = 1.0;
+  
+  BoneData boneData;
+  
+  SlotData(String name,BoneData boneData) {
+      this.name = name;
+      this.boneData = boneData;
+  }
 
-spine.BoneData = function (name, parent) {
-    this.name = name;
-    this.parent = parent;
-};
-spine.BoneData.prototype = {
-    length: 0,
-    x: 0, y: 0,
-    rotation: 0,
-    scaleX: 1, scaleY: 1
-};
+}
 
-spine.SlotData = function (name, boneData) {
-    this.name = name;
-    this.boneData = boneData;
-};
-spine.SlotData.prototype = {
-    r: 1, g: 1, b: 1, a: 1,
-    attachmentName: null
-};
+class Bone{
+  
+  BoneData data;
+  
+  var parent;
+  
+  bool yDown;
+  
+  double x  = 0.0, y = 0.0, rotation =0.0, scaleX = 1.0, scaleY = 1.0,
+    m00 = 0.0, m01 = 0.0, m10 = 0.0, m11 = 0.0,
+    worldX =0.0, worldY = 0.0, worldRotation = 0.0, worldScaleX = 1.0, worldScaleY = 1.0;
 
-spine.Bone = function (boneData, parent) {
-    this.data = boneData;
-    this.parent = parent;
+  Bone(BoneData this.data, this.parent) {
     this.setToSetupPose();
-};
-spine.Bone.yDown = false;
-spine.Bone.prototype = {
-    x: 0, y: 0,
-    rotation: 0,
-    scaleX: 1, scaleY: 1,
-    m00: 0, m01: 0, worldX: 0, // a b x
-    m10: 0, m11: 0, worldY: 0, // c d y
-    worldRotation: 0,
-    worldScaleX: 1, worldScaleY: 1,
-    updateWorldTransform: function (flipX, flipY) {
+  }
+  
+    void updateWorldTransform([bool flipX = false,bool flipY = false]) {
         var parent = this.parent;
         if (parent != null) {
             this.worldX = this.x * parent.m00 + this.y * parent.m01 + parent.worldX;
@@ -67,14 +77,14 @@ spine.Bone.prototype = {
             this.worldScaleY = this.scaleY;
             this.worldRotation = this.rotation;
         }
-        var radians = this.worldRotation * Math.PI / 180;
-        var cos = Math.cos(radians);
-        var sin = Math.sin(radians);
+        double radians = this.worldRotation * Math.PI / 180;
+        double cos = Math.cos(radians);
+        double sin = Math.sin(radians);
         this.m00 = cos * this.worldScaleX;
         this.m10 = sin * this.worldScaleX;
         this.m01 = -sin * this.worldScaleY;
         this.m11 = cos * this.worldScaleY;
-        if (flipX) {
+        if (flipX != 0) {
             this.m00 = -this.m00;
             this.m01 = -this.m01;
         }
@@ -86,8 +96,9 @@ spine.Bone.prototype = {
             this.m10 = -this.m10;
             this.m11 = -this.m11;
         }
-    },
-    setToSetupPose: function () {
+    }
+    
+    setToSetupPose() {
         var data = this.data;
         this.x = data.x;
         this.y = data.y;
@@ -95,163 +106,191 @@ spine.Bone.prototype = {
         this.scaleX = data.scaleX;
         this.scaleY = data.scaleY;
     }
-};
+}
 
-spine.Slot = function (slotData, skeleton, bone) {
-    this.data = slotData;
-    this.skeleton = skeleton;
-    this.bone = bone;
+class Slot{
+
+  double r = 1.0 , g = 1.0 , b = 1.0 , a = 1.0;
+  
+  int _attachmentTime = 0;
+  
+  var attachment = null;
+  
+  SlotData data;
+  
+  var skeleton;
+  
+  Bone bone;
+  
+  Slot(SlotData this.data, this.skeleton,Bone this.bone) {
     this.setToSetupPose();
-};
-spine.Slot.prototype = {
-    r: 1, g: 1, b: 1, a: 1,
-    _attachmentTime: 0,
-    attachment: null,
-    setAttachment: function (attachment) {
+  }
+  
+    void setAttachment(attachment) {
         this.attachment = attachment;
         this._attachmentTime = this.skeleton.time;
-    },
-    setAttachmentTime: function (time) {
+    }
+    
+    void setAttachmentTime(int time) {
         this._attachmentTime = this.skeleton.time - time;
-    },
-    getAttachmentTime: function () {
+    }
+    
+    int getAttachmentTime() {
         return this.skeleton.time - this._attachmentTime;
-    },
-    setToSetupPose: function () {
+    }
+    
+    void setToSetupPose() {
         var data = this.data;
         this.r = data.r;
         this.g = data.g;
         this.b = data.b;
         this.a = data.a;
 
-        var slotDatas = this.skeleton.data.slots;
-        for (var i = 0, n = slotDatas.length; i < n; i++) {
+        List<SlotData> slotDatas = this.skeleton.data.slots;
+        for (int i = 0, n = slotDatas.length; i < n; i++) {
             if (slotDatas[i] == data) {
                 this.setAttachment(!data.attachmentName ? null : this.skeleton.getAttachmentBySlotIndex(i, data.attachmentName));
                 break;
             }
         }
     }
-};
+}
 
-spine.Skin = function (name) {
-    this.name = name;
-    this.attachments = {};
-};
-spine.Skin.prototype = {
-    addAttachment: function (slotIndex, name, attachment) {
-        this.attachments[slotIndex + ":" + name] = attachment;
-    },
-    getAttachment: function (slotIndex, name) {
+class Skin{
+  
+  String name;
+  
+  Map attachments = {};
+  
+  Skin(String this.name) {
+  }
+    
+    void addAttachment(int slotIndex,String name, attachment) {
+        this.attachments[slotIndex.toString() + ":" + name] = attachment;
+    }
+    
+    Map getAttachment(int slotIndex,String name) {
         return this.attachments[slotIndex + ":" + name];
-    },
-    _attachAll: function (skeleton, oldSkin) {
+    }
+    
+    void _attachAll(skeleton, oldSkin) {
         for (var key in oldSkin.attachments) {
-            var colon = key.indexOf(":");
-            var slotIndex = parseInt(key.substring(0, colon), 10);
-            var name = key.substring(colon + 1);
+            int colon = key.indexOf(":");
+            int slotIndex = int.parse(key.substring(0, colon), 10);
+            String name = key.substring(colon + 1);
             var slot = skeleton.slots[slotIndex];
-            if (slot.attachment && slot.attachment.name == name) {
+            if (slot.attachment != null && slot.attachment.name == name) {
                 var attachment = this.getAttachment(slotIndex, name);
                 if (attachment) slot.setAttachment(attachment);
             }
         }
     }
-};
+}
 
-spine.Animation = function (name, timelines, duration) {
-    this.name = name;
-    this.timelines = timelines;
-    this.duration = duration;
-};
-spine.Animation.prototype = {
-    apply: function (skeleton, time, loop) {
-        if (loop && this.duration) time %= this.duration;
+class Animation{
+  
+  String name;
+  
+  var timelines;
+  
+  int duration;
+
+  Animation(this.name, this.timelines, this.duration);
+  
+    void apply(skeleton,int time,bool loop) {
+        if (loop && this.duration != 0) time %= this.duration;
         var timelines = this.timelines;
-        for (var i = 0, n = timelines.length; i < n; i++)
+        for (int i = 0, n = timelines.length; i < n; i++)
             timelines[i].apply(skeleton, time, 1);
-    },
-    mix: function (skeleton, time, loop, alpha) {
-        if (loop && this.duration) time %= this.duration;
+    }
+    
+    void mix(skeleton,int time,bool loop,double alpha) {
+        if (loop && this.duration != 0) time %= this.duration;
         var timelines = this.timelines;
-        for (var i = 0, n = timelines.length; i < n; i++)
+        for (int i = 0, n = timelines.length; i < n; i++)
             timelines[i].apply(skeleton, time, alpha);
     }
-};
+}
 
-spine.binarySearch = function (values, target, step) {
-    var low = 0;
-    var high = Math.floor(values.length / step) - 2;
-    if (!high) return step;
-    var current = high >>> 1;
+int binarySearch(values, target,double step) {
+    int low = 0;
+    double high = (values.length / step).floor() - 2;
+    if (high == 0) return step;
+    int current = high >> 1;
     while (true) {
         if (values[(current + 1) * step] <= target)
             low = current + 1;
         else
             high = current;
         if (low == high) return (low + 1) * step;
-        current = (low + high) >>> 1;
+        current = (low + high) >> 1;
     }
-};
-spine.linearSearch = function (values, target, step) {
-    for (var i = 0, last = values.length - step; i <= last; i += step)
+}
+
+int linearSearch(values, target, step) {
+    for (int i = 0, last = values.length - step; i <= last; i += step)
         if (values[i] > target) return i;
     return -1;
-};
+}
 
-spine.Curves = function (frameCount) {
-    this.curves = []; // dfx, dfy, ddfx, ddfy, dddfx, dddfy, ...
+class Curves{
+  
+  List curves = []; // dfx, dfy, ddfx, ddfy, dddfx, dddfy, ...
+  
+  Curves(int frameCount) {
     this.curves.length = (frameCount - 1) * 6;
-};
-spine.Curves.prototype = {
-    setLinear: function (frameIndex) {
-        this.curves[frameIndex * 6] = 0/*LINEAR*/;
-    },
-    setStepped: function (frameIndex) {
-        this.curves[frameIndex * 6] = -1/*STEPPED*/;
-    },
+  }
+  
+    void setLinear(int frameIndex) {
+        this.curves[frameIndex * 6] = 0.0/*LINEAR*/;
+    }
+    
+    void setStepped(int frameIndex) {
+        this.curves[frameIndex * 6] = -1.0/*STEPPED*/;
+    }
     /** Sets the control handle positions for an interpolation bezier curve used to transition from this keyframe to the next.
      * cx1 and cx2 are from 0 to 1, representing the percent of time between the two keyframes. cy1 and cy2 are the percent of
      * the difference between the keyframe's values. */
-    setCurve: function (frameIndex, cx1, cy1, cx2, cy2) {
-        var subdiv_step = 1 / 10/*BEZIER_SEGMENTS*/;
-        var subdiv_step2 = subdiv_step * subdiv_step;
-        var subdiv_step3 = subdiv_step2 * subdiv_step;
-        var pre1 = 3 * subdiv_step;
-        var pre2 = 3 * subdiv_step2;
-        var pre4 = 6 * subdiv_step2;
-        var pre5 = 6 * subdiv_step3;
-        var tmp1x = -cx1 * 2 + cx2;
-        var tmp1y = -cy1 * 2 + cy2;
-        var tmp2x = (cx1 - cx2) * 3 + 1;
-        var tmp2y = (cy1 - cy2) * 3 + 1;
-        var i = frameIndex * 6;
-        var curves = this.curves;
+    setCurve(int frameIndex,double cx1,double cy1,double cx2,double cy2) {
+        int subdiv_step = 1 / 10/*BEZIER_SEGMENTS*/;
+        int subdiv_step2 = subdiv_step * subdiv_step;
+        int subdiv_step3 = subdiv_step2 * subdiv_step;
+        int pre1 = 3 * subdiv_step;
+        int pre2 = 3 * subdiv_step2;
+        int pre4 = 6 * subdiv_step2;
+        int pre5 = 6 * subdiv_step3;
+        double tmp1x = -cx1 * 2 + cx2;
+        double tmp1y = -cy1 * 2 + cy2;
+        double tmp2x = (cx1 - cx2) * 3 + 1;
+        double tmp2y = (cy1 - cy2) * 3 + 1;
+        int i = frameIndex * 6;
+        List curves = this.curves;
         curves[i] = cx1 * pre1 + tmp1x * pre2 + tmp2x * subdiv_step3;
         curves[i + 1] = cy1 * pre1 + tmp1y * pre2 + tmp2y * subdiv_step3;
         curves[i + 2] = tmp1x * pre4 + tmp2x * pre5;
         curves[i + 3] = tmp1y * pre4 + tmp2y * pre5;
         curves[i + 4] = tmp2x * pre5;
         curves[i + 5] = tmp2y * pre5;
-    },
-    getCurvePercent: function (frameIndex, percent) {
+    }
+    
+    double getCurvePercent(int frameIndex, double percent) {
         percent = percent < 0 ? 0 : (percent > 1 ? 1 : percent);
-        var curveIndex = frameIndex * 6;
-        var curves = this.curves;
-        var dfx = curves[curveIndex];
-        if (!dfx/*LINEAR*/) return percent;
+        int curveIndex = frameIndex * 6;
+        List curves = this.curves;
+        double dfx = curves[curveIndex];
+        if (dfx == 0/*LINEAR*/) return percent;
         if (dfx == -1/*STEPPED*/) return 0;
-        var dfy = curves[curveIndex + 1];
-        var ddfx = curves[curveIndex + 2];
-        var ddfy = curves[curveIndex + 3];
-        var dddfx = curves[curveIndex + 4];
-        var dddfy = curves[curveIndex + 5];
-        var x = dfx, y = dfy;
-        var i = 10/*BEZIER_SEGMENTS*/ - 2;
+        double dfy = curves[curveIndex + 1];
+        double ddfx = curves[curveIndex + 2];
+        double ddfy = curves[curveIndex + 3];
+        double dddfx = curves[curveIndex + 4];
+        double dddfy = curves[curveIndex + 5];
+        double x = dfx, y = dfy;
+        double i = 10.0/*BEZIER_SEGMENTS*/ - 2.0;
         while (true) {
             if (x >= percent) {
-                var lastX = x - dfx;
-                var lastY = y - dfy;
+              double lastX = x - dfx;
+              double lastY = y - dfy;
                 return lastY + (y - lastY) * (percent - lastX) / (x - lastX);
             }
             if (!i) break;
@@ -265,7 +304,7 @@ spine.Curves.prototype = {
         }
         return y + (1 - y) * (percent - x) / (1 - x); // Last point is 1,1.
     }
-};
+}
 
 spine.RotateTimeline = function (frameCount) {
     this.curves = new spine.Curves(frameCount);
