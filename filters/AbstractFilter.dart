@@ -1,3 +1,4 @@
+part of pixi;
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
  */
@@ -10,8 +11,25 @@
  * @param fragmentSrc
  * @param uniforms
  */
-PIXI.AbstractFilter = function(fragmentSrc, uniforms)
-{
+class AbstractFilter{
+  
+  List<AbstractFilter> passes;
+  
+  /**
+      * @property shaders
+      * @type Array an array of shaders
+      * @private
+      */
+      List shaders = [];
+      
+      bool dirty = true;
+      double padding = 0.0;
+      
+      Map uniforms;
+      List fragmentSrc;
+  
+  AbstractFilter(this.fragmentSrc, this.uniforms)
+  {
     /**
     * An array of passes - some filters contain a few steps this array simply stores the steps in a liniear fashion.
     * For example the blur filter has two passes blurX and blurY.
@@ -20,27 +38,6 @@ PIXI.AbstractFilter = function(fragmentSrc, uniforms)
     * @private
     */
     this.passes = [this];
-
-    /**
-    * @property shaders
-    * @type Array an array of shaders
-    * @private
-    */
-    this.shaders = [];
-    
-    this.dirty = true;
-    this.padding = 0;
-
-    /**
-    * @property uniforms
-    * @type object
-    * @private
-    */
-    this.uniforms = uniforms || {};
-    /**
-    * @property fragmentSrc
-    * @type Array
-    * @private
-    */
-    this.fragmentSrc = fragmentSrc || [];
-};
+  }
+  
+}
