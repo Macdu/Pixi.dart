@@ -17,6 +17,7 @@ part 'display/DisplayObjectContainer.dart';
 part 'display/MovieClip.dart';
 part 'display/Sprite.dart';
 part 'display/SpriteBatch.dart';
+part 'display/ParticleBatch.dart';
 
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
