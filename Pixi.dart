@@ -20,6 +20,8 @@ part 'display/SpriteBatch.dart';
 part 'display/ParticleBatch.dart';
 part 'display/Stage.dart';
 
+part 'extras/Rope.dart';
+
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
  */
