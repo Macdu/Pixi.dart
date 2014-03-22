@@ -23,6 +23,7 @@ part 'display/Stage.dart';
 part 'extras/Rope.dart';
 part 'extras/Spine.dart';
 part 'extras/Strip.dart';
+part 'extras/TilingSprite.dart';
 
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23

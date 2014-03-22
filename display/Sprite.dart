@@ -156,7 +156,7 @@ class Sprite extends DisplayObjectContainer{
    * @param event
    * @private
    */
-  void onTextureUpdate()
+  void onTextureUpdate(_)
   {
       // so if _width is 0 then width was not set..
       if(this._width != 0)this.scale.x = this._width / this.texture.frame.width;
