@@ -18,6 +18,7 @@ part 'display/MovieClip.dart';
 part 'display/Sprite.dart';
 part 'display/SpriteBatch.dart';
 part 'display/ParticleBatch.dart';
+part 'display/Stage.dart';
 
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
