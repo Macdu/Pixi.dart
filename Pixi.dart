@@ -1,7 +1,9 @@
 library pixi;
 
 import 'dart:math' as Math;
+import 'dart:html';
 import 'dart:typed_data';
+import 'dart:web_gl';
 
 part 'core/Circle.dart';
 part 'core/Ellipse.dart';
@@ -14,6 +16,7 @@ part 'display/DisplayObject.dart';
 part 'display/DisplayObjectContainer.dart';
 part 'display/MovieClip.dart';
 part 'display/Sprite.dart';
+part 'display/SpriteBatch.dart';
 
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
