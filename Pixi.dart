@@ -35,6 +35,7 @@ part 'filters/BlurYFilter.dart';
 part 'filters/ColorMatrixFilter.dart';
 part 'filters/ColorStepFilter.dart';
 part 'filters/CrossHatchFilter.dart';
+part 'filters/DisplacementFilter.dart';
 
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
