@@ -1,3 +1,4 @@
+part of pixi;
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
  */
@@ -8,15 +9,15 @@
  * @class ColorStepFilter
  * @contructor
  */
-PIXI.ColorStepFilter = function()
+class ColorStepFilter extends AbstractFilter{
+ColorStepFilter()
 {
-    PIXI.AbstractFilter.call( this );
 
     this.passes = [this];
 
     // set the uniforms
     this.uniforms = {
-        step: {type: '1f', value: 5},
+        'step': {'type': '1f', 'value': 5},
     };
 
     this.fragmentSrc = [
@@ -32,20 +33,14 @@ PIXI.ColorStepFilter = function()
         '   gl_FragColor = color;',
         '}'
     ];
-};
+}
 
-PIXI.ColorStepFilter.prototype = Object.create( PIXI.AbstractFilter.prototype );
-PIXI.ColorStepFilter.prototype.constructor = PIXI.ColorStepFilter;
 
-/**
-The number of steps.
-@property step
-*/
-Object.defineProperty(PIXI.ColorStepFilter.prototype, 'step', {
-    get: function() {
-        return this.uniforms.step.value;
-    },
-    set: function(value) {
-        this.uniforms.step.value = value;
-    }
-});
+  /**
+  The number of steps.
+  @property step
+  */
+    num get step => this.uniforms['step']['value'];
+  set step (num value) => this.uniforms['step']['value'] = value;
+
+}
