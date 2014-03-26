@@ -1,16 +1,16 @@
+part of pixi;
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
  */
 
-PIXI.BlurXFilter = function()
+class BlurXFilter extends AbstractFilter
 {
-    PIXI.AbstractFilter.call( this );
-
-    this.passes = [this];
+  BlurXFilter(){
+    super.passes = [this];
 
     // set the uniforms
     this.uniforms = {
-        blur: {type: '1f', value: 1/512},
+        'blur': {'type': '1f', 'value': 1/512},
     };
 
     this.fragmentSrc = [
@@ -36,18 +36,11 @@ PIXI.BlurXFilter = function()
         '   gl_FragColor = sum;',
         '}'
     ];
-};
+  }
 
-PIXI.BlurXFilter.prototype = Object.create( PIXI.AbstractFilter.prototype );
-PIXI.BlurXFilter.prototype.constructor = PIXI.BlurXFilter;
-
-Object.defineProperty(PIXI.BlurXFilter.prototype, 'blur', {
-    get: function() {
-        return this.uniforms.blur.value / (1/7000);
-    },
-    set: function(value) {
-
-        this.dirty = true;
-        this.uniforms.blur.value = (1/7000) * value;
+  double get blur => this.uniforms['blur']['value'] / (1/7000);
+    set blur (double value){
+      this.dirty = true;
+      this.uniforms['blur']['value'] = (1/7000) * value;
     }
-});
+}
