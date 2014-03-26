@@ -5,6 +5,9 @@ import 'dart:html';
 import 'dart:typed_data';
 import 'dart:web_gl';
 
+import 'extras/Spine.dart' as Spine;
+export 'extras/Spine.dart';
+
 part 'core/Circle.dart';
 part 'core/Ellipse.dart';
 part 'core/Matrix.dart';
@@ -21,7 +24,6 @@ part 'display/ParticleBatch.dart';
 part 'display/Stage.dart';
 
 part 'extras/Rope.dart';
-part 'extras/Spine.dart';
 part 'extras/Strip.dart';
 part 'extras/TilingSprite.dart';
 
