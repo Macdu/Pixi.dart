@@ -19,8 +19,8 @@ class BlurFilter {
   List<AbstractFilter> passes;
 
   BlurFilter() {
-    this.blurXFilter = new PIXI.BlurXFilter();
-    this.blurYFilter = new PIXI.BlurYFilter();
+    this.blurXFilter = new BlurXFilter();
+    this.blurYFilter = new BlurYFilter();
 
     this.passes = [this.blurXFilter, this.blurYFilter];
   }
@@ -33,7 +33,7 @@ class BlurFilter {
    * @default 2
    */
   double get blur => this.blurXFilter.blur;
-  set blur(double value) => this.blurXfilter = this.blurYFilter = value;
+  set blur(double value) => this.blurXFilter = this.blurYFilter = value;
 
   /**
    * Sets the strength of the blurX property
@@ -43,7 +43,7 @@ class BlurFilter {
    * @default 2
    */
   double get blurX => this.blurXFilter.blur;
-  set blurX(double value) => this.blurXfilter = value;
+  set blurX(double value) => this.blurXFilter = value;
 
   /**
    * Sets the strength of the blurX property
