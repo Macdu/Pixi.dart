@@ -31,6 +31,7 @@ part 'filters/AbstractFilter.dart';
 part 'filters/AlphaMaskFilter.dart';
 part 'filters/BlurFilter.dart';
 part 'filters/BlurXFilter.dart';
+part 'filters/BlurYFilter.dart';
 
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
