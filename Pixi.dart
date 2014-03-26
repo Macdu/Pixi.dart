@@ -36,6 +36,7 @@ part 'filters/ColorMatrixFilter.dart';
 part 'filters/ColorStepFilter.dart';
 part 'filters/CrossHatchFilter.dart';
 part 'filters/DisplacementFilter.dart';
+part 'filters/DotScreenFilter.dart';
 
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23

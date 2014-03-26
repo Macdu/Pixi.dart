@@ -1,3 +1,4 @@
+part of pixi;
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
  * original filter: https://github.com/evanw/glfx.js/blob/master/src/filters/fun/dotscreen.js
@@ -9,17 +10,16 @@
  * @class DotScreenFilter
  * @contructor
  */
-PIXI.DotScreenFilter = function()
-{
-    PIXI.AbstractFilter.call( this );
+class DotScreenFilter extends AbstractFilter{
+DotScreenFilter(){
 
     this.passes = [this];
 
     // set the uniforms
     this.uniforms = {
-        scale: {type: '1f', value:1},
-        angle: {type: '1f', value:5},
-        dimensions:   {type: '4fv', value:[0,0,0,0]}
+        'scale': {'type': '1f', 'value':1},
+        'angle': {'type': '1f', 'value':5},
+        'dimensions':   {'type': '4fv', 'value':[0,0,0,0]}
     };
 
     this.fragmentSrc = [
@@ -48,10 +48,7 @@ PIXI.DotScreenFilter = function()
         '   gl_FragColor = vec4(vec3(average * 10.0 - 5.0 + pattern()), color.a);',
         '}'
     ];
-};
-
-PIXI.DotScreenFilter.prototype = Object.create( PIXI.DotScreenFilter.prototype );
-PIXI.DotScreenFilter.prototype.constructor = PIXI.DotScreenFilter;
+}
 
 /**
  *
@@ -59,15 +56,8 @@ PIXI.DotScreenFilter.prototype.constructor = PIXI.DotScreenFilter;
  * @property scale
  * @type Number
  */
-Object.defineProperty(PIXI.DotScreenFilter.prototype, 'scale', {
-    get: function() {
-        return this.uniforms.scale.value;
-    },
-    set: function(value) {
-        this.dirty = true;
-        this.uniforms.scale.value = value;
-    }
-});
+Map get scale =>  this.uniforms['scale']['value'];
+set scale(Map value ){ this.uniforms['scale']['value'] = value;this.dirty = true;}
 
 /**
  *
@@ -75,12 +65,7 @@ Object.defineProperty(PIXI.DotScreenFilter.prototype, 'scale', {
  * @property angle
  * @type Number
  */
-Object.defineProperty(PIXI.DotScreenFilter.prototype, 'angle', {
-    get: function() {
-        return this.uniforms.angle.value;
-    },
-    set: function(value) {
-        this.dirty = true;
-        this.uniforms.angle.value = value;
-    }
-});
+num get angle =>  this.uniforms['angle']['value'];
+set angle(num value ){ this.uniforms['angle']['value'] = value;this.dirty = true;}
+
+}
