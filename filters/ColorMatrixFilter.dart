@@ -46,7 +46,7 @@ class ColorMatrixFilter extends AbstractFilter
  * @type List and array of 26 numbers
  * @default [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]
  */
-List get matrix => this.uniforms.matrix.value;
-  set matrix (List value) => this.uniforms.matrix.value = value;
+List get matrix => this.uniforms['matrix']['value'];
+  set matrix (List value) => this.uniforms['matrix']['value'] = value;
   
 }
