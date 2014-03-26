@@ -1,3 +1,4 @@
+part of pixi;
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
  */
@@ -10,15 +11,14 @@
  * @class ColorMatrixFilter
  * @contructor
  */
-PIXI.ColorMatrixFilter = function()
+class ColorMatrixFilter extends AbstractFilter
 {
-    PIXI.AbstractFilter.call( this );
-
+  ColorMatrixFilter(){
     this.passes = [this];
 
     // set the uniforms
     this.uniforms = {
-        matrix: {type: 'mat4', value: [1,0,0,0,
+        'matrix': {'type': 'mat4', 'value': [1,0,0,0,
                                        0,1,0,0,
                                        0,0,1,0,
                                        0,0,0,1]},
@@ -37,23 +37,16 @@ PIXI.ColorMatrixFilter = function()
       //  '   gl_FragColor = gl_FragColor;',
         '}'
     ];
-};
-
-PIXI.ColorMatrixFilter.prototype = Object.create( PIXI.AbstractFilter.prototype );
-PIXI.ColorMatrixFilter.prototype.constructor = PIXI.ColorMatrixFilter;
+}
 
 /**
  * Sets the matrix of the color matrix filter
  *
  * @property matrix
- * @type Array and array of 26 numbers
+ * @type List and array of 26 numbers
  * @default [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]
  */
-Object.defineProperty(PIXI.ColorMatrixFilter.prototype, 'matrix', {
-    get: function() {
-        return this.uniforms.matrix.value;
-    },
-    set: function(value) {
-        this.uniforms.matrix.value = value;
-    }
-});
+List get matrix => this.uniforms.matrix.value;
+  set matrix (List value) => this.uniforms.matrix.value = value;
+  
+}
