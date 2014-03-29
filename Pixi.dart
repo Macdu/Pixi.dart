@@ -41,6 +41,7 @@ part 'filters/FilterBlock.dart';
 part 'filters/GrayFilter.dart';
 part 'filters/InvertFilter.dart';
 part 'filters/NormalMapFilter.dart';
+part 'filters/PixelateFilter.dart';
 
 
 /**
