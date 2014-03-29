@@ -48,6 +48,7 @@ part 'filters/SmartBlurFilter.dart';
 part 'filters/TwistFilter.dart';
 
 part 'loaders/AssetLoader.dart';
+part 'loaders/AtlasLoader.dart';
 
 
 /**
