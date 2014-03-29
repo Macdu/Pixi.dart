@@ -11,7 +11,7 @@ part of pixi;
  * @param fragmentSrc
  * @param uniforms
  */
-class AbstractFilter{
+abstract class AbstractFilter{
   
   List<AbstractFilter> passes;
   
