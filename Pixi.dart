@@ -45,6 +45,7 @@ part 'filters/PixelateFilter.dart';
 part 'filters/RGBSplitFilter.dart';
 part 'filters/SepiaFilter.dart';
 part 'filters/SmartBlurFilter.dart';
+part 'filters/TwistFilter.dart';
 
 
 /**
