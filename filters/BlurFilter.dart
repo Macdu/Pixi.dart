@@ -33,7 +33,7 @@ class BlurFilter {
    * @default 2
    */
   double get blur => this.blurXFilter.blur;
-  set blur(double value) => this.blurXFilter = this.blurYFilter = value;
+  set blur(double value) => this.blurXFilter.blur = this.blurYFilter.blur = value;
 
   /**
    * Sets the strength of the blurX property
@@ -43,7 +43,7 @@ class BlurFilter {
    * @default 2
    */
   double get blurX => this.blurXFilter.blur;
-  set blurX(double value) => this.blurXFilter = value;
+  set blurX(double value) => this.blurXFilter.blur = value;
 
   /**
    * Sets the strength of the blurX property
@@ -53,6 +53,6 @@ class BlurFilter {
    * @default 2
    */
   double get blurY => this.blurYFilter.blur;
-  set blurY(double value) => this.blurYFilter = value;
+  set blurY(double value) => this.blurYFilter.blur = value;
 
 }
