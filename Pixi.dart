@@ -47,6 +47,8 @@ part 'filters/SepiaFilter.dart';
 part 'filters/SmartBlurFilter.dart';
 part 'filters/TwistFilter.dart';
 
+part 'loaders/AssetLoader.dart';
+
 
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
