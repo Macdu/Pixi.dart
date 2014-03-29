@@ -43,6 +43,7 @@ part 'filters/InvertFilter.dart';
 part 'filters/NormalMapFilter.dart';
 part 'filters/PixelateFilter.dart';
 part 'filters/RGBSplitFilter.dart';
+part 'filters/SepiaFilter.dart';
 
 
 /**
