@@ -39,6 +39,8 @@ part 'filters/DisplacementFilter.dart';
 part 'filters/DotScreenFilter.dart';
 part 'filters/FilterBlock.dart';
 part 'filters/GrayFilter.dart';
+part 'filters/InvertFilter.dart';
+
 
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
