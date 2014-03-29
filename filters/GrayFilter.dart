@@ -1,3 +1,4 @@
+part of pixi;
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
  */
@@ -8,15 +9,15 @@
  * @class GrayFilter
  * @contructor
  */
-PIXI.GrayFilter = function()
-{
-    PIXI.AbstractFilter.call( this );
+class GrayFilter extends AbstractFilter{
+  
+  GrayFilter(){
 
     this.passes = [this];
 
     // set the uniforms
     this.uniforms = {
-        gray: {type: '1f', value: 1},
+        'gray': {'type': '1f', 'value': 1.0},
     };
 
     this.fragmentSrc = [
@@ -32,20 +33,13 @@ PIXI.GrayFilter = function()
      //   '   gl_FragColor = gl_FragColor;',
         '}'
     ];
-};
+  }
 
-PIXI.GrayFilter.prototype = Object.create( PIXI.AbstractFilter.prototype );
-PIXI.GrayFilter.prototype.constructor = PIXI.GrayFilter;
-
-/**
-The strength of the gray. 1 will make the object black and white, 0 will make the object its normal color
-@property gray
-*/
-Object.defineProperty(PIXI.GrayFilter.prototype, 'gray', {
-    get: function() {
-        return this.uniforms.gray.value;
-    },
-    set: function(value) {
-        this.uniforms.gray.value = value;
-    }
-});
+  /**
+  The strength of the gray. 1 will make the object black and white, 0 will make the object its normal color
+  @property gray
+  */
+  double get gray => this.uniforms['gray']['value'];
+    set gray(double value) => this.uniforms['gray']['value'] = value;
+    
+}
