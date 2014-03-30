@@ -1,3 +1,4 @@
+part of pixi;
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
  */
@@ -17,13 +18,27 @@
  * @param url {String} The url of the sprite sheet JSON file
  * @param crossorigin {Boolean} Whether requests should be treated as crossorigin
  */
-PIXI.SpriteSheetLoader = function (url, crossorigin) {
+class SpriteSheetLoader extends EventTarget {
+
+
+  String url;
+
+  bool crossorigin;
+
+  String baseUrl;
+
+  Texture texture;
+
+  Map frames;
+
+  Map json;
+
+  SpriteSheetLoader(String url, bool crossorigin) {
     /*
      * i use texture packer to load the assets..
      * http://www.codeandweb.com/texturepacker
      * make sure to set the format as 'JSON'
      */
-    PIXI.EventTarget.call(this);
 
     /**
      * The url of the bitmap font data
@@ -48,7 +63,7 @@ PIXI.SpriteSheetLoader = function (url, crossorigin) {
      * @type String
      * @readOnly
      */
-    this.baseUrl = url.replace(/[^\/]*$/, '');
+    this.baseUrl = url.replaceAll(new RegExp(r'[^\/]*$'), '');
 
     /**
      * The texture being loaded
@@ -65,35 +80,34 @@ PIXI.SpriteSheetLoader = function (url, crossorigin) {
      * @type Object
      */
     this.frames = {};
-};
+  }
 
-// constructor
-PIXI.SpriteSheetLoader.prototype.constructor = PIXI.SpriteSheetLoader;
 
-/**
+  /**
  * This will begin loading the JSON file
  *
  * @method load
  */
-PIXI.SpriteSheetLoader.prototype.load = function () {
-    var scope = this;
-    var jsonLoader = new PIXI.JsonLoader(this.url, this.crossorigin);
-    jsonLoader.addEventListener('loaded', function (event) {
-        scope.json = event.content.json;
-        scope.onLoaded();
+  void load([_]) {
+    JsonLoader jsonLoader = new JsonLoader(this.url, this.crossorigin);
+    jsonLoader.addEventListener('loaded', ([event]) {
+      this.json = event.content.json;
+      this.onLoaded();
     });
     jsonLoader.load();
-};
+  }
 
-/**
+  /**
  * Invoke when all files are loaded (json and texture)
  *
  * @method onLoaded
  * @private
  */
-PIXI.SpriteSheetLoader.prototype.onLoaded = function () {
-    this.dispatchEvent({
-        type: 'loaded',
-        content: this
+  void onLoaded() {
+    this.fire({
+      'type': 'loaded',
+      'content': this
     });
-};
+  }
+
+}
