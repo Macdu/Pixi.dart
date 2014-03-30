@@ -1,3 +1,4 @@
+part of pixi;
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
  * based on pixi impact spine implementation made by Eemeli Kelokorpi (@ekelokorpi) https://github.com/ekelokorpi
@@ -21,9 +22,17 @@
  * @param url {String} The url of the JSON file
  * @param crossorigin {Boolean} Whether requests should be treated as crossorigin
  */
-PIXI.SpineLoader = function(url, crossorigin)
-{
-    PIXI.EventTarget.call(this);
+class SpineLoader extends EventTarget {
+
+  String url;
+
+  bool crossorigin;
+
+  bool loaded;
+
+  Map json;
+
+  SpineLoader(String url, bool crossorigin) {
 
     /**
      * The url of the bitmap font data
@@ -49,34 +58,36 @@ PIXI.SpineLoader = function(url, crossorigin)
      * @readOnly
      */
     this.loaded = false;
-};
+  }
 
-PIXI.SpineLoader.prototype.constructor = PIXI.SpineLoader;
 
-/**
+  /**
  * Loads the JSON data
  *
  * @method load
  */
-PIXI.SpineLoader.prototype.load = function () {
+  void load() {
 
-    var scope = this;
-    var jsonLoader = new PIXI.JsonLoader(this.url, this.crossorigin);
-    jsonLoader.addEventListener("loaded", function (event) {
-        scope.json = event.content.json;
-        scope.onLoaded();
+    var jsonLoader = new JsonLoader(this.url, this.crossorigin);
+    jsonLoader.listen("loaded", ([event]) {
+      this.json = event['content'].json;
+      this.onLoaded(event);
     });
     jsonLoader.load();
-};
+  }
 
-/**
+  /**
  * Invoke when JSON file is loaded
  *
  * @method onLoaded
  * @private
  */
-PIXI.SpineLoader.prototype.onLoaded = function () {
+  void onLoaded([_]) {
     this.loaded = true;
-    this.dispatchEvent({type: "loaded", content: this});
-};
+    this.fire({
+      'type': "loaded",
+      'content': this
+    });
+  }
 
+}

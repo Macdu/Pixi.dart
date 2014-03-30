@@ -53,6 +53,7 @@ part 'loaders/AtlasLoader.dart';
 part 'loaders/BitmapFontLoader.dart';
 part 'loaders/ImageLoader.dart';
 part 'loaders/JsonLoader.dart';
+part 'loaders/SpineLoader.dart';
 
 
 /**
