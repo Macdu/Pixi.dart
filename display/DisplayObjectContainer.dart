@@ -206,7 +206,7 @@ class DisplayObjectContainer extends DisplayObject
    * @method getBounds
    * @return {Rectangle} the rectangular bounding area
    */
-  Rectangle getBounds([Matrix matrix = null])
+  Rectangle getBounds({Matrix matrix : null})
   {
       if(this.children.length == 0)return EmptyRectangle;
   

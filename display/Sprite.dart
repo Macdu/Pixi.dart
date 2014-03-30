@@ -83,6 +83,8 @@ class Sprite extends DisplayObjectContainer{
 
     bool renderable = true;
     
+    CanvasBuffer buffer;
+    
     var tintedTexture;
 
     Sprite(Texture texture){

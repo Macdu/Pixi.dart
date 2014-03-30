@@ -427,7 +427,7 @@ class DisplayObject
    * @method getBounds
    * @return {Rectangle} the rectangular bounding area
    */
-  Rectangle getBounds(Matrix matrix ) => EmptyRectangle;
+  Rectangle getBounds({Matrix matrix : null} ) => EmptyRectangle;
   
   /**
    * Retrieves the local bounds of the displayObject as a rectangle object

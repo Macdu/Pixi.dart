@@ -56,6 +56,8 @@ part 'loaders/JsonLoader.dart';
 part 'loaders/SpineLoader.dart';
 part 'loaders/SpriteSheetLoader.dart';
 
+part 'primitives/Graphics.dart';
+
 
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
