@@ -58,6 +58,8 @@ part 'loaders/SpriteSheetLoader.dart';
 
 part 'primitives/Graphics.dart';
 
+part 'renderers/canvas/CanvasRenderer.dart';
+
 
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
@@ -109,3 +111,7 @@ bool AUTO_PREVENT_DEFAULT = true;
 
 double RAD_TO_DEG = 180 / Math.PI;
 double DEG_TO_RAD = Math.PI / 180;
+
+var defaultRenderer;
+
+List blendModesCanvas = [];
