@@ -4,6 +4,7 @@ import 'dart:math' as Math;
 import 'dart:html';
 import 'dart:typed_data';
 import 'dart:web_gl';
+import 'dart:convert';
 
 import 'extras/Spine.dart' as Spine;
 export 'extras/Spine.dart';
@@ -51,6 +52,7 @@ part 'loaders/AssetLoader.dart';
 part 'loaders/AtlasLoader.dart';
 part 'loaders/BitmapFontLoader.dart';
 part 'loaders/ImageLoader.dart';
+part 'loaders/JsonLoader.dart';
 
 
 /**
