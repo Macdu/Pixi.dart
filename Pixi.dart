@@ -50,6 +50,7 @@ part 'filters/TwistFilter.dart';
 part 'loaders/AssetLoader.dart';
 part 'loaders/AtlasLoader.dart';
 part 'loaders/BitmapFontLoader.dart';
+part 'loaders/ImageLoader.dart';
 
 
 /**
