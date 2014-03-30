@@ -59,6 +59,7 @@ part 'loaders/SpriteSheetLoader.dart';
 part 'primitives/Graphics.dart';
 
 part 'renderers/canvas/CanvasRenderer.dart';
+part 'renderers/canvas/CanvasGraphics.dart';
 
 
 /**
