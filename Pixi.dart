@@ -63,6 +63,8 @@ part 'renderers/canvas/CanvasGraphics.dart';
 part 'renderers/canvas/utils/CanvasMaskManager.dart';
 part 'renderers/canvas/utils/CanvasTinter.dart';
 
+part 'renderers/webgl/WebGLRenderer.dart';
+
 
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23

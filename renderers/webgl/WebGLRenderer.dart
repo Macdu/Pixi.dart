@@ -1,29 +1,96 @@
+part of pixi;
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
  */
 
-PIXI.glContexts = []; // this is where we store the webGL contexts for easy access.
+List glContexts = []; // this is where we store the webGL contexts for easy access.
 
 /**
  * the WebGLRenderer draws the stage and all its content onto a webGL enabled canvas. This renderer
  * should be used for browsers that support webGL. This Render works by automatically managing webGLBatch's.
  * So no need for Sprite Batch's or Sprite Cloud's
  * Dont forget to add the view to your DOM or you will not see anything :)
- *
- * @class WebGLRenderer
- * @constructor
- * @param width=0 {Number} the width of the canvas view
- * @param height=0 {Number} the height of the canvas view
- * @param view {HTMLCanvasElement} the canvas to use as a view, optional
- * @param transparent=false {Boolean} If the render view is transparent, default false
- * @param antialias=false {Boolean} sets antialias (only applicable in chrome at the moment)
- *
  */
-PIXI.WebGLRenderer = function(width, height, view, transparent, antialias)
-{
-    if(!PIXI.defaultRenderer)PIXI.defaultRenderer = this;
+class WebGLRenderer{
 
-    this.type = PIXI.WEBGL_RENDERER;
+  
+  int type = WEBGL_RENDERER;
+
+      // do a catch.. only 1 webGL renderer..
+      /**
+       * Whether the render view is transparent
+       *
+       * @property transparent
+       * @type Boolean
+       */
+      bool transparent;
+
+      /**
+       * The width of the canvas view
+       *
+       * @property width
+       * @type Number
+       * @default 800
+       */
+      int width;
+
+      /**
+       * The height of the canvas view
+       *
+       * @property height
+       * @type Number
+       * @default 600
+       */
+      int height;
+
+      /**
+       * The canvas element that everything is drawn to
+       *
+       * @property view
+       * @type HTMLCanvasElement
+       */
+      CanvasElement view;
+
+      Map<String,bool> options = {
+          'alpha': this.transparent,
+          'antialias': this.antialias, // SPEED UP??
+          'remultipliedAlpha':this.transparent,
+          'stencil':true
+      };
+
+      RenderingContext gl;
+      
+      int glContextId;
+
+      Point projection = new Point();
+
+      Point offset = new Point(0, 0);
+
+      bool contextLost = false;
+
+      // time to create the render managers! each one focuses on managine a state in webGL
+      WebGLShaderManager shaderManager = new WebGLShaderManager(gl);                   // deals with managing the shader programs and their attribs
+      WebGLSpriteBatch spriteBatch = new PIXI.WebGLSpriteBatch(gl);                       // manages the rendering of sprites
+      WebGLMaskManager maskManager = new PIXI.WebGLMaskManager(gl);                       // manages the masks using the stencil buffer
+      WebGLFilterManager filterManager = new PIXI.WebGLFilterManager(gl, this.transparent); // manages the filters
+
+      Map renderSession = {};
+  
+      
+      /**
+       * @class WebGLRenderer
+       * @constructor
+       * @param width=0 {Number} the width of the canvas view
+       * @param height=0 {Number} the height of the canvas view
+       * @param view {HTMLCanvasElement} the canvas to use as a view, optional
+       * @param transparent=false {Boolean} If the render view is transparent, default false
+       * @param antialias=false {Boolean} sets antialias (only applicable in chrome at the moment)
+       *
+       */
+WebGLRenderer([int width = 800,int height = 600,CanvasElement view = new CanvasElement() ,bool transparent = false,bool antialias = false])
+{
+    if(defaultRenderer == null)defaultRenderer = this;
+
 
     // do a catch.. only 1 webGL renderer..
     /**
@@ -32,7 +99,7 @@ PIXI.WebGLRenderer = function(width, height, view, transparent, antialias)
      * @property transparent
      * @type Boolean
      */
-    this.transparent = !!transparent;
+    this.transparent = transparent;
 
     /**
      * The width of the canvas view
@@ -41,7 +108,7 @@ PIXI.WebGLRenderer = function(width, height, view, transparent, antialias)
      * @type Number
      * @default 800
      */
-    this.width = width || 800;
+    this.width = width;
 
     /**
      * The height of the canvas view
@@ -50,7 +117,7 @@ PIXI.WebGLRenderer = function(width, height, view, transparent, antialias)
      * @type Number
      * @default 600
      */
-    this.height = height || 600;
+    this.height = height;
 
     /**
      * The canvas element that everything is drawn to
@@ -58,25 +125,13 @@ PIXI.WebGLRenderer = function(width, height, view, transparent, antialias)
      * @property view
      * @type HTMLCanvasElement
      */
-    this.view = view || document.createElement( 'canvas' );
+    this.view = view;
     this.view.width = this.width;
     this.view.height = this.height;
-
-    // deal with losing context..
-    this.contextLost = this.handleContextLost.bind(this);
-    this.contextRestoredLost = this.handleContextRestored.bind(this);
     
-    this.view.addEventListener('webglcontextlost', this.contextLost, false);
-    this.view.addEventListener('webglcontextrestored', this.contextRestoredLost, false);
+    this.view.onWebGlContextLost.listen(this.handleContextLost);
+    this.view.onWebGlContextRestored.listen(this.handleContextRestored);
 
-    this.options = {
-        alpha: this.transparent,
-        antialias:!!antialias, // SPEED UP??
-        premultipliedAlpha:!!transparent,
-        stencil:true
-    };
-
-    //try 'experimental-webgl'
     try {
         this.gl = this.view.getContext('experimental-webgl',  this.options);
     } catch (e) {
@@ -85,7 +140,7 @@ PIXI.WebGLRenderer = function(width, height, view, transparent, antialias)
             this.gl = this.view.getContext('webgl',  this.options);
         } catch (e2) {
             // fail, not able to get a context
-            throw new Error(' This browser does not support webGL. Try using the canvas renderer' + this);
+            throw new Exception(' This browser does not support webGL. Try using the canvas renderer' + this);
         }
     }
 
