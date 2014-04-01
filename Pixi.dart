@@ -61,6 +61,7 @@ part 'primitives/Graphics.dart';
 part 'renderers/canvas/CanvasRenderer.dart';
 part 'renderers/canvas/CanvasGraphics.dart';
 part 'renderers/canvas/utils/CanvasMaskManager.dart';
+part 'renderers/canvas/utils/CanvasTinter.dart';
 
 
 /**
