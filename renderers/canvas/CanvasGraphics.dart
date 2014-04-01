@@ -20,7 +20,7 @@ class CanvasGraphics {
  * @param graphics {Graphics} the actual graphics object to render
  * @param context {Context2D} the 2d drawing method of the canvas
  */
-  void renderGraphics(Graphics graphics, CanvasRenderingContext2D context) {
+  static void renderGraphics(Graphics graphics, CanvasRenderingContext2D context) {
     double worldAlpha = graphics.worldAlpha;
     String color = '';
 
@@ -135,7 +135,7 @@ class CanvasGraphics {
  * @param graphics {Graphics} the graphics which will be used as a mask
  * @param context {Context2D} the context 2d method of the canvas
  */
-  void renderGraphicsMask(Graphics graphics, CanvasRenderingContext2D context) {
+  static void renderGraphicsMask(Graphics graphics, CanvasRenderingContext2D context) {
     int len = graphics.graphicsData.length;
 
     if (len == 0) return;
