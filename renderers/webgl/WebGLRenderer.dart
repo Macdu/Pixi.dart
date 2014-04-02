@@ -3,7 +3,8 @@ part of pixi;
  * @author Mat Groves http://matgroves.com/ @Doormat23
  */
 
-List<RenderingContext> glContexts = []; // this is where we store the webGL contexts for easy access.
+List<RenderingContext> glContexts = [];
+    // this is where we store the webGL contexts for easy access.
 
 /**
  * the WebGLRenderer draws the stage and all its content onto a webGL enabled canvas. This renderer
@@ -11,75 +12,76 @@ List<RenderingContext> glContexts = []; // this is where we store the webGL cont
  * So no need for Sprite Batch's or Sprite Cloud's
  * Dont forget to add the view to your DOM or you will not see anything :)
  */
-class WebGLRenderer{
+class WebGLRenderer {
 
-  
+
   int type = WEBGL_RENDERER;
 
-      // do a catch.. only 1 webGL renderer..
-      /**
+  // do a catch.. only 1 webGL renderer..
+  /**
        * Whether the render view is transparent
        *
        * @property transparent
        * @type Boolean
        */
-      bool transparent;
-      
-      bool antialias;
+  bool transparent;
 
-      /**
+  bool antialias;
+
+  /**
        * The width of the canvas view
        *
        * @property width
        * @type Number
        * @default 800
        */
-      int width;
+  int width;
 
-      /**
+  /**
        * The height of the canvas view
        *
        * @property height
        * @type Number
        * @default 600
        */
-      int height;
+  int height;
 
-      /**
+  /**
        * The canvas element that everything is drawn to
        *
        * @property view
        * @type HTMLCanvasElement
        */
-      CanvasElement view;
+  CanvasElement view;
 
-      Map<String,bool> options = {};
+  Map<String, bool> options = {};
 
-      RenderingContext gl;
-      
-      int glContextId;
-      
-      static int _globalGlContextId;
+  RenderingContext gl;
 
-      Point projection = new Point();
+  int glContextId;
 
-      Point offset = new Point(0.0, 0.0);
+  static int _globalGlContextId;
 
-      bool contextLost = false;
-      
+  Point projection = new Point();
+
+  Point offset = new Point(0.0, 0.0);
+
+  bool contextLost = false;
+
   // time to create the render managers! each one focuses on managine a state in webGL
-   WebGLShaderManager shaderManager ;                   // deals with managing the shader programs and their attribs
-   WebGLSpriteBatch spriteBatch ;                       // manages the rendering of sprites
-   WebGLMaskManager maskManager ;                       // manages the masks using the stencil buffer
-   WebGLFilterManager filterManager ;                   // manages the filters
+  WebGLShaderManager shaderManager;
+      // deals with managing the shader programs and their attribs
+  WebGLSpriteBatch spriteBatch; // manages the rendering of sprites
+  WebGLMaskManager maskManager; // manages the masks using the stencil buffer
+  WebGLFilterManager filterManager; // manages the filters
 
 
-      Map renderSession = {};
-      
-      Stage _stage;
-  
-      
-      /**
+  Map renderSession = {};
+
+  Stage _stage;
+
+
+  /**
        * @class WebGLRenderer
        * @constructor
        * @param width=0 {Number} the width of the canvas view
@@ -89,10 +91,10 @@ class WebGLRenderer{
        * @param antialias=false {Boolean} sets antialias (only applicable in chrome at the moment)
        *
        */
-WebGLRenderer([int width = 800,int height = 600,CanvasElement view = null ,bool transparent = false,bool antialias = false])
-{
-    if(defaultRenderer == null)defaultRenderer = this;
-    
+  WebGLRenderer([int width = 800, int height = 600, CanvasElement view =
+      null, bool transparent = false, bool antialias = false]) {
+    if (defaultRenderer == null) defaultRenderer = this;
+
     if (view == null) view = new CanvasElement();
 
 
@@ -104,7 +106,7 @@ WebGLRenderer([int width = 800,int height = 600,CanvasElement view = null ,bool 
      * @type Boolean
      */
     this.transparent = transparent;
-    
+
     this.antialias = antialias;
 
     /**
@@ -134,73 +136,94 @@ WebGLRenderer([int width = 800,int height = 600,CanvasElement view = null ,bool 
     this.view = view;
     this.view.width = this.width;
     this.view.height = this.height;
-    
-    Map<String,bool> options = {
-              'alpha': this.transparent,
-              'antialias': this.antialias, // SPEED UP??
-              'remultipliedAlpha':this.transparent,
-              'stencil':true
-          };
-    
+
+    Map<String, bool> options = {
+      'alpha': this.transparent,
+      'antialias': this.antialias, // SPEED UP??
+      'remultipliedAlpha': this.transparent,
+      'stencil': true
+    };
+
     this.view.onWebGlContextLost.listen(this.handleContextLost);
     this.view.onWebGlContextRestored.listen(this.handleContextRestored);
 
     try {
-        this.gl = this.view.getContext('experimental-webgl',  this.options);
+      this.gl = this.view.getContext('experimental-webgl', this.options);
     } catch (e) {
-        //try 'webgl'
-        try {
-            this.gl = this.view.getContext('webgl',  this.options);
-        } catch (e2) {
-            // fail, not able to get a context
-            throw new Exception(' This browser does not support webGL. Try using the canvas renderer' + this);
-        }
+      //try 'webgl'
+      try {
+        this.gl = this.view.getContext('webgl', this.options);
+      } catch (e2) {
+        // fail, not able to get a context
+        throw new Exception(
+            ' This browser does not support webGL. Try using the canvas renderer' + this);
+      }
     }
 
     RenderingContext gl = this.gl;
-    this.glContextId = WebGLRenderer._globalGlContextId ++;
+    this.glContextId = WebGLRenderer._globalGlContextId++;
 
     glContexts[this.glContextId] = gl;
 
-    if(blendModesWebGL == [])
-    {
-        blendModesWebGL = [];
+    if (blendModesWebGL == []) {
+      blendModesWebGL = [];
 
-        blendModesWebGL[blendModes['NORMAL']]        = [RenderingContext.ONE,       RenderingContext.ONE_MINUS_SRC_ALPHA];
-        blendModesWebGL[blendModes['ADD']]           = [RenderingContext.SRC_ALPHA, RenderingContext.DST_ALPHA];
-        blendModesWebGL[blendModes['MULTIPLY']]      = [RenderingContext.DST_COLOR, RenderingContext.ONE_MINUS_SRC_ALPHA];
-        blendModesWebGL[blendModes['SCREEN']]        = [RenderingContext.SRC_ALPHA, RenderingContext.ONE];
-        blendModesWebGL[blendModes['OVERLAY']]       = [RenderingContext.ONE,       RenderingContext.ONE_MINUS_SRC_ALPHA];
-        blendModesWebGL[blendModes['DARKEN']]        = [RenderingContext.ONE,       RenderingContext.ONE_MINUS_SRC_ALPHA];
-        blendModesWebGL[blendModes['LIGHTEN']]       = [RenderingContext.ONE,       RenderingContext.ONE_MINUS_SRC_ALPHA];
-        blendModesWebGL[blendModes['COLOR_DODGE']]   = [RenderingContext.ONE,       RenderingContext.ONE_MINUS_SRC_ALPHA];
-        blendModesWebGL[blendModes['COLOR_BURN']]    = [RenderingContext.ONE,       RenderingContext.ONE_MINUS_SRC_ALPHA];
-        blendModesWebGL[blendModes['HARD_LIGHT']]    = [RenderingContext.ONE,       RenderingContext.ONE_MINUS_SRC_ALPHA];
-        blendModesWebGL[blendModes['SOFT_LIGHT']]    = [RenderingContext.ONE,       RenderingContext.ONE_MINUS_SRC_ALPHA];
-        blendModesWebGL[blendModes['DIFFERENCE']]    = [RenderingContext.ONE,       RenderingContext.ONE_MINUS_SRC_ALPHA];
-        blendModesWebGL[blendModes['EXCLUSION']]     = [RenderingContext.ONE,       RenderingContext.ONE_MINUS_SRC_ALPHA];
-        blendModesWebGL[blendModes['HUE']]           = [RenderingContext.ONE,       RenderingContext.ONE_MINUS_SRC_ALPHA];
-        blendModesWebGL[blendModes['SATURATION']]    = [RenderingContext.ONE,       RenderingContext.ONE_MINUS_SRC_ALPHA];
-        blendModesWebGL[blendModes['COLOR']]         = [RenderingContext.ONE,       RenderingContext.ONE_MINUS_SRC_ALPHA];
-        blendModesWebGL[blendModes['LUMINOSITY']]    = [RenderingContext.ONE,       RenderingContext.ONE_MINUS_SRC_ALPHA];
+      blendModesWebGL[blendModes['NORMAL']] = [RenderingContext.ONE,
+          RenderingContext.ONE_MINUS_SRC_ALPHA];
+      blendModesWebGL[blendModes['ADD']] = [RenderingContext.SRC_ALPHA,
+          RenderingContext.DST_ALPHA];
+      blendModesWebGL[blendModes['MULTIPLY']] = [RenderingContext.DST_COLOR,
+          RenderingContext.ONE_MINUS_SRC_ALPHA];
+      blendModesWebGL[blendModes['SCREEN']] = [RenderingContext.SRC_ALPHA,
+          RenderingContext.ONE];
+      blendModesWebGL[blendModes['OVERLAY']] = [RenderingContext.ONE,
+          RenderingContext.ONE_MINUS_SRC_ALPHA];
+      blendModesWebGL[blendModes['DARKEN']] = [RenderingContext.ONE,
+          RenderingContext.ONE_MINUS_SRC_ALPHA];
+      blendModesWebGL[blendModes['LIGHTEN']] = [RenderingContext.ONE,
+          RenderingContext.ONE_MINUS_SRC_ALPHA];
+      blendModesWebGL[blendModes['COLOR_DODGE']] = [RenderingContext.ONE,
+          RenderingContext.ONE_MINUS_SRC_ALPHA];
+      blendModesWebGL[blendModes['COLOR_BURN']] = [RenderingContext.ONE,
+          RenderingContext.ONE_MINUS_SRC_ALPHA];
+      blendModesWebGL[blendModes['HARD_LIGHT']] = [RenderingContext.ONE,
+          RenderingContext.ONE_MINUS_SRC_ALPHA];
+      blendModesWebGL[blendModes['SOFT_LIGHT']] = [RenderingContext.ONE,
+          RenderingContext.ONE_MINUS_SRC_ALPHA];
+      blendModesWebGL[blendModes['DIFFERENCE']] = [RenderingContext.ONE,
+          RenderingContext.ONE_MINUS_SRC_ALPHA];
+      blendModesWebGL[blendModes['EXCLUSION']] = [RenderingContext.ONE,
+          RenderingContext.ONE_MINUS_SRC_ALPHA];
+      blendModesWebGL[blendModes['HUE']] = [RenderingContext.ONE,
+          RenderingContext.ONE_MINUS_SRC_ALPHA];
+      blendModesWebGL[blendModes['SATURATION']] = [RenderingContext.ONE,
+          RenderingContext.ONE_MINUS_SRC_ALPHA];
+      blendModesWebGL[blendModes['COLOR']] = [RenderingContext.ONE,
+          RenderingContext.ONE_MINUS_SRC_ALPHA];
+      blendModesWebGL[blendModes['LUMINOSITY']] = [RenderingContext.ONE,
+          RenderingContext.ONE_MINUS_SRC_ALPHA];
     }
 
 
 
 
-    this.projection.x =  this.width/2;
-    this.projection.y =  -this.height/2;
+    this.projection.x = this.width / 2;
+    this.projection.y = -this.height / 2;
 
 
-  // time to create the render managers! each one focuses on managine a state in webGL
-   this.shaderManager = new WebGLShaderManager(gl);                   // deals with managing the shader programs and their attribs
-   this.spriteBatch = new WebGLSpriteBatch(gl);                       // manages the rendering of sprites
-   this.maskManager = new WebGLMaskManager(gl);                       // manages the masks using the stencil buffer
-   this.filterManager = new WebGLFilterManager(gl, this.transparent); // manages the filters
+    // time to create the render managers! each one focuses on managine a state in webGL
+    this.shaderManager = new WebGLShaderManager(gl);
+        // deals with managing the shader programs and their attribs
+    this.spriteBatch = new WebGLSpriteBatch(gl);
+        // manages the rendering of sprites
+    this.maskManager = new WebGLMaskManager(gl);
+        // manages the masks using the stencil buffer
+    this.filterManager = new WebGLFilterManager(gl, this.transparent);
+        // manages the filters
 
-    
+
     this.resize(this.width, this.height);
-    
+
     this.renderSession = {};
     this.renderSession['gl'] = this.gl;
     this.renderSession['drawCount'] = 0;
@@ -217,28 +240,26 @@ WebGLRenderer([int width = 800,int height = 600,CanvasElement view = null ,bool 
 
     gl.enable(RenderingContext.BLEND);
     gl.colorMask(true, true, true, this.transparent);
-}
+  }
 
 
-/**
+  /**
  * Renders the stage to its webGL view
  *
  * @method render
  * @param stage {Stage} the Stage element to be rendered
  */
-void render(Stage stage)
-{
-    if(this.contextLost)return;
+  void render(Stage stage) {
+    if (this.contextLost) return;
 
 
     // if rendering a new stage clear the batches..
-    if(this._stage != stage)
-    {
-        if(stage.interactive)stage.interactionManager.removeEvents();
+    if (this._stage != stage) {
+      if (stage.interactive) stage.interactionManager.removeEvents();
 
-        // TODO make this work
-        // dont think this is needed any more?
-        this._stage = stage;
+      // TODO make this work
+      // dont think this is needed any more?
+      this._stage = stage;
     }
 
     // update any textures this includes uvs and uploading them to the gpu
@@ -256,37 +277,30 @@ void render(Stage stage)
     // make sure we are bound to the main frame buffer
     gl.bindFramebuffer(RenderingContext.FRAMEBUFFER, null);
 
-    if(this.transparent)
-    {
-        gl.clearColor(0, 0, 0, 0);
-    }
-    else
-    {
-        gl.clearColor(stage.backgroundColorSplit[0],stage.backgroundColorSplit[1],stage.backgroundColorSplit[2], 1);
+    if (this.transparent) {
+      gl.clearColor(0, 0, 0, 0);
+    } else {
+      gl.clearColor(stage.backgroundColorSplit[0],
+          stage.backgroundColorSplit[1], stage.backgroundColorSplit[2], 1);
     }
 
 
     gl.clear(RenderingContext.COLOR_BUFFER_BIT);
 
-    this.renderDisplayObject( stage, this.projection );
+    this.renderDisplayObject(stage, this.projection);
 
     // interaction
-    if(stage.interactive)
-    {
-        //need to add some events!
-        if(!stage._interactiveEventsAdded)
-        {
-            stage._interactiveEventsAdded = true;
-            stage.interactionManager.setTarget(this);
-        }
-    }
-    else
-    {
-        if(stage._interactiveEventsAdded)
-        {
-            stage._interactiveEventsAdded = false;
-            stage.interactionManager.setTarget(this);
-        }
+    if (stage.interactive) {
+      //need to add some events!
+      if (!stage._interactiveEventsAdded) {
+        stage._interactiveEventsAdded = true;
+        stage.interactionManager.setTarget(this);
+      }
+    } else {
+      if (stage._interactiveEventsAdded) {
+        stage._interactiveEventsAdded = false;
+        stage.interactionManager.setTarget(this);
+      }
     }
 
     /*
@@ -309,9 +323,9 @@ void render(Stage stage)
       }.bind(this), 1000);
      }.bind(this);
      */
-}
+  }
 
-/**
+  /**
  * Renders a display Object
  *
  * @method renderDIsplayObject
@@ -319,8 +333,8 @@ void render(Stage stage)
  * @param projection {Point} The projection
  * @param buffer {List} a standard WebGL buffer 
  */
-void renderDisplayObject(DisplayObject displayObject,Point projection,[Buffer buffer = null])
-{
+  void renderDisplayObject(DisplayObject displayObject, Point
+      projection, [Buffer buffer = null]) {
     // reset the render session data..
     this.renderSession['drawCount'] = 0;
     this.renderSession['currentBlendMode'] = 9999;
@@ -339,17 +353,16 @@ void renderDisplayObject(DisplayObject displayObject,Point projection,[Buffer bu
 
     // finish the sprite batch
     this.spriteBatch.end();
-}
+  }
 
-/**
+  /**
  * Updates the textures loaded into this webgl renderer
  *
  * @static
  * @method updateTextures
  * @private
  */
-static void updateTextures()
-{
+  static void updateTextures() {
     int i = 0;
 
     //TODO break this out into a texture manager...
@@ -357,66 +370,61 @@ static void updateTextures()
     //    PIXI.WebGLRenderer.updateTexture(PIXI.texturesToUpdate[i]);
 
 
-    for (i=0; i < Texture.frameUpdates.length; i++)
+    for (i = 0; i < Texture.frameUpdates.length; i++)
         WebGLRenderer.updateTextureFrame(Texture.frameUpdates[i]);
 
-    for (i = 0; i < texturesToDestroy.length; i++)
-        WebGLRenderer.destroyTexture(texturesToDestroy[i]);
+    for (i = 0; i < texturesToDestroy.length; i++) WebGLRenderer.destroyTexture(
+        texturesToDestroy[i]);
 
     texturesToUpdate.length = 0;
     texturesToDestroy.length = 0;
     Texture.frameUpdates.length = 0;
-}
+  }
 
-/**
+  /**
  * Destroys a loaded webgl texture
  *
  * @method destroyTexture
  * @param texture {Texture} The texture to update
  * @private
  */
-void destroyTexture(Texture texture)
-{
+  void destroyTexture(Texture texture) {
     //TODO break this out into a texture manager...
 
-    for (int i = texture._glTextures.length - 1; i >= 0; i--)
-    {
-        Texture glTexture = texture._glTextures[i];
-        RenderingContext gl = glContexts[i];
+    for (int i = texture._glTextures.length - 1; i >= 0; i--) {
+      Texture glTexture = texture._glTextures[i];
+      RenderingContext gl = glContexts[i];
 
-        if(gl && glTexture)
-        {
-            gl.deleteTexture(glTexture);
-        }
+      if (gl && glTexture) {
+        gl.deleteTexture(glTexture);
+      }
     }
 
     texture._glTextures.length = 0;
-}
+  }
 
-/**
+  /**
  *
  * @method updateTextureFrame
  * @param texture {Texture} The texture to update the frame from
  * @private
  */
-void updateTextureFrame(Texture texture)
-{
+  void updateTextureFrame(Texture texture) {
     texture.updateFrame = false;
 
     // now set the uvs. Figured that the uv data sits with a texture rather than a sprite.
     // so uv data is stored on the texture itself
     texture._updateWebGLuvs();
-}
+  }
 
-/**
+  /**
  * resizes the webGL view to the specified width and height
  *
  * @method resize
  * @param width {Number} the new width of the webGL view
  * @param height {Number} the new height of the webGL view
  */
-void resize(int width,int height)
-{
+  void resize(int width, int height) {
     this.width = width;
     this.height = height;
 
@@ -425,20 +433,20 @@ void resize(int width,int height)
 
     this.gl.viewport(0, 0, this.width, this.height);
 
-    this.projection.x =  this.width/2;
-    this.projection.y =  -this.height/2;
-}
-
-static int _getIndexFirst(RenderingContext context){
-  
-  for(int i = 0; i < glContexts.length; i++){
-    if(glContexts[i] == context)return i;
+    this.projection.x = this.width / 2;
+    this.projection.y = -this.height / 2;
   }
-  return null;
-  
-}
 
-/**
+  static int _getIndexFirst(RenderingContext context) {
+
+    for (int i = 0; i < glContexts.length; i++) {
+      if (glContexts[i] == context) return i;
+    }
+    return null;
+
+  }
+
+  /**
  * Creates a WebGL texture
  *
  * @method createWebGLTexture
@@ -446,43 +454,46 @@ static int _getIndexFirst(RenderingContext context){
  * @param gl {webglContext} the WebGL context
  * @static
  */
-static Texture createWebGLTexture(Texture texture,RenderingContext gl)
-{
+  static Texture createWebGLTexture(Texture texture, RenderingContext gl) {
 
-  int id = _getIndexFirst(gl);
-  
-    if(texture.hasLoaded)
-    {
-      
-        texture._glTextures[id] = gl.createTexture();
+    int id = _getIndexFirst(gl);
 
-        gl.bindTexture(RenderingContext.TEXTURE_2D, texture._glTextures[id]);
-        gl.pixelStorei(RenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+    if (texture.hasLoaded) {
 
-        gl.texImage2D(RenderingContext.TEXTURE_2D, 0, RenderingContext.RGBA, RenderingContext.RGBA, RenderingContext.UNSIGNED_BYTE, texture.source);
-        gl.texParameteri(RenderingContext.TEXTURE_2D, RenderingContext.TEXTURE_MAG_FILTER, texture.scaleMode == scaleModes['LINEAR'] ? RenderingContext.LINEAR : RenderingContext.NEAREST);
-        gl.texParameteri(RenderingContext.TEXTURE_2D, RenderingContext.TEXTURE_MIN_FILTER, texture.scaleMode == scaleModes['LINEAR'] ? RenderingContext.LINEAR : RenderingContext.NEAREST);
+      texture._glTextures[id] = gl.createTexture();
 
-        // reguler...
+      gl.bindTexture(RenderingContext.TEXTURE_2D, texture._glTextures[id]);
+      gl.pixelStorei(RenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
 
-        if(!texture._powerOf2)
-        {
-            gl.texParameteri(RenderingContext.TEXTURE_2D, RenderingContext.TEXTURE_WRAP_S, RenderingContext.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        }
-        else
-        {
-            gl.texParameteri(RenderingContext.TEXTURE_2D, RenderingContext.TEXTURE_WRAP_S, RenderingContext.REPEAT);
-            gl.texParameteri(RenderingContext.TEXTURE_2D, RenderingContext.TEXTURE_WRAP_T, RenderingContext.REPEAT);
-        }
+      gl.texImage2D(RenderingContext.TEXTURE_2D, 0, RenderingContext.RGBA,
+          RenderingContext.RGBA, RenderingContext.UNSIGNED_BYTE, texture.source);
+      gl.texParameteri(RenderingContext.TEXTURE_2D,
+          RenderingContext.TEXTURE_MAG_FILTER, texture.scaleMode == scaleModes['LINEAR'] ?
+          RenderingContext.LINEAR : RenderingContext.NEAREST);
+      gl.texParameteri(RenderingContext.TEXTURE_2D,
+          RenderingContext.TEXTURE_MIN_FILTER, texture.scaleMode == scaleModes['LINEAR'] ?
+          RenderingContext.LINEAR : RenderingContext.NEAREST);
 
-        gl.bindTexture(RenderingContext.TEXTURE_2D, null);
+      // reguler...
+
+      if (!texture._powerOf2) {
+        gl.texParameteri(RenderingContext.TEXTURE_2D,
+            RenderingContext.TEXTURE_WRAP_S, RenderingContext.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      } else {
+        gl.texParameteri(RenderingContext.TEXTURE_2D,
+            RenderingContext.TEXTURE_WRAP_S, RenderingContext.REPEAT);
+        gl.texParameteri(RenderingContext.TEXTURE_2D,
+            RenderingContext.TEXTURE_WRAP_T, RenderingContext.REPEAT);
+      }
+
+      gl.bindTexture(RenderingContext.TEXTURE_2D, null);
     }
 
-    return  texture._glTextures[id];
-}
+    return texture._glTextures[id];
+  }
 
-/**
+  /**
  * Updates a WebGL texture
  *
  * @method updateWebGLTexture
@@ -490,77 +501,80 @@ static Texture createWebGLTexture(Texture texture,RenderingContext gl)
  * @param gl {webglContext} the WebGL context
  * @private
  */
-void updateWebGLTexture(Texture texture,RenderingContext gl)
-{
-  
-    int id = _getIndexFirst(gl);  
-  
-    if( texture._glTextures[id] )
-    {
-        gl.bindTexture(RenderingContext.TEXTURE_2D, texture._glTextures[id]);
-        gl.pixelStorei(RenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
+  void updateWebGLTexture(Texture texture, RenderingContext gl) {
 
-        gl.texImage2D(RenderingContext.TEXTURE_2D, 0, RenderingContext.RGBA, RenderingContext.RGBA, RenderingContext.UNSIGNED_BYTE, texture.source);
-        gl.texParameteri(RenderingContext.TEXTURE_2D, RenderingContext.TEXTURE_MAG_FILTER, texture.scaleMode == scaleModes['LINEAR'] ? RenderingContext.LINEAR : RenderingContext.NEAREST);
-        gl.texParameteri(RenderingContext.TEXTURE_2D, RenderingContext.TEXTURE_MIN_FILTER, texture.scaleMode == scaleModes['LINEAR'] ? RenderingContext.LINEAR : RenderingContext.NEAREST);
+    int id = _getIndexFirst(gl);
 
-        // reguler...
+    if (texture._glTextures[id]) {
+      gl.bindTexture(RenderingContext.TEXTURE_2D, texture._glTextures[id]);
+      gl.pixelStorei(RenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
 
-        if(!texture._powerOf2)
-        {
-            gl.texParameteri(RenderingContext.TEXTURE_2D, RenderingContext.TEXTURE_WRAP_S, RenderingContext.CLAMP_TO_EDGE);
-            gl.texParameteri(RenderingContext.TEXTURE_2D, RenderingContext.TEXTURE_WRAP_T, RenderingContext.CLAMP_TO_EDGE);
-        }
-        else
-        {
-            gl.texParameteri(RenderingContext.TEXTURE_2D, RenderingContext.TEXTURE_WRAP_S, RenderingContext.REPEAT);
-            gl.texParameteri(RenderingContext.TEXTURE_2D, RenderingContext.TEXTURE_WRAP_T, RenderingContext.REPEAT);
-        }
+      gl.texImage2D(RenderingContext.TEXTURE_2D, 0, RenderingContext.RGBA,
+          RenderingContext.RGBA, RenderingContext.UNSIGNED_BYTE, texture.source);
+      gl.texParameteri(RenderingContext.TEXTURE_2D,
+          RenderingContext.TEXTURE_MAG_FILTER, texture.scaleMode == scaleModes['LINEAR'] ?
+          RenderingContext.LINEAR : RenderingContext.NEAREST);
+      gl.texParameteri(RenderingContext.TEXTURE_2D,
+          RenderingContext.TEXTURE_MIN_FILTER, texture.scaleMode == scaleModes['LINEAR'] ?
+          RenderingContext.LINEAR : RenderingContext.NEAREST);
 
-        gl.bindTexture(RenderingContext.TEXTURE_2D, null);
+      // reguler...
+
+      if (!texture._powerOf2) {
+        gl.texParameteri(RenderingContext.TEXTURE_2D,
+            RenderingContext.TEXTURE_WRAP_S, RenderingContext.CLAMP_TO_EDGE);
+        gl.texParameteri(RenderingContext.TEXTURE_2D,
+            RenderingContext.TEXTURE_WRAP_T, RenderingContext.CLAMP_TO_EDGE);
+      } else {
+        gl.texParameteri(RenderingContext.TEXTURE_2D,
+            RenderingContext.TEXTURE_WRAP_S, RenderingContext.REPEAT);
+        gl.texParameteri(RenderingContext.TEXTURE_2D,
+            RenderingContext.TEXTURE_WRAP_T, RenderingContext.REPEAT);
+      }
+
+      gl.bindTexture(RenderingContext.TEXTURE_2D, null);
     }
-    
-}
 
-/**
+  }
+
+  /**
  * Handles a lost webgl context
  *
  * @method handleContextLost
  * @param event {Event}
  * @private
  */
-void handleContextLost(Event event)
-{
+  void handleContextLost(Event event) {
     event.preventDefault();
     this.contextLost = true;
-}
+  }
 
-/**
+  /**
  * Handles a restored webgl context
  *
  * @method handleContextRestored
  * @param event {Event}
  * @private
  */
-void handleContextRestored(Event event)
-{
+  void handleContextRestored(Event event) {
 
     //try 'experimental-webgl'
     try {
-        this.gl = this.view.getContext('experimental-webgl',  this.options);
+      this.gl = this.view.getContext('experimental-webgl', this.options);
     } catch (e) {
-        //try 'webgl'
-        try {
-            this.gl = this.view.getContext('webgl',  this.options);
-        } catch (e2) {
-            // fail, not able to get a context
-            throw new Exception(' This browser does not support webGL. Try using the canvas renderer' + this);
-        }
+      //try 'webgl'
+      try {
+        this.gl = this.view.getContext('webgl', this.options);
+      } catch (e2) {
+        // fail, not able to get a context
+        throw new Exception(
+            ' This browser does not support webGL. Try using the canvas renderer' + this);
+      }
     }
 
     RenderingContext gl = this.gl;
     glContexts[_getIndexFirst(gl)] = null;
-    this.glContextId = WebGLRenderer._globalGlContextId ++;
+    this.glContextId = WebGLRenderer._globalGlContextId++;
     glContexts.add(gl);
 
 
@@ -582,10 +596,9 @@ void handleContextRestored(Event event)
 
     this.gl.viewport(0, 0, this.width, this.height);
 
-    for(Texture key in TextureCache)
-    {
-        Texture texture = key.baseTexture;
-        texture._glTextures = [];
+    for (Texture key in TextureCache) {
+      Texture texture = key.baseTexture;
+      texture._glTextures = [];
     }
 
     /**
@@ -595,18 +608,17 @@ void handleContextRestored(Event event)
      */
     this.contextLost = false;
 
-}
+  }
 
-/**
+  /**
  * Removes everything from the renderer (event listeners, spritebatch, etc...)
  *
  * @method destroy
  */
-void destroy()
-{
+  void destroy() {
 
     // deal with losing context..
-    
+
     // remove listeners
     //TODO: remove the listeners
     //this.view.removeEventListener('webglcontextlost', this.contextLost);
@@ -627,9 +639,9 @@ void destroy()
     this.spriteBatch = null;
     this.maskManager = null;
     this.filterManager = null;
-    
+
     this.gl = null;
     //
     this.renderSession = null;
-}
+  }
 }
