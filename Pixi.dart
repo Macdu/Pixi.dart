@@ -66,6 +66,7 @@ part 'renderers/canvas/utils/CanvasTinter.dart';
 part 'renderers/webgl/WebGLRenderer.dart';
 part 'renderers/webgl/shaders/PixiFastShader.dart';
 part 'renderers/webgl/shaders/PixiShader.dart';
+part 'renderers/webgl/shaders/PrimitiveShader.dart';
 
 
 /**
