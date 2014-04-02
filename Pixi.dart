@@ -119,4 +119,8 @@ double DEG_TO_RAD = Math.PI / 180;
 
 var defaultRenderer;
 
+List texturesToUpdate = [];
+List texturesToDestroy = [];
+
 List blendModesCanvas = [];
+List blendModesWebGL = [];
