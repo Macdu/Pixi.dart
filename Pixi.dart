@@ -64,6 +64,7 @@ part 'renderers/canvas/utils/CanvasMaskManager.dart';
 part 'renderers/canvas/utils/CanvasTinter.dart';
 
 part 'renderers/webgl/WebGLRenderer.dart';
+part 'renderers/webgl/shaders/PixiFastShader.dart';
 
 
 /**
