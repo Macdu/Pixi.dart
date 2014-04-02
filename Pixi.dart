@@ -67,6 +67,7 @@ part 'renderers/webgl/WebGLRenderer.dart';
 part 'renderers/webgl/shaders/PixiFastShader.dart';
 part 'renderers/webgl/shaders/PixiShader.dart';
 part 'renderers/webgl/shaders/PrimitiveShader.dart';
+part 'renderers/webgl/shaders/StripShader.dart';
 
 
 /**
