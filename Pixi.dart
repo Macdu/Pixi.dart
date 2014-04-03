@@ -77,6 +77,8 @@ part 'renderers/webgl/utils/WebGLShaderManager.dart';
 part 'renderers/webgl/utils/WebGLShaderUtils.dart';
 part 'renderers/webgl/utils/WebGLSpriteBatch.dart';
 
+part 'text/BitmapText.dart';
+
 
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
