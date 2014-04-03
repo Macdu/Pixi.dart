@@ -70,6 +70,7 @@ part 'renderers/webgl/shaders/PrimitiveShader.dart';
 part 'renderers/webgl/shaders/StripShader.dart';
 part 'renderers/webgl/utils/FilterTexture.dart';
 part 'renderers/webgl/utils/WebGLFastSpriteBatch.dart';
+part 'renderers/webgl/utils/WebGLFilterManager.dart';
 
 
 /**

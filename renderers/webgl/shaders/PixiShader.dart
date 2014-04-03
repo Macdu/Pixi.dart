@@ -37,7 +37,7 @@ class PixiShader {
 
   List attributes = [];
 
-  List uniforms;
+  Map uniforms;
 
   // get and store the uniforms for the shader
   UniformLocation uSampler, projectionVector, offsetVector, dimensions;

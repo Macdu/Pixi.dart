@@ -62,7 +62,7 @@ class PixiFastShader {
 
   int aTextureCoord, colorAttribute;
 
-  List uniforms;
+  Map uniforms;
 
   List attributes;
 

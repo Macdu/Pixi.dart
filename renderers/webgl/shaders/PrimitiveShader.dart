@@ -46,7 +46,7 @@ class PrimitiveShader {
 
   List<int> attributes;
 
-  List uniforms;
+  Map uniforms;
 
   UniformLocation translationMatrix, alpha;
 
