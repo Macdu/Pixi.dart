@@ -74,6 +74,7 @@ part 'renderers/webgl/utils/WebGLFilterManager.dart';
 part 'renderers/webgl/utils/WebGLGraphics.dart';
 part 'renderers/webgl/utils/WebGLMaskManager.dart';
 part 'renderers/webgl/utils/WebGLShaderManager.dart';
+part 'renderers/webgl/utils/WebGLShaderUtils.dart';
 
 
 /**
