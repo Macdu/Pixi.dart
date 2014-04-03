@@ -72,6 +72,7 @@ part 'renderers/webgl/utils/FilterTexture.dart';
 part 'renderers/webgl/utils/WebGLFastSpriteBatch.dart';
 part 'renderers/webgl/utils/WebGLFilterManager.dart';
 part 'renderers/webgl/utils/WebGLGraphics.dart';
+part 'renderers/webgl/utils/WebGLMaskManager.dart';
 
 
 /**
