@@ -1,18 +1,14 @@
+part of pixi;
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
  */
 
+class WebGLGraphics{
 /**
  * A set of functions used by the webGL renderer to draw the primitive graphics data
  *
  * @class WebGLGraphics
- * @private
- * @static
  */
-PIXI.WebGLGraphics = function()
-{
-
-};
 
 /**
  * Renders the graphics object
@@ -23,18 +19,20 @@ PIXI.WebGLGraphics = function()
  * @param graphics {Graphics}
  * @param renderSession {Object}
  */
-PIXI.WebGLGraphics.renderGraphics = function(graphics, renderSession)//projection, offset)
+static void renderGraphics(Graphics graphics,Map renderSession)//projection, offset)
 {
-    var gl = renderSession.gl;
-    var projection = renderSession.projection,
-        offset = renderSession.offset,
-        shader = renderSession.shaderManager.primitiveShader;
+    RenderingContext gl = renderSession['gl'];
+    Point projection = renderSession['projection'],
+        offset = renderSession.offset;
+    PixiShader shader = renderSession['shaderManager'].primitiveShader;
 
-    if(!graphics._webGL[gl.id])graphics._webGL[gl.id] = {points:[], indices:[], lastIndex:0,
-                                           buffer:gl.createBuffer(),
-                                           indexBuffer:gl.createBuffer()};
+    int id = WebGLRenderer._getIndexFirst(gl);
+    
+    if(graphics._webGL[id] == null)graphics._webGL[id] = {'points':[], 'indices':[], 'lastIndex':0,
+                                           'buffer':gl.createBuffer(),
+                                           'indexBuffer':gl.createBuffer()};
 
-    var webGL = graphics._webGL[gl.id];
+    Map webGL = graphics._webGL[gl];
 
     if(graphics.dirty)
     {
@@ -44,23 +42,23 @@ PIXI.WebGLGraphics.renderGraphics = function(graphics, renderSession)//projectio
         {
             graphics.clearDirty = false;
 
-            webGL.lastIndex = 0;
-            webGL.points = [];
-            webGL.indices = [];
+            webGL['lastIndex'] = 0;
+            webGL['points'] = [];
+            webGL['indices'] = [];
 
         }
 
-        PIXI.WebGLGraphics.updateGraphics(graphics, gl);
+        WebGLGraphics.updateGraphics(graphics, gl);
     }
 
-    renderSession.shaderManager.activatePrimitiveShader();
+    renderSession['shaderManager'].activatePrimitiveShader();
 
     // This  could be speeded up for sure!
 
     // set the matrix transform
-    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    gl.blendFunc(ONE, ONE_MINUS_SRC_ALPHA);
 
-    gl.uniformMatrix3fv(shader.translationMatrix, false, graphics.worldTransform.toArray(true));
+    gl.uniformMatrix3fv(shader.translationMatrix, false, graphics.worldTransform.toList(true));
 
     gl.uniform2f(shader.projectionVector, projection.x, -projection.y);
     gl.uniform2f(shader.offsetVector, -offset.x, -offset.y);
@@ -68,21 +66,21 @@ PIXI.WebGLGraphics.renderGraphics = function(graphics, renderSession)//projectio
     gl.uniform3fv(shader.tintColor, PIXI.hex2rgb(graphics.tint));
 
     gl.uniform1f(shader.alpha, graphics.worldAlpha);
-    gl.bindBuffer(gl.ARRAY_BUFFER, webGL.buffer);
+    gl.bindBuffer(ARRAY_BUFFER, webGL.buffer);
 
-    gl.vertexAttribPointer(shader.aVertexPosition, 2, gl.FLOAT, false, 4 * 6, 0);
-    gl.vertexAttribPointer(shader.colorAttribute, 4, gl.FLOAT, false,4 * 6, 2 * 4);
+    gl.vertexAttribPointer(shader.aVertexPosition, 2, FLOAT, false, 4 * 6, 0);
+    gl.vertexAttribPointer(shader.colorAttribute, 4, FLOAT, false,4 * 6, 2 * 4);
 
     // set the index buffer!
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, webGL.indexBuffer);
+    gl.bindBuffer(ELEMENT_ARRAY_BUFFER, webGL.indexBuffer);
 
-    gl.drawElements(gl.TRIANGLE_STRIP,  webGL.indices.length, gl.UNSIGNED_SHORT, 0 );
+    gl.drawElements(TRIANGLE_STRIP,  webGL.indices.length, UNSIGNED_SHORT, 0 );
 
     renderSession.shaderManager.deactivatePrimitiveShader();
 
     // return to default shader...
 //  PIXI.activateShader(PIXI.defaultShader);
-};
+}
 
 /**
  * Updates the graphics object
@@ -93,51 +91,51 @@ PIXI.WebGLGraphics.renderGraphics = function(graphics, renderSession)//projectio
  * @param graphicsData {Graphics} The graphics object to update
  * @param gl {WebGLContext} the current WebGL drawing context
  */
-PIXI.WebGLGraphics.updateGraphics = function(graphics, gl)
+static void updateGraphics(Graphics graphics,RenderingContext gl)
 {
-    var webGL = graphics._webGL[gl.id];
+    Map webGL = graphics._webGL[WebGLRenderer._getIndexFirst(gl)];
     
-    for (var i = webGL.lastIndex; i < graphics.graphicsData.length; i++)
+    for (int i = webGL['lastIndex']; i < graphics.graphicsData.length; i++)
     {
-        var data = graphics.graphicsData[i];
+        Map data = graphics.graphicsData[i];
 
-        if(data.type === PIXI.Graphics.POLY)
+        if(data['type'] == Graphics.POLY)
         {
-            if(data.fill)
+            if(data['fill'])
             {
-                if(data.points.length>3)
-                    PIXI.WebGLGraphics.buildPoly(data, webGL);
+                if(data['points']length>3)
+                    WebGLGraphics.buildPoly(data, webGL);
             }
 
-            if(data.lineWidth > 0)
+            if(data['lineWidth'] > 0)
             {
-                PIXI.WebGLGraphics.buildLine(data, webGL);
+                WebGLGraphics.buildLine(data, webGL);
             }
         }
-        else if(data.type === PIXI.Graphics.RECT)
+        else if(data['type'] == Graphics.RECT)
         {
             PIXI.WebGLGraphics.buildRectangle(data, webGL);
         }
-        else if(data.type === PIXI.Graphics.CIRC || data.type === PIXI.Graphics.ELIP)
+        else if(data['type'] = PIXI.Graphics.CIRC || data['type'] == Graphics.ELIP)
         {
             PIXI.WebGLGraphics.buildCircle(data, webGL);
         }
     }
 
-    webGL.lastIndex = graphics.graphicsData.length;
+    webGL['lastIndex'] = graphics.graphicsData.length;
 
    
 
-    webGL.glPoints = new Float32Array(webGL.points);
+    webGL['glPoints'] = new Float32List.fromList(webGL['points']);
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, webGL.buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, webGL.glPoints, gl.STATIC_DRAW);
+    gl.bindBuffer(ARRAY_BUFFER, webGL['buffer']);
+    gl.bufferData(ARRAY_BUFFER, webGL['glPoints'], STATIC_DRAW);
 
-    webGL.glIndicies = new Uint16Array(webGL.indices);
+    webGL['glIndicies'] = new Uint16List.fromList(webGL['indices']);
 
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, webGL.indexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, webGL.glIndicies, gl.STATIC_DRAW);
-};
+    gl.bindBuffer(ELEMENT_ARRAY_BUFFER, webGL.indexBuffer);
+    gl.bufferData(ELEMENT_ARRAY_BUFFER, webGL.glIndicies, STATIC_DRAW);
+}
 
 /**
  * Builds a rectangle to draw
@@ -148,47 +146,47 @@ PIXI.WebGLGraphics.updateGraphics = function(graphics, gl)
  * @param graphicsData {Graphics} The graphics object containing all the necessary properties
  * @param webGLData {Object}
  */
-PIXI.WebGLGraphics.buildRectangle = function(graphicsData, webGLData)
+static void buildRectangle(Map graphicsData,Map webGLData)
 {
     // --- //
     // need to convert points to a nice regular data
     //
-    var rectData = graphicsData.points;
-    var x = rectData[0];
-    var y = rectData[1];
-    var width = rectData[2];
-    var height = rectData[3];
+    List<int> rectData = graphicsData['points'];
+    int x = rectData[0];
+    int y = rectData[1];
+    int width = rectData[2];
+    int height = rectData[3];
 
 
-    if(graphicsData.fill)
+    if(graphicsData['fill'])
     {
-        var color = PIXI.hex2rgb(graphicsData.fillColor);
-        var alpha = graphicsData.fillAlpha;
+        List<int> color = hex2rgb(graphicsData['fillColor']);
+        double alpha = graphicsData['fillAlpha'];
 
-        var r = color[0] * alpha;
-        var g = color[1] * alpha;
-        var b = color[2] * alpha;
+        double r = color[0] * alpha;
+        double g = color[1] * alpha;
+        double b = color[2] * alpha;
 
-        var verts = webGLData.points;
-        var indices = webGLData.indices;
+        List verts = webGLData['points'];
+        List indices = webGLData['indices'];
 
-        var vertPos = verts.length/6;
+        double vertPos = verts.length/6;
 
         // start
-        verts.push(x, y);
-        verts.push(r, g, b, alpha);
+        verts.add(x, y);
+        verts.add(r, g, b, alpha);
 
-        verts.push(x + width, y);
-        verts.push(r, g, b, alpha);
+        verts.add(x + width, y);
+        verts.add(r, g, b, alpha);
 
-        verts.push(x , y + height);
-        verts.push(r, g, b, alpha);
+        verts.add(x , y + height);
+        verts.add(r, g, b, alpha);
 
-        verts.push(x + width, y + height);
-        verts.push(r, g, b, alpha);
+        verts.add(x + width, y + height);
+        verts.add(r, g, b, alpha);
 
         // insert 2 dead triangles..
-        indices.push(vertPos, vertPos, vertPos+1, vertPos+2, vertPos+3, vertPos+3);
+        indices.add(vertPos, vertPos, vertPos+1, vertPos+2, vertPos+3, vertPos+3);
     }
 
     if(graphicsData.lineWidth)
