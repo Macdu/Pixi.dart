@@ -78,6 +78,7 @@ part 'renderers/webgl/utils/WebGLShaderUtils.dart';
 part 'renderers/webgl/utils/WebGLSpriteBatch.dart';
 
 part 'text/BitmapText.dart';
+part 'text/Text.dart';
 
 
 /**

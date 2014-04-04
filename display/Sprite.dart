@@ -91,15 +91,17 @@ class Sprite extends DisplayObjectContainer{
     
       this.texture = texture;
       
-      if(texture.baseTexture.hasLoaded)
+      if(texture != null)
       {
-          this.onTextureUpdate();
+        if(texture.baseTexture.hasLoaded)
+        {
+            this.onTextureUpdate();
+        }
+        else
+        {
+            this.texture.listen('update', this.onTextureUpdate );
+        }
       }
-      else
-      {
-          this.texture.stream('update').listen( this.onTextureUpdate );
-      }
-      
   }
   
   /**
@@ -158,7 +160,7 @@ class Sprite extends DisplayObjectContainer{
    * @param event
    * @private
    */
-  void onTextureUpdate(_)
+  void onTextureUpdate([_])
   {
       // so if _width is 0 then width was not set..
       if(this._width != 0)this.scale.x = this._width / this.texture.frame.width;
