@@ -80,6 +80,8 @@ part 'renderers/webgl/utils/WebGLSpriteBatch.dart';
 part 'text/BitmapText.dart';
 part 'text/Text.dart';
 
+part 'textures/BaseTexture.dart';
+
 
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
@@ -91,14 +93,14 @@ part 'text/Text.dart';
 * This file contains a lot of pixi consts which are used across the rendering engine
 * @class Consts
 */
-int WEBGL_RENDERER = 0;
-int CANVAS_RENDERER = 1;
+const int WEBGL_RENDERER = 0;
+const int CANVAS_RENDERER = 1;
 
 // useful for testing against if your lib is using pixi.
-String VERSION = "v1.5.1";
+const String VERSION = "v1.5.1";
 
 // the various blend modes supported by pixi
-Map blendModes = {
+final Map blendModes = {
     'NORMAL':0,
     'ADD':1,
     'MULTIPLY':2,
@@ -119,23 +121,20 @@ Map blendModes = {
 };
 
 // the scale modes
-Map scaleModes = {
+final Map scaleModes = {
     'DEFAULT':0,
     'LINEAR':0,
     'NEAREST':1
 };
 
 // interaction frequency 
-int INTERACTION_FREQUENCY = 30;
-bool AUTO_PREVENT_DEFAULT = true;
+const int INTERACTION_FREQUENCY = 30;
+const bool AUTO_PREVENT_DEFAULT = true;
 
-double RAD_TO_DEG = 180 / Math.PI;
-double DEG_TO_RAD = Math.PI / 180;
+const double RAD_TO_DEG = 180 / Math.PI;
+const double DEG_TO_RAD = Math.PI / 180;
 
 var defaultRenderer;
-
-List texturesToUpdate = [];
-List texturesToDestroy = [];
 
 List blendModesCanvas = [];
 List blendModesWebGL = [];
