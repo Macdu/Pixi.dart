@@ -84,6 +84,7 @@ part 'textures/BaseTexture.dart';
 part 'textures/RenderTexture.dart';
 part 'textures/Texture.dart';
 
+part 'utils/Detector.dart';
 
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23

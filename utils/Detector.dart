@@ -1,3 +1,4 @@
+part of pixi;
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
  */
@@ -15,15 +16,13 @@
  * @param [antialias=false] {Boolean} sets antialias (only applicable in webGL chrome at the moment)
  *
  */
-PIXI.autoDetectRenderer = function(width, height, view, transparent, antialias)
+autoDetectRenderer([int width = 800,int height = 800,CanvasElement view = null,bool transparent = false,bool antialias = false])
 {
-    if(!width)width = 800;
-    if(!height)height = 600;
 
     // BORROWED from Mr Doob (mrdoob.com)
-    var webgl = ( function () { try {
-                                    var canvas = document.createElement( 'canvas' );
-                                    return !! window.WebGLRenderingContext && ( canvas.getContext( 'webgl' ) || canvas.getContext( 'experimental-webgl' ) );
+    bool webgl = ( () { try {
+                                    CanvasElement canvas = new CanvasElement();
+                                    return  ( canvas.getContext( 'webgl' ) != null || canvas.getContext( 'experimental-webgl' ) != null);
                                 } catch( e ) {
                                     return false;
                                 }
@@ -32,8 +31,8 @@ PIXI.autoDetectRenderer = function(width, height, view, transparent, antialias)
 
     if( webgl )
     {
-        return new PIXI.WebGLRenderer(width, height, view, transparent, antialias);
+        return new WebGLRenderer(width, height, view, transparent, antialias);
     }
 
-    return  new PIXI.CanvasRenderer(width, height, view, transparent);
-};
+    return  new CanvasRenderer(width, height, view, transparent);
+}
