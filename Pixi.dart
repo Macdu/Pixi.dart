@@ -89,6 +89,8 @@ part 'utils/EventTarget.dart';
 part 'utils/Polyk.dart';
 part 'utils/Utils.dart';
 
+part 'InteractionData.dart';
+
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
  */
