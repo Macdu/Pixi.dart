@@ -75,7 +75,7 @@ class BaseTexture extends EventTarget {
  * @param source {String} the source object (image or canvas)
  * @param scaleMode {Number} Should be one of the PIXI.scaleMode consts
  */
-  BaseTexture(HtmlElement source, [int scaleMode = 0]) {
+  BaseTexture([HtmlElement source = null, int scaleMode = 0]) {
 
     this._load(source, scaleMode);
 
