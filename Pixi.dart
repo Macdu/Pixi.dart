@@ -86,6 +86,7 @@ part 'textures/Texture.dart';
 
 part 'utils/Detector.dart';
 part 'utils/EventTarget.dart';
+part 'utils/Polyk.dart';
 
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
