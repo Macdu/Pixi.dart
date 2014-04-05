@@ -85,6 +85,7 @@ part 'textures/RenderTexture.dart';
 part 'textures/Texture.dart';
 
 part 'utils/Detector.dart';
+part 'utils/EventTarget.dart';
 
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23

@@ -1,3 +1,4 @@
+part of pixi;
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
  */
@@ -19,15 +20,15 @@
  *      var em = new MyEmitter();
  *      em.emit({ type: 'eventName', data: 'some data' });
  */
-PIXI.EventTarget = function () {
-
-    /**
-     * Holds all the listeners
-     *
-     * @property listeneners
-     * @type Object
-     */
-    var listeners = {};
+class EventTarget{
+  
+  /**
+       * Holds all the listeners
+       *
+       * @property listeneners
+       * @type Object
+       */
+      Map<String,List<Function>> listeners = {};
 
     /**
      * Adds a listener for a specific event
@@ -36,21 +37,21 @@ PIXI.EventTarget = function () {
      * @param type {string} A string representing the event type to listen for.
      * @param listener {function} The callback function that will be fired when the event occurs
      */
-    this.addEventListener = this.on = function ( type, listener ) {
+    void listen(String type,Function listener ) {
 
 
-        if ( listeners[ type ] === undefined ) {
+        if (!listeners.containsKey('type')) {
 
             listeners[ type ] = [];
 
         }
 
-        if ( listeners[ type ].indexOf( listener ) === - 1 ) {
+        if ( listeners[ type ].indexOf( listener ) == - 1 ) {
 
-            listeners[ type ].push( listener );
+            listeners[ type ].add( listener );
         }
 
-    };
+    }
 
     /**
      * Fires the event, ie pretends that the event has happened
@@ -58,21 +59,21 @@ PIXI.EventTarget = function () {
      * @method dispatchEvent
      * @param event {Event} the event object
      */
-    this.dispatchEvent = this.emit = function ( event ) {
+    void fire(Map<String,dynamic> event ) {
 
-        if ( !listeners[ event.type ] || !listeners[ event.type ].length ) {
+        if ( !listeners.containsKey(event['type']) || listeners[event['type']].length == 0 ) {
 
             return;
 
         }
 
-        for(var i = 0, l = listeners[ event.type ].length; i < l; i++) {
+        for(int i = 0, l = listeners[ event['type'] ].length; i < l; i++) {
 
-            listeners[ event.type ][ i ]( event );
+            listeners[ event['type'] ][ i ]( event );
 
         }
 
-    };
+    }
 
     /**
      * Removes the specified listener that was assigned to the specified event type
@@ -81,17 +82,17 @@ PIXI.EventTarget = function () {
      * @param type {string} A string representing the event type which will have its listener removed
      * @param listener {function} The callback function that was be fired when the event occured
      */
-    this.removeEventListener = this.off = function ( type, listener ) {
+    void stopListen( String type,Function listener ) {
 
-        var index = listeners[ type ].indexOf( listener );
+        int index = listeners[ type ].indexOf( listener );
 
-        if ( index !== - 1 ) {
+        if ( index != - 1 ) {
 
-            listeners[ type ].splice( index, 1 );
+            listeners[ type ].remove( index );
 
         }
 
-    };
+    }
 
     /**
      * Removes all the listeners that were active for the specified event type
@@ -99,9 +100,8 @@ PIXI.EventTarget = function () {
      * @method removeAllEventListeners
      * @param type {string} A string representing the event type which will have all its listeners removed
      */
-	this.removeAllEventListeners = function( type ) {
-		var a = listeners[type];
-		if (a)
-			a.length = 0;
-	};
-};
+	void removeAllEventListeners(String type ) {
+		listeners[type].length = 0;
+		
+	}
+}
