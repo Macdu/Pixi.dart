@@ -82,6 +82,7 @@ part 'text/Text.dart';
 
 part 'textures/BaseTexture.dart';
 part 'textures/RenderTexture.dart';
+part 'textures/Texture.dart';
 
 
 /**
