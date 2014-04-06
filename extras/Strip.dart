@@ -3,7 +3,7 @@ part of pixi;
  * @author Mat Groves http://matgroves.com/
  */
 
- /**
+/**
  * 
  * @class Strip
  * @extends DisplayObjectContainer
@@ -13,56 +13,48 @@ part of pixi;
  * @param height {Number} the height
  * 
  */
-class Strip extends DisplayObjectContainer{
-  
+class Strip extends DisplayObjectContainer {
+
   int blendMode;
-  
-  Float32List uvs , verticies , colors ;
+
+  Float32List uvs, verticies, colors;
   Uint16List indices;
-  
+
   double width;
-  
+
   double height;
-  
+
   Texture texture;
-  
+
   bool updateFrame = false;
-  
-  Strip(Texture texture,double this.width,double this.height) : super(){
-    
+
+  Strip(Texture texture, [double this.width = null, double this.height = null]) {
+
     this.texture = texture;
     this.blendMode = blendModes['NORMAL'];
-    
-    this.uvs = new Float32List.fromList([0, 1,
-                1, 1,
-                1, 0, 0,1]);
 
-        this.verticies = new Float32List.fromList([0, 0,
-                          0,0,
-                          0,0, 0,
-                          0, 0]);
+    this.uvs = new Float32List.fromList([0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0]);
 
-        this.colors = new Float32List.fromList([1, 1, 1, 1]);
+    this.verticies = new Float32List.fromList([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]);
 
-        this.indices = new Uint16List.fromList([0, 1, 2, 3]);
-        
-        
-        if(texture.baseTexture.hasLoaded)
-        {
-            this.width   = this.texture.frame.width;
-            this.height  = this.texture.frame.height;
-            this.updateFrame = true;
-        }
-        else
-        {
-            this.texture.stream( 'update').listen(this.onTextureUpdate);
-        }
+    this.colors = new Float32List.fromList([1.0, 1.0, 1.0, 1.0]);
 
-        this.renderable = true;
+    this.indices = new Uint16List.fromList([0, 1, 2, 3]);
+
+
+    if (texture.baseTexture.hasLoaded) {
+      this.width = this.texture.frame.width;
+      this.height = this.texture.frame.height;
+      this.updateFrame = true;
+    } else {
+      this.texture.stream('update').listen(this.onTextureUpdate);
     }
 
+    this.renderable = true;
+  }
 
-    /*
+
+  /*
     this.uvs = new Float32Array()
     this.verticies = new Float32Array()
     this.colors = new Float32Array()
@@ -70,9 +62,9 @@ class Strip extends DisplayObjectContainer{
     */
 
 
-    // load the texture!
+  // load the texture!
 
-  
+
   /*
    * Sets the texture that the Strip will use 
    *
@@ -80,18 +72,17 @@ class Strip extends DisplayObjectContainer{
    * @param texture {Texture} the texture that will be used
    * @private
    */
-  void setTexture(Texture texture)
-  {
-      //TODO SET THE TEXTURES
-      //TODO VISIBILITY
-  
-      // stop current texture
-      this.texture = texture;
-      this.width   = texture.frame.width;
-      this.height  = texture.frame.height;
-      this.updateFrame = true;
+  void setTexture(Texture texture) {
+    //TODO SET THE TEXTURES
+    //TODO VISIBILITY
+
+    // stop current texture
+    this.texture = texture;
+    this.width = texture.frame.width;
+    this.height = texture.frame.height;
+    this.updateFrame = true;
   }
-  
+
   /**
    * When the texture is updated, this event will fire to update the scale and frame
    *
@@ -99,9 +90,8 @@ class Strip extends DisplayObjectContainer{
    * @param event
    * @private
    */
-  void onTextureUpdate(_)
-  {
-      this.updateFrame = true;
+  void onTextureUpdate(_) {
+    this.updateFrame = true;
   }
-  
+
 }

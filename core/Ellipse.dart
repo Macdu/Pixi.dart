@@ -14,50 +14,49 @@ part of pixi;
  * @param width {Number} The overall width of this ellipse
  * @param height {Number} The overall height of this ellipse
  */
-class Ellipse{
-  
+class Ellipse {
+
   /**
   * @property x
   * @type Number
   * @default 0
   */
   double x;
-    
-   /**
+
+  /**
    * @property y
    * @type Number
    * @default 0
    */
-   double y;
-    
+  double y;
+
   /**
    * @property width
    * @type Number
    * @default 0
    */
-  double width ;
-    
+  double width;
+
   /**
    * @property height
    * @type Number
    * @default 0
    */
-  double height ;
-  
-  Ellipse( [this.x = 0.0, this.y = 0.0, this.width = 0.0, this.height = 0.0]);
-      
-  
+  double height;
+
+  Ellipse([this.x = 0.0, this.y = 0.0, this.width = 0.0, this.height = 0.0]);
+
+
   /**
    * Creates a clone of this Ellipse instance
    *
    * @method clone
    * @return {Ellipse} a copy of the ellipse
    */
-  Ellipse clone()
-  {
-      return new Ellipse(this.x, this.y, this.width, this.height);
+  Ellipse clone() {
+    return new Ellipse(this.x, this.y, this.width, this.height);
   }
-  
+
   /**
    * Checks whether the x and y coordinates passed to this function are contained within this ellipse
    *
@@ -66,30 +65,27 @@ class Ellipse{
    * @param y {Number} The Y coordinate of the point to test
    * @return {Boolean} Whether the x/y coords are within this ellipse
    */
-  bool contains(double x,double y)
-  {
-      if(this.width <= 0 || this.height <= 0)
-          return false;
-  
-      //normalize the coords to an ellipse with center 0,0
-      double normx = ((x - this.x) / this.width),
-          normy = ((y - this.y) / this.height);
-  
-      normx *= normx;
-      normy *= normy;
-  
-      return (normx + normy <= 1);
+  bool contains(double x, double y) {
+    if (this.width <= 0 || this.height <= 0) return false;
+
+    //normalize the coords to an ellipse with center 0,0
+    double normx = ((x - this.x) / this.width),
+        normy = ((y - this.y) / this.height);
+
+    normx *= normx;
+    normy *= normy;
+
+    return (normx + normy <= 1);
   }
-  
+
   /**
   * Returns the framing rectangle of the ellipse as a PIXI.Rectangle object
   *
   * @method getBounds
   * @return {Rectangle} the framing rectangle
   */
-  Rectangle getBounds()
-  {
-      return new Rectangle(this.x, this.y, this.width, this.height);
+  Rectangle getBounds() {
+    return new Rectangle(this.x, this.y, this.width, this.height);
   }
-  
+
 }
