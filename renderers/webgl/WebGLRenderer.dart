@@ -502,7 +502,7 @@ class WebGLRenderer {
  * @param gl {webglContext} the WebGL context
  * @private
  */
-  void updateWebGLTexture(Texture texture1, RenderingContext gl) {
+  static void updateWebGLTexture(Texture texture1, RenderingContext gl) {
     
     BaseTexture texture = texture1.baseTexture;
 

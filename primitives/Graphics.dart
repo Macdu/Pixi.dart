@@ -365,7 +365,7 @@ class Graphics extends DisplayObjectContainer {
   Texture generateTexture() {
     Rectangle bounds = this.getBounds();
 
-    CanvasBuffer canvasBuffer = new CanvasBuffer(bounds.width, bounds.height);
+    CanvasBuffer canvasBuffer = new CanvasBuffer(bounds.width.toInt(), bounds.height.toInt());
     Texture texture = new Texture.fromCanvas(canvasBuffer.canvas);
 
     canvasBuffer.context.translate(-bounds.x, -bounds.y);
@@ -391,7 +391,7 @@ class Graphics extends DisplayObjectContainer {
       if (this.dirty) {
         this._generateCachedSprite();
         // we will also need to update the texture on the gpu too!
-        updateWebGLTexture(this._cachedSprite.texture.baseTexture, renderSession.gl);
+        WebGLRenderer.updateWebGLTexture(this._cachedSprite.texture, renderSession.gl);
 
         this.dirty = false;
       }
@@ -613,7 +613,7 @@ class Graphics extends DisplayObjectContainer {
     Rectangle bounds = this.getLocalBounds();
 
     if (this._cachedSprite != null) {
-      CanvasBuffer canvasBuffer = new CanvasBuffer(bounds.width, bounds.height);
+      CanvasBuffer canvasBuffer = new CanvasBuffer(bounds.width.toInt(), bounds.height.toInt());
       Texture texture = new Texture.fromCanvas(canvasBuffer.canvas);
 
       this._cachedSprite = new Sprite(texture);
@@ -621,7 +621,7 @@ class Graphics extends DisplayObjectContainer {
 
       this._cachedSprite.worldTransform = this.worldTransform;
     } else {
-      this._cachedSprite.buffer.resize(bounds.width, bounds.height);
+      this._cachedSprite.buffer.resize(bounds.width.toInt(), bounds.height.toInt());
     }
 
     // leverage the anchor to account for the offset of the element
