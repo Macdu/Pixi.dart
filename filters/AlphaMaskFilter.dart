@@ -34,7 +34,7 @@ class AlphaMaskFilter extends AbstractFilter{
     }
     else
     {
-        texture.baseTexture.on('loaded', this.onTextureLoaded);
+        texture.baseTexture.listen('loaded', this.onTextureLoaded);
     }
 
     this.fragmentSrc = [

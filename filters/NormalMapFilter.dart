@@ -39,7 +39,7 @@ class NormalMapFilter extends AbstractFilter{
   	}
   	else
   	{
-  		texture.baseTexture.stream("loaded").listen(this.onTextureLoaded);
+  		texture.baseTexture.listen("loaded",this.onTextureLoaded);
   	}
   
   	this.fragmentSrc = [
