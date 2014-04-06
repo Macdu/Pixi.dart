@@ -30,6 +30,8 @@ class SpriteBatch extends DisplayObjectContainer {
   bool ready = false;
 
   WebGLFastSpriteBatch fastSpriteBatch;
+  
+  double rotationCache;
 
   SpriteBatch(this.textureThing): super();
 
@@ -98,21 +100,22 @@ class SpriteBatch extends DisplayObjectContainer {
     for (var i = 0; i < this.children.length; i++) {
 
       DisplayObject child = this.children[i];
-      Texture texture = child.texture;
-      var frame = texture.frame;
+      Texture texture = (child as Sprite).texture;
+      Rectangle frame = texture.frame;
 
       context.globalAlpha = this.worldAlpha * child.alpha;
 
       if (child.rotation % (Math.PI * 2) == 0) {
 
         // this is the fastest  way to optimise! - if rotation is 0 then we can avoid any kind of setTransform call
-        context.drawImage(texture.baseTexture.source, frame.x, frame.y, frame.width, frame.height, ((child.anchor.x) * (-frame.width * child.scale.x) + child.position.x + 0.5) | 0, ((child.anchor.y) * (-frame.height * child.scale.y) + child.position.y + 0.5) | 0, frame.width * child.scale.x, frame.height * child.scale.y);
+        context.drawImage(texture.baseTexture.source, frame.x, frame.y, frame.width, frame.height, (((child as Sprite).anchor.x) * (-frame.width * child.scale.x) + child.position.x + 0.5) /*| 0*/, (((child as Sprite).anchor.y) * (-frame.height * child.scale.y) + child.position.y + 0.5) /*| 0*/, frame.width * child.scale.x, frame.height * child.scale.y);
       } else {
         child.updateTransform();
 
-        transform = child.localTransform;
+        //transform = (child as Sprite).localTransform;
+        transform = (child as Sprite).worldTransform;
 
-        if (this.rotation != super.rotationCache) {
+        if (this.rotation != this.rotationCache) {
           this.rotationCache = this.rotation;
           this._sr = Math.sin(this.rotation);
           this._cr = Math.cos(this.rotation);
@@ -125,7 +128,7 @@ class SpriteBatch extends DisplayObjectContainer {
 
         context.setTransform(a, c, b, d, child.position.x, child.position.y);
 
-        context.drawImage(texture.baseTexture.source, frame.x, frame.y, frame.width, frame.height, ((child.anchor.x) * (-frame.width) + 0.5) | 0, ((child.anchor.y) * (-frame.height) + 0.5) | 0, frame.width, frame.height);
+        context.drawImage(texture.baseTexture.source, frame.x, frame.y, frame.width, frame.height, (((child as Sprite).anchor.x) * (-frame.width) + 0.5) /*| 0*/, (((child as Sprite).anchor.y) * (-frame.height) + 0.5) /*| 0*/, frame.width, frame.height);
 
       }
     }

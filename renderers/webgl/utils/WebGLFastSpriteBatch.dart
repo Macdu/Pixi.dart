@@ -29,13 +29,13 @@ class WebGLFastSpriteBatch {
 
   bool drawing = false;
   int currentBatchSize = 0;
-  Texture currentBaseTexture = null;
+  BaseTexture currentBaseTexture = null;
 
   int currentBlendMode = 0;
   Map renderSession = null;
 
 
-  WebGLFastShader shader = null;
+  WebGLShaderManager shader = null;
 
   Matrix matrix = null;
 
@@ -84,7 +84,7 @@ class WebGLFastSpriteBatch {
     this.currentBlendMode = 99999;
   }
 
-  void begin(WebGLSpriteBatch spriteBatch, Map renderSession) {
+  void begin(SpriteBatch spriteBatch, Map renderSession) {
     this.renderSession = renderSession;
     this.shader = this.renderSession['shaderManager'].fastShader;
 
@@ -97,7 +97,7 @@ class WebGLFastSpriteBatch {
     this.flush();
   }
 
-  void render(WebGLSpriteBatch spriteBatch) {
+  void render(SpriteBatch spriteBatch) {
 
     List children = spriteBatch.children;
     Sprite sprite = children[0];

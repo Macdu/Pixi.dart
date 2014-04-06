@@ -101,12 +101,12 @@ class ParticleBatch extends DisplayObjectContainer {
     for (int i = 0; i < this.totalItems * 8; i += 8) {
 
       gemCount++;
-      var gemFrame = this.texture.frame || simpleFrame;//this.gems[gemCount % this.gems.length].frame;
+      Rectangle gemFrame = simpleFrame;//this.gems[gemCount % this.gems.length].frame;
       //  console.log(gemFrame);
       // position..
 
-      var xoff = gemFrame.x / fullWidth;
-      var yoff = gemFrame.y / fullHeight;
+      double xoff = gemFrame.x / fullWidth;
+      double yoff = gemFrame.y / fullHeight;
 
       this.texture[i] = xoff;
       this.texture[i + 1] = yoff;
@@ -212,8 +212,8 @@ class ParticleBatch extends DisplayObjectContainer {
     Math.Random random = new Math.Random();
     for (int i = 0; i < this.totalItems * 4; i += 4) {
 
-      this.posData[i] = 0; // pos x
-      this.posData[i + 1] = 0; // pos y
+      this.posData[i] = 0.0; // pos x
+      this.posData[i + 1] = 0.0; // pos y
 
       double angle = random.nextDouble() * Math.PI * 2;
 
@@ -232,7 +232,8 @@ class ParticleBatch extends DisplayObjectContainer {
   void _renderWebGL(RenderSession renderSession) {
     if (!this.visible) return;
 
-    renderSession.shaderManager.deactivateDefaultShader();
+    //renderSession.shaderManager.desactivateDefaultShader();
+    renderSession.shaderManager.deactivatePrimitiveShader();
     if (!this.ready) this.initWebGL(renderSession.gl);
 
     renderSession.spriteBatch.stop();
@@ -243,7 +244,8 @@ class ParticleBatch extends DisplayObjectContainer {
 
 
     RenderingContext gl = renderSession.gl;
-    var glTexture = (this.textureThing.baseTexture._glTextures[gl.id] != null) ? this.textureThing.baseTexture._glTextures[gl.id] : createWebGLTexture(this.textureThing.baseTexture, gl);
+    int id = WebGLRenderer._getIndexFirst(gl);
+    var glTexture = (this.textureThing.baseTexture._glTextures[id] != null) ? this.textureThing.baseTexture._glTextures[id] : WebGLRenderer.createWebGLTexture(this.textureThing, gl);
 
     gl.useProgram(this.program);
 
@@ -321,7 +323,8 @@ class ParticleBatch extends DisplayObjectContainer {
     gl.disableVertexAttribArray(this.aTexture);
 
 
-    renderSession.shaderManager.activateDefaultShader();
+    //renderSession.shaderManager.activateDefaultShader();
+    renderSession.shaderManager.activatePrimitiveShader();
 
     renderSession.spriteBatch.start();
     /*

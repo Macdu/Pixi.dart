@@ -47,6 +47,8 @@ class Texture extends EventTarget {
   bool updateFrame = false;
 
   TextureUvs _uvs;
+  
+  List _glTextures;
 
   /**
  * @class Texture
@@ -266,7 +268,7 @@ class TextureUvs {
   double y2 = 0.0;
 
   double x3 = 0.0;
-  double y4 = 0.0;
+  double y3 = 0.0;
 
 
 }

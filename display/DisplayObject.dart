@@ -371,7 +371,7 @@ abstract class DisplayObject {
 
     if (this._mask != null) this._mask.isMask = false;
     this._mask = value;
-    if (this._mask) this._mask.isMask = true;
+    if (this._mask != null) this._mask.isMask = true;
   }
 
   /**
@@ -465,7 +465,7 @@ abstract class DisplayObject {
   Rectangle getLocalBounds() {
     //var matrixCache = this.worldTransform;
 
-    return this.getBounds(identityMatrix);
+    return this.getBounds(matrix : identityMatrix);
     ///PIXI.EmptyRectangle();
   }
 

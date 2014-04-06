@@ -168,7 +168,7 @@ class Sprite extends DisplayObjectContainer {
   * @param matrix {Matrix} the transformation matrix of the sprite
   * @return {Rectangle} the framing rectangle
   */
-  Rectangle getBounds([Matrix matrix = null]) {
+  Rectangle getBounds({Matrix matrix : null}) {
 
     if (matrix == null) matrix = this.worldTransform;
 
@@ -344,7 +344,8 @@ class Sprite extends DisplayObjectContainer {
       //if smoothingEnabled is supported and we need to change the smoothing property for this texture
       if (renderSession.smoothProperty && renderSession.scaleMode != this.texture.baseTexture.scaleMode) {
         renderSession.scaleMode = this.texture.baseTexture.scaleMode;
-        context[renderSession.smoothProperty] = (renderSession.scaleMode == scaleModes['LINEAR']);
+        //TODO: set the property to dart
+        //context[renderSession.smoothProperty] = (renderSession.scaleMode == scaleModes['LINEAR']);
       }
 
       if (this.tint != 0xFFFFFF) {
@@ -365,8 +366,8 @@ class Sprite extends DisplayObjectContainer {
 
 
 
-        if (texture.trim) {
-          var trim = texture.trim;
+        if (texture.trim != null) {
+          Rectangle trim = texture.trim;
 
           context.drawImage(this.texture.baseTexture.source, frame.x, frame.y, frame.width, frame.height, trim.x - this.anchor.x * trim.width, trim.y - this.anchor.y * trim.height, frame.width, frame.height);
         } else {
@@ -378,13 +379,13 @@ class Sprite extends DisplayObjectContainer {
     }
 
     // OVERWRITE
-    for (var i = 0,
+    for (int i = 0,
         j = this.children.length; i < j; i++) {
       var child = this.children[i];
       child._renderCanvas(renderSession);
     }
 
-    if (this._mask) {
+    if (this._mask != null) {
       renderSession.maskManager.popMask(renderSession.context);
     }
   }
@@ -419,7 +420,7 @@ class Sprite extends DisplayObjectContainer {
    * @return {Sprite} A new Sprite using a texture from the texture cache matching the image id
    */
   static Sprite fromImage(String imageId, crossorigin, scaleMode) {
-    var texture = Texture.fromImage(imageId, crossorigin, scaleMode);
+    Texture texture = new Texture.fromImage(imageId, crossorigin, scaleMode);
     return new Sprite(texture);
   }
 

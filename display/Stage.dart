@@ -63,6 +63,9 @@ class Stage extends DisplayObjectContainer {
   var backgroundColorSplit;
 
   String backgroundColorString;
+  
+  bool _interactiveEventsAdded = false;
+  
 
   //optimize hit detection a bit
 

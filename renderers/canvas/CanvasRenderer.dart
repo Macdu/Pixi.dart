@@ -92,7 +92,7 @@ class CanvasRenderer {
            * @property renderSession
            * @type Object
            */
-  Map renderSession;
+  RenderSession renderSession = new RenderSession();
 
   /**
  * @class CanvasRenderer
@@ -162,14 +162,12 @@ class CanvasRenderer {
     this.view.width = this.width;
     this.view.height = this.height;
 
-    this.renderSession = {
-      'context': this.context,
-      'maskManager': this.maskManager,
-      'scaleMode': null,
-      'smoothProperty': null
-    };
+    this.renderSession
+      ..context = this.context
+      ..maskManager = this.maskManager;
+    
 
-    this.renderSession['smoothProperty'] = "imageSmoothingEnabled";
+    this.renderSession.smoothProperty = "imageSmoothingEnabled";
   }
 
 
@@ -196,7 +194,7 @@ class CanvasRenderer {
       this.context.clearRect(0, 0, this.width, this.height);
     }
 
-    this.renderDisplayObject(stage);
+    this.renderDisplayObject(stage , this.context);
 
     // run interaction!
     if (stage.interactive) {
@@ -241,7 +239,7 @@ class CanvasRenderer {
     //var transform;
     //var context = this.context;
 
-    this.renderSession['context'] = (context != null) ? context : this.context;
+    this.renderSession.context = (context != null) ? context : this.context;
     displayObject._renderCanvas(this.renderSession);
   }
 
@@ -336,7 +334,7 @@ class CanvasRenderer {
 
       context.transform(deltaA / delta, deltaD / delta, deltaB / delta, deltaE / delta, deltaC / delta, deltaF / delta);
 
-      context.drawImage(strip.texture.baseTexture.source, 0, 0);
+      context.drawImage(strip.texture.baseTexture.source as CanvasImageSource, 0, 0);
       context.restore();
     }
   }

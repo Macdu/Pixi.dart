@@ -82,7 +82,7 @@ class DisplayObjectContainer extends DisplayObject {
 
       this.children[index] = child;
 
-      if (this.stage) child.setStageReference(this.stage);
+      if (this.stage != null) child.setStageReference(this.stage);
     } else {
       throw new Exception(child.toString() + ' The index ' + index.toString() + ' supplied is out of bounds ' + this.children.length.toString());
     }
@@ -137,7 +137,7 @@ class DisplayObjectContainer extends DisplayObject {
     int index = this.children.indexOf(child);
     if (index != -1) {
       // update the stage reference..
-      if (this.stage) child.removeStageReference();
+      if (this.stage != null) child.removeStageReference();
 
       child.parent = null;
       this.children.removeAt(index);
@@ -220,7 +220,7 @@ class DisplayObjectContainer extends DisplayObject {
 
       childVisible = true;
 
-      childBounds = this.children[i].getBounds(matrix);
+      childBounds = this.children[i].getBounds(matrix : matrix);
 
       minX = minX < childBounds.x ? minX : childBounds.x;
       minY = minY < childBounds.y ? minY : childBounds.y;
@@ -311,7 +311,7 @@ class DisplayObjectContainer extends DisplayObject {
 
     int i, j;
 
-    if (this._mask = !null || this._filters != null) {
+    if (this._mask != null || this._filters != null) {
       if (this._mask != null) {
         renderSession.spriteBatch.stop();
         renderSession.maskManager.pushMask(this.mask, renderSession);

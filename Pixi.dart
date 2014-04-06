@@ -58,6 +58,8 @@ part 'loaders/SpriteSheetLoader.dart';
 
 part 'primitives/Graphics.dart';
 
+part 'renderers/RenderSession.dart';
+
 part 'renderers/canvas/CanvasRenderer.dart';
 part 'renderers/canvas/CanvasGraphics.dart';
 part 'renderers/canvas/utils/CanvasMaskManager.dart';
@@ -110,33 +112,33 @@ const String VERSION = "v1.5.1";
 
 // the various blend modes supported by pixi
 final Map blendModes = {
-    'NORMAL':0,
-    'ADD':1,
-    'MULTIPLY':2,
-    'SCREEN':3,
-    'OVERLAY':4,
-    'DARKEN':5,
-    'LIGHTEN':6,
-    'COLOR_DODGE':7,
-    'COLOR_BURN':8,
-    'HARD_LIGHT':9,
-    'SOFT_LIGHT':10,
-    'DIFFERENCE':11,
-    'EXCLUSION':12,
-    'HUE':13,
-    'SATURATION':14,
-    'COLOR':15,
-    'LUMINOSITY':16
+  'NORMAL': 0,
+  'ADD': 1,
+  'MULTIPLY': 2,
+  'SCREEN': 3,
+  'OVERLAY': 4,
+  'DARKEN': 5,
+  'LIGHTEN': 6,
+  'COLOR_DODGE': 7,
+  'COLOR_BURN': 8,
+  'HARD_LIGHT': 9,
+  'SOFT_LIGHT': 10,
+  'DIFFERENCE': 11,
+  'EXCLUSION': 12,
+  'HUE': 13,
+  'SATURATION': 14,
+  'COLOR': 15,
+  'LUMINOSITY': 16
 };
 
 // the scale modes
 final Map scaleModes = {
-    'DEFAULT':0,
-    'LINEAR':0,
-    'NEAREST':1
+  'DEFAULT': 0,
+  'LINEAR': 0,
+  'NEAREST': 1
 };
 
-// interaction frequency 
+// interaction frequency
 const int INTERACTION_FREQUENCY = 30;
 const bool AUTO_PREVENT_DEFAULT = true;
 

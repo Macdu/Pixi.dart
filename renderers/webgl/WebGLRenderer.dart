@@ -76,7 +76,7 @@ class WebGLRenderer {
   WebGLFilterManager filterManager; // manages the filters
 
 
-  Map renderSession = {};
+  RenderSession renderSession = new RenderSession();
 
   Stage _stage;
 
@@ -156,7 +156,7 @@ class WebGLRenderer {
       } catch (e2) {
         // fail, not able to get a context
         throw new Exception(
-            ' This browser does not support webGL. Try using the canvas renderer' + this);
+            ' This browser does not support webGL. Try using the canvas renderer' + this.toString());
       }
     }
 
@@ -224,13 +224,12 @@ class WebGLRenderer {
 
     this.resize(this.width, this.height);
 
-    this.renderSession = {};
-    this.renderSession['gl'] = this.gl;
-    this.renderSession['drawCount'] = 0;
-    this.renderSession['shaderManager'] = this.shaderManager;
-    this.renderSession['maskManager'] = this.maskManager;
-    this.renderSession['filterManager'] = this.filterManager;
-    this.renderSession['spriteBatch'] = this.spriteBatch;
+    this.renderSession
+      ..gl = this.gl
+      ..shaderManager = this.shaderManager
+      ..maskManager = this.maskManager
+      ..filterManager = this.filterManager
+      ..spriteBatch = this.spriteBatch;
 
 
     gl.useProgram(this.shaderManager.defaultShader.program);
@@ -336,11 +335,11 @@ class WebGLRenderer {
   void renderDisplayObject(DisplayObject displayObject, Point
       projection, [Buffer buffer = null]) {
     // reset the render session data..
-    this.renderSession['drawCount'] = 0;
-    this.renderSession['currentBlendMode'] = 9999;
+    this.renderSession.drawCount = 0;
+    this.renderSession.currentBlendMode = 9999;
 
-    this.renderSession['projection'] = projection;
-    this.renderSession['offset'] = this.offset;
+    this.renderSession.projection = projection;
+    this.renderSession.offset = this.offset;
 
     // start the sprite batch
     this.spriteBatch.begin(this.renderSession);
@@ -388,11 +387,11 @@ class WebGLRenderer {
  * @param texture {Texture} The texture to update
  * @private
  */
-  void destroyTexture(Texture texture) {
+  static void destroyTexture(Texture texture) {
     //TODO break this out into a texture manager...
 
     for (int i = texture._glTextures.length - 1; i >= 0; i--) {
-      Texture glTexture = texture._glTextures[i];
+      var glTexture = texture._glTextures[i];
       RenderingContext gl = glContexts[i];
 
       if (gl && glTexture) {
@@ -409,7 +408,7 @@ class WebGLRenderer {
  * @param texture {Texture} The texture to update the frame from
  * @private
  */
-  void updateTextureFrame(Texture texture) {
+  static void updateTextureFrame(Texture texture) {
     texture.updateFrame = false;
 
     // now set the uvs. Figured that the uv data sits with a texture rather than a sprite.
@@ -454,7 +453,9 @@ class WebGLRenderer {
  * @param gl {webglContext} the WebGL context
  * @static
  */
-  static Texture createWebGLTexture(Texture texture, RenderingContext gl) {
+  static Texture createWebGLTexture(Texture texture1, RenderingContext gl) {
+    
+    BaseTexture texture = texture1.baseTexture;
 
     int id = _getIndexFirst(gl);
 
@@ -463,7 +464,7 @@ class WebGLRenderer {
       texture._glTextures[id] = gl.createTexture();
 
       gl.bindTexture(RenderingContext.TEXTURE_2D, texture._glTextures[id]);
-      gl.pixelStorei(RenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+      gl.pixelStorei(RenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
 
       gl.texImage2D(RenderingContext.TEXTURE_2D, 0, RenderingContext.RGBA,
           RenderingContext.RGBA, RenderingContext.UNSIGNED_BYTE, texture.source);
@@ -479,7 +480,7 @@ class WebGLRenderer {
       if (!texture._powerOf2) {
         gl.texParameteri(RenderingContext.TEXTURE_2D,
             RenderingContext.TEXTURE_WRAP_S, RenderingContext.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(TEXTURE_2D, TEXTURE_WRAP_T, CLAMP_TO_EDGE);
       } else {
         gl.texParameteri(RenderingContext.TEXTURE_2D,
             RenderingContext.TEXTURE_WRAP_S, RenderingContext.REPEAT);
@@ -501,7 +502,9 @@ class WebGLRenderer {
  * @param gl {webglContext} the WebGL context
  * @private
  */
-  void updateWebGLTexture(Texture texture, RenderingContext gl) {
+  void updateWebGLTexture(Texture texture1, RenderingContext gl) {
+    
+    BaseTexture texture = texture1.baseTexture;
 
     int id = _getIndexFirst(gl);
 
@@ -568,7 +571,7 @@ class WebGLRenderer {
       } catch (e2) {
         // fail, not able to get a context
         throw new Exception(
-            ' This browser does not support webGL. Try using the canvas renderer' + this);
+            ' This browser does not support webGL. Try using the canvas renderer' + this.toString());
       }
     }
 
@@ -586,7 +589,7 @@ class WebGLRenderer {
     this.filterManager.setContext(gl);
 
 
-    this.renderSession['gl'] = this.gl;
+    this.renderSession.gl = this.gl;
 
     gl.disable(RenderingContext.DEPTH_TEST);
     gl.disable(RenderingContext.CULL_FACE);
@@ -597,7 +600,7 @@ class WebGLRenderer {
     this.gl.viewport(0, 0, this.width, this.height);
 
     for (Texture key in TextureCache) {
-      Texture texture = key.baseTexture;
+      BaseTexture texture = key.baseTexture;
       texture._glTextures = [];
     }
 
