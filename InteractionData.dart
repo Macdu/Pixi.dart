@@ -37,7 +37,7 @@ class InteractionData {
        * @property originalEvent
        * @type Event
        */
-  Map originalEvent = null;
+  Event originalEvent = null;
 
 
   /**

@@ -90,6 +90,7 @@ part 'utils/Polyk.dart';
 part 'utils/Utils.dart';
 
 part 'InteractionData.dart';
+part 'InteractionManager.dart';
 
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23

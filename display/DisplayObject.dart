@@ -9,7 +9,7 @@ part of pixi;
  *
  * @class DisplayObject
  */
-class DisplayObject
+abstract class DisplayObject
 {
     /**
      * The coordinate of the object relative to the local coordinates of the parent.
@@ -194,6 +194,10 @@ class DisplayObject
      * @private
      */
     Graphics _mask = null;
+    
+    bool interactiveChildren = false;
+    
+    DisplayObject _iParent;
 
     /*
      * MOUSE Callbacks
@@ -204,38 +208,49 @@ class DisplayObject
      * @method click
      * @param interactionData {InteractionData}
      */
-
+    void click(InteractionData interactionData){}
+    
     /**
      * A callback that is used when the user clicks the mouse down over the sprite
      * @method mousedown
      * @param interactionData {InteractionData}
      */
-
+    void mousedown(InteractionData interactionData){}
+    
     /**
      * A callback that is used when the user releases the mouse that was over the displayObject
      * for this callback to be fired the mouse must have been pressed down over the displayObject
      * @method mouseup
      * @param interactionData {InteractionData}
      */
-
+    void mouseup(InteractionData interactionData){}
+    
     /**
      * A callback that is used when the user releases the mouse that was over the displayObject but is no longer over the displayObject
      * for this callback to be fired, The touch must have started over the displayObject
      * @method mouseupoutside
      * @param interactionData {InteractionData}
      */
+    void mouseupoutside(InteractionData interactionData){}
 
     /**
      * A callback that is used when the users mouse rolls over the displayObject
      * @method mouseover
      * @param interactionData {InteractionData}
      */
+    void mouseover(InteractionData interactionData){}
 
     /**
      * A callback that is used when the users mouse leaves the displayObject
      * @method mouseout
      * @param interactionData {InteractionData}
      */
+    void mouseout(InteractionData interactionData){}
+    
+    /**
+     * A callback that is used when the users mouse moves
+     */
+    void mousemove(InteractionData interactionData){}
 
 
     /*
@@ -248,18 +263,21 @@ class DisplayObject
      * @method tap
      * @param interactionData {InteractionData}
      */
+    void tap(InteractionData interactionData){}
 
     /**
      * A callback that is used when the user touches over the displayObject
      * @method touchstart
      * @param interactionData {InteractionData}
      */
+    void touchstart(InteractionData interactionData){}
 
     /**
      * A callback that is used when the user releases a touch over the displayObject
      * @method touchend
      * @param interactionData {InteractionData}
      */
+    void touchend(InteractionData interactionData){}
 
     /**
      * A callback that is used when the user releases the touch that was over the displayObject
@@ -267,6 +285,9 @@ class DisplayObject
      * @method touchendoutside
      * @param interactionData {InteractionData}
      */
+    void touchendoutside(InteractionData interactionData){}
+    
+    void touchmove(InteractionData interactionData){}
     
     List _filters;
     
@@ -274,6 +295,16 @@ class DisplayObject
     
     
     double _rotationCache = null;
+    
+    bool _mouseIsDown;
+    
+    bool _hit;
+    
+    bool _isDown;
+    
+    bool _isOver;
+    
+    InteractionData _touchData;
   
   
   // constructor
@@ -307,7 +338,7 @@ class DisplayObject
   
       // TODO more to be done here..
       // need to sort out a re-crawl!
-      if(this.stage)this.stage.dirty = true;
+      if(this.stage != null)this.stage.dirty = true;
    }
   
   /**
