@@ -82,10 +82,13 @@ class ImageLoader extends EventTarget {
     int i = 0;
     for (int y = 0; y < rows; y++) {
       for (int x = 0; x < cols; x++, i++) {
-        Texture texture = new Texture(this.texture, x: x * frameWidth, y: y * frameHeight, width: frameWidth, height: frameHeight);
+        Texture texture = new Texture(this.texture.baseTexture,new Rectangle(
+            (x * frameWidth).toDouble(), (y * frameHeight).toDouble(),
+            frameWidth.toDouble(),  frameHeight.toDouble())
+        );
 
         this.frames.add(texture);
-        if (textureName != null) TextureCache[textureName + '-' + i] = texture;
+        if (textureName != null) TextureCache[textureName + '-' + i.toString()] = texture;
       }
     }
 

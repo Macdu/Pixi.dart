@@ -81,7 +81,7 @@ class AtlasLoader extends EventTarget {
 
         // parser without rotation support yet!
         for (i = 0; i < result.length; i++) {
-          result[i] = result[i].replace(new RegExp(r'/^\s+|\s+$/g'), '');
+          result[i] = result[i].replaceAll(new RegExp(r'/^\s+|\s+$/g'), '');
           if (result[i] == '') {
             nameInNextLine = i + 1;
           }
@@ -137,19 +137,19 @@ class AtlasLoader extends EventTarget {
           this.images = [];
           for (j = 0; j < this.atlas['meta']['image'].length; j++) {
             // sprite sheet
-            String textureUrl = this.baseUrl + this['meta']['image'].image[j];
+            String textureUrl = this.baseUrl + this.atlas['meta']['image'].image[j];
             Map frameData = this.atlas['frames'][j];
             this.images.add(new ImageLoader(textureUrl, this.crossorigin));
 
             for (i in frameData) {
               Map rect = frameData[i].frame;
               if (rect != null) {
-                TextureCache[i] = new Texture(this.images[j].texture.baseTexture, {
-                  'x': rect['x'],
-                  'y': rect['y'],
-                  'width': rect['w'],
-                  'height': rect['h']
-                });
+                TextureCache[i] = new Texture(this.images[j].texture.baseTexture, new Rectangle(
+                    rect['x'], 
+                    rect['y'],
+                    rect['w'],
+                    rect['h'])
+                );
                 if (frameData[i]['trimmed']) {
                   TextureCache[i].realSize = frameData[i]['realSize'];
                   // trim in pixi not supported yet, todo update trim properties if it is done ...

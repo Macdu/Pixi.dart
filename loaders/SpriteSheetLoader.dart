@@ -90,8 +90,8 @@ class SpriteSheetLoader extends EventTarget {
  */
   void load([_]) {
     JsonLoader jsonLoader = new JsonLoader(this.url, this.crossorigin);
-    jsonLoader.addEventListener('loaded', ([event]) {
-      this.json = event.content.json;
+    jsonLoader.listen('loaded', (Map event) {
+      this.json = event['content'].json;
       this.onLoaded();
     });
     jsonLoader.load();

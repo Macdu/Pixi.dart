@@ -36,27 +36,27 @@ class AssetLoader extends EventTarget {
          * @property loadersByType
          * @type Object
          */
-  EventTarget loadersByType(String type, bool arg) {
+  EventTarget loadersByType(String type,String name ,bool crossorigin) {
 
     switch (type) {
       case 'jpg':
       case 'jpeg':
       case 'png':
       case 'gif':
-        return new ImageLoader();
+        return new ImageLoader(name, crossorigin);
         break;
       case 'json':
-        return new JsonLoader();
+        return new JsonLoader(name, crossorigin);
         break;
       case 'atlas':
-        return new AtlasLoader();
+        return new AtlasLoader(name, crossorigin);
         break;
       case 'anim':
-        return new SpineLoader();
+        return new SpineLoader(name, crossorigin);
         break;
       case 'xml':
       case 'fnt':
-        return new BitmapFontLoader();
+        return new BitmapFontLoader(name, crossorigin);
         break;
       default:
         throw new Exception(type + ' is an unsupported file type');
@@ -139,7 +139,7 @@ class AssetLoader extends EventTarget {
       if (fileType == null) fileType = fileName.split('?').removeAt(0).split('.').last.toLowerCase();
 
 
-      EventTarget loader = this.loadersByType(fileType, this.crossorigin);
+      EventTarget loader = this.loadersByType(fileName ,fileType, this.crossorigin);
 
       loader.listen('loaded', onLoad);
       loader.load();
@@ -159,14 +159,14 @@ class AssetLoader extends EventTarget {
       'content': this,
       'loader': loader
     });
-    if (this.onProgress) this.onProgress(loader);
+    //if (this.onProgress) this.onProgress(loader);
 
     if (this.loadCount == null) {
       this.fire({
-        type: 'onComplete',
-        content: this
+        'type': 'onComplete',
+        'content': this
       });
-      if (this.onComplete) this.onComplete();
+      //if (this.onComplete) this.onComplete();
     }
   }
 

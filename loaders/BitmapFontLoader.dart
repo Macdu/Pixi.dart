@@ -23,7 +23,7 @@ class BitmapFontLoader extends EventTarget {
 
   String baseUrl;
 
-  String texture;
+  Texture texture;
 
   HttpRequest ajaxRequest;
 
@@ -97,7 +97,7 @@ class BitmapFontLoader extends EventTarget {
 
         String textureUrl = this.baseUrl + (responseXML.getElementsByTagName('page')[0] as Element).attributes['file'];
         ImageLoader image = new ImageLoader(textureUrl, this.crossorigin);
-        this.texture = image.texture.baseTexture;
+        this.texture = image.texture;
 
         Map data = {};
         Element info = responseXML.getElementsByTagName('info')[0];
@@ -113,14 +113,17 @@ class BitmapFontLoader extends EventTarget {
         for (int i = 0; i < letters.length; i++) {
           int charCode = int.parse(letters[i].attributes['id'], radix: 10);
 
-          Rectangle textureRect = new Rectangle(double.parse(letters[i].attributes['x'], radix: 10), double.parse(letters[i].attributes['y'], radix: 10), double.parse(letters[i].attributes['width'], radix: 10), double.parse(letters[i].attributes['height'], radix: 10));
+          Rectangle textureRect = new Rectangle(double.parse(letters[i].attributes['x'] /*,radix: 10*/ ),
+              double.parse(letters[i].attributes['y']/* ,radix: 10*/ ),
+              double.parse(letters[i].attributes['width'] /*,radix: 10*/ ),
+              double.parse(letters[i].attributes['height'] /*,radix: 10)*/));
 
           data['chars'][charCode] = {
             'xOffset': int.parse(letters[i].attributes['xoffset'], radix: 10),
             'yOffset': int.parse(letters[i].attributes['yoffset'], radix: 10),
             'xAdvance': int.parse(letters[i].attributes['xadvance'], radix: 10),
             'kerning': {},
-            'texture': TextureCache[charCode] = new Texture(this.texture, textureRect)
+            'texture': TextureCache[charCode] = new Texture(this.texture.baseTexture, textureRect)
 
           };
         }

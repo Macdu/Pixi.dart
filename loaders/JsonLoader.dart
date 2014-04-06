@@ -99,13 +99,15 @@ class JsonLoader extends EventTarget {
           ImageLoader image = new ImageLoader(textureUrl, this.crossorigin);
           var frameData = this.json['frames'];
 
-          this.texture = image.texture.baseTexture;
+          this.texture = image.texture;
           image.listen('loaded', this.onLoaded);
 
           for (int i = 0; i < frameData.length; i++) {
             Map rect = frameData[i]['frame'];
             if (rect != null) {
-              TextureCache[i] = new Texture(this.texture, x: rect['x'], y: rect['y'], width: rect['w'], height: rect['h']);
+              TextureCache[i] = new Texture(this.texture.baseTexture, new Rectangle(
+                  rect['x'], rect['y'], rect['w'], rect['h']
+              ));
 
               // check to see if the sprite has been trimmed..
               if (frameData[i]['trimmed']) {
@@ -122,7 +124,7 @@ class JsonLoader extends EventTarget {
 
           image.load();
 
-        } else if (this.json['bones']) {
+        } /*else if (this.json['bones']) {
           // spine animation
           Spine.SkeletonJson spineJsonParser = new Spine.SkeletonJson();
           Spine.SkeletonData skeletonData = spineJsonParser.readSkeletonData(this.json);
@@ -131,8 +133,9 @@ class JsonLoader extends EventTarget {
         } else {
           this.onLoaded();
         }
-      } else {
+      }*/ else {
         this.onError();
+        }
       }
     }
   }
@@ -157,7 +160,7 @@ class JsonLoader extends EventTarget {
  * @method onError
  * @private
  */
-  onError() {
+  void onError() {
     this.fire({
       'type': 'error',
       'content': this
