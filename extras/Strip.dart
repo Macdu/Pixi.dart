@@ -47,7 +47,7 @@ class Strip extends DisplayObjectContainer {
       this.height = this.texture.frame.height;
       this.updateFrame = true;
     } else {
-      this.texture.stream('update').listen(this.onTextureUpdate);
+      this.texture.listen('update',this.onTextureUpdate);
     }
 
     this.renderable = true;

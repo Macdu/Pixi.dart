@@ -129,8 +129,8 @@ class Rope extends Strip {
     // time to do some smart drawing!
 
     int total = points.length,
-        index,
-        num;
+        index;
+    double num;
     double ratio, perpLength;
     Point point;
 
@@ -149,7 +149,7 @@ class Rope extends Strip {
 
       ratio = (1 - (i / (total - 1))) * 10;
 
-      if (ratio > 1) ratio = 1;
+      if (ratio > 1) ratio = 1.0;
 
       perpLength = Math.sqrt(perp['x'] * perp['x'] + perp['y'] * perp['y']);
       num = this.texture.height / 2; //(20 + Math.abs(Math.sin((i + this.count) * 0.3) * 50) )* ratio;

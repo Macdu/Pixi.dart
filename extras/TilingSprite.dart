@@ -30,7 +30,7 @@ class TilingSprite extends Sprite {
        * @property tileScaleOffset
        * @type Point
        */
-  Point tileScaleOffset = new PIXI.Point(1.0, 1.0);
+  Point tileScaleOffset = new Point(1.0, 1.0);
 
   /**
        * The offset position of the image that is being tiled
@@ -100,7 +100,7 @@ class TilingSprite extends Sprite {
    * @param event
    * @private
    */
-  void onTextureUpdate(_) {
+  void onTextureUpdate([_]) {
     this.updateFrame = true;
   }
 
@@ -227,7 +227,7 @@ class TilingSprite extends Sprite {
   * @method getBounds
   * @return {Rectangle} the framing rectangle
   */
-  Rectangle getBounds([_]) {
+  Rectangle getBounds({matrix : null}) {
 
     double width = this.width;
     double height = this.height;
@@ -331,18 +331,18 @@ class TilingSprite extends Sprite {
         newTextureRequired = true;
       }
     } else {
-      targetWidth = getNextPowerOfTwo(texture.frame.width);
-      targetHeight = getNextPowerOfTwo(texture.frame.height);
+      targetWidth = getNextPowerOfTwo(texture.frame.width.toInt()).toDouble();
+      targetHeight = getNextPowerOfTwo(texture.frame.height.toInt()).toDouble();
 
       if (frame.width != targetWidth && frame.height != targetHeight) newTextureRequired = true;
     }
 
     if (newTextureRequired) {
-      var canvasBuffer = new CanvasBuffer(targetWidth, targetHeight);
+      CanvasBuffer canvasBuffer = new CanvasBuffer(targetWidth.toInt(), targetHeight.toInt());
 
-      canvasBuffer.context.drawImage(texture.baseTexture.source, frame.x, frame.y, frame.width, frame.height, 0, 0, targetWidth, targetHeight);
+      canvasBuffer.context.drawImageScaledFromSource(texture.baseTexture.source as CanvasImageSource, frame.x, frame.y, frame.width, frame.height, 0, 0, targetWidth, targetHeight);
 
-      this.tilingTexture = Texture.fromCanvas(canvasBuffer.canvas);
+      this.tilingTexture = new Texture.fromCanvas(canvasBuffer.canvas);
 
       this.tileScaleOffset.x = frame.width / targetWidth;
       this.tileScaleOffset.y = frame.height / targetHeight;
