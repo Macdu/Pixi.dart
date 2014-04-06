@@ -23,15 +23,15 @@ class CanvasTinter {
  * @param sprite {Sprite} the sprite to tint
  * @param color {Number} the color to use to tint the sprite with
  */
-  static CanvasElement getTintedTexture(Sprite sprite, int color) {
+  static CanvasImageSource getTintedTexture(Sprite sprite, int color) {
 
     Texture texture = sprite.texture;
 
     color = CanvasTinter.roundColor(color);
 
-    String stringColor = "#" + ("00000" + (color | 0).toString(16)).substring(-6);
+    String stringColor = "#" + ("00000" + (color | 0).toString()).substring(-6);
 
-    if (texture.tintCache[stringColor]) return texture.tintCache[stringColor];
+    if (texture.tintCache[stringColor] != null) return texture.tintCache[stringColor];
 
     // clone texture..
     CanvasElement canvas = (CanvasTinter.canvas != null) ? CanvasTinter.canvas : new CanvasElement();
@@ -79,11 +79,11 @@ class CanvasTinter {
 
     context.globalCompositeOperation = "multiply";
 
-    context.drawImageScaledFromSource(texture.baseTexture.source, frame.x, frame.y, frame.width, frame.height, 0, 0, frame.width, frame.height);
+    context.drawImageScaledFromSource(texture.baseTexture.source as CanvasImageSource, frame.x, frame.y, frame.width, frame.height, 0, 0, frame.width, frame.height);
 
     context.globalCompositeOperation = "destination-atop";
 
-    context.drawImageScaledFromSource(texture.baseTexture.source, frame.x, frame.y, frame.width, frame.height, 0, 0, frame.width, frame.height);
+    context.drawImageScaledFromSource(texture.baseTexture.source as CanvasImageSource, frame.x, frame.y, frame.width, frame.height, 0, 0, frame.width, frame.height);
   }
 
   /**
@@ -108,7 +108,7 @@ class CanvasTinter {
     context.fillRect(0, 0, frame.width, frame.height);
 
     context.globalCompositeOperation = "destination-atop";
-    context.drawImageScaledFromSource(texture.baseTexture.source, frame.x, frame.y, frame.width, frame.height, 0, 0, frame.width, frame.height);
+    context.drawImageScaledFromSource(texture.baseTexture.source as CanvasImageSource, frame.x, frame.y, frame.width, frame.height, 0, 0, frame.width, frame.height);
 
 
     //context.globalCompositeOperation = "copy";
@@ -125,15 +125,15 @@ class CanvasTinter {
   static void tintWithPerPixel(Texture texture, int color, CanvasElement canvas) {
     CanvasRenderingContext2D context = canvas.getContext("2d");
 
-    var frame = texture.frame;
+    Rectangle frame = texture.frame;
 
-    canvas.width = frame.width;
-    canvas.height = frame.height;
+    canvas.width = frame.width.toInt();
+    canvas.height = frame.height.toInt();
 
     context.globalCompositeOperation = "copy";
-    context.drawImageScaledFromSource(texture.baseTexture.source, frame.x, frame.y, frame.width, frame.height, 0, 0, frame.width, frame.height);
+    context.drawImageScaledFromSource(texture.baseTexture.source as CanvasImageSource, frame.x, frame.y, frame.width, frame.height, 0, 0, frame.width, frame.height);
 
-    var rgbValues = hex2rgb(color);
+    List<int> rgbValues = hex2rgb(color);
     int r = rgbValues[0],
         g = rgbValues[1],
         b = rgbValues[2];
@@ -194,5 +194,7 @@ class CanvasTinter {
   static bool canUseMultiply = canUseNewCanvasBlendModes();
 
   static Function tintMethod = CanvasTinter.canUseMultiply ? CanvasTinter.tintWithMultiply : CanvasTinter.tintWithPerPixel;
+  
+  static CanvasElement canvas = null;
 
 }

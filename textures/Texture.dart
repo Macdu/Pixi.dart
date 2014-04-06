@@ -49,6 +49,8 @@ class Texture extends EventTarget {
   TextureUvs _uvs;
   
   List _glTextures;
+  
+  Map<String , CanvasImageSource> tintCache = {};
 
   /**
  * @class Texture
