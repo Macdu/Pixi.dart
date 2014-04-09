@@ -497,7 +497,7 @@ class WebGLRenderer {
 
         if (texture.hasLoaded) {
 
-          texture._glTextures[id] = gl.createTexture();
+          texture._glTextures.insert(id, gl.createTexture());
 
           gl.bindTexture(RenderingContext.TEXTURE_2D, texture._glTextures[id]);
           gl.pixelStorei(RenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);

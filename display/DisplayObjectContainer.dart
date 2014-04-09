@@ -80,7 +80,7 @@ class DisplayObjectContainer extends DisplayObject {
 
       child.parent = this;
 
-      this.children[index] = child;
+      this.children.insert(index, child);
 
       if (this.stage != null) child.setStageReference(this.stage);
     } else {

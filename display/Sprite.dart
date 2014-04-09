@@ -256,7 +256,7 @@ class Sprite extends DisplayObjectContainer {
     int i, j;
 
     // do a quick check to see if this element has a mask or a filter.
-    if (this._mask || this._filters) {
+    if (this._mask != null || this._filters != null) {
       var spriteBatch = renderSession.spriteBatch;
 
       if (this._mask != null) {
@@ -327,7 +327,7 @@ class Sprite extends DisplayObjectContainer {
 
 
     //ignore null sources
-    if (frame && frame.width && frame.height && texture.baseTexture.source) {
+    if (frame != null && frame.width != null && frame.height != null && texture.baseTexture.source != null) {
       context.globalAlpha = this.worldAlpha;
 
       Matrix transform = this.worldTransform;
@@ -342,7 +342,7 @@ class Sprite extends DisplayObjectContainer {
 
 
       //if smoothingEnabled is supported and we need to change the smoothing property for this texture
-      if (renderSession.smoothProperty && renderSession.scaleMode != this.texture.baseTexture.scaleMode) {
+      if (renderSession.smoothProperty.isNotEmpty && renderSession.scaleMode != this.texture.baseTexture.scaleMode) {
         renderSession.scaleMode = this.texture.baseTexture.scaleMode;
         //TODO: set the property to dart
         //context[renderSession.smoothProperty] = (renderSession.scaleMode == scaleModes['LINEAR']);

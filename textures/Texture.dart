@@ -77,7 +77,7 @@ class Texture extends EventTarget {
   Texture.fromImage(String imageUrl, [bool crossorigin = false, int scaleMode = 0]) {
     Texture texture = TextureCache[imageUrl];
 
-    if (texture != null) {
+    if (texture == null) {
       this._load(new BaseTexture.fromImage(imageUrl, crossorigin, scaleMode));
       TextureCache[imageUrl] = texture;
     } else this._load(texture.baseTexture, texture.frame);
@@ -123,7 +123,7 @@ class Texture extends EventTarget {
 
   void _load(BaseTexture baseTexture, [Rectangle frame = null]) {
 
-    if (frame != null) {
+    if (frame == null) {
       this.noFrame = true;
       frame = new Rectangle(0.0, 0.0, 1.0, 1.0);
     }
@@ -163,7 +163,7 @@ class Texture extends EventTarget {
  */
   void onBaseTextureLoaded([_]) {
     BaseTexture baseTexture = this.baseTexture;
-
+    
     if (this.noFrame) this.frame = new Rectangle(0.0, 0.0, baseTexture.width.toDouble(), baseTexture.height.toDouble());
 
     this.setFrame(this.frame);

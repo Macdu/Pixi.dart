@@ -416,14 +416,14 @@ class WebGLSpriteBatch {
     int id = WebGLRenderer._getIndexFirst(gl);
 
     // bind the current texture
-    gl.bindTexture(TEXTURE_2D, (this.currentBaseTexture._glTextures[id] != null) ? this.currentBaseTexture._glTextures[id] : WebGLRenderer.createWebGLTextureFromBaseTexture(this.currentBaseTexture, gl));
+    gl.bindTexture(TEXTURE_2D, (this.currentBaseTexture._glTextures.contains(id)) ? this.currentBaseTexture._glTextures[id] : WebGLRenderer.createWebGLTextureFromBaseTexture(this.currentBaseTexture, gl));
 
     // upload the verts to the buffer
 
     if (this.currentBatchSize > (this.size * 0.5)) {
       gl.bufferSubData(ARRAY_BUFFER, 0, this.vertices);
     } else {
-      Float32List view = new Float32List.fromList(this.vertices.getRange(0, this.currentBatchSize * 4 * this.vertSize));
+      Float32List view = new Float32List.fromList(this.vertices.getRange(0, this.currentBatchSize * 4 * this.vertSize).toList());
 
       gl.bufferSubData(ARRAY_BUFFER, 0, view);
     }

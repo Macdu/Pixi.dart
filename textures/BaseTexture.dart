@@ -210,7 +210,7 @@ class BaseTexture extends EventTarget {
     BaseTexture baseTexture = BaseTextureCache[imageUrl];
     crossorigin = !crossorigin;
 
-    if (baseTexture != null) {
+    if (baseTexture == null) {
       // new Image() breaks tex loading in some versions of Chrome.
       // See https://code.google.com/p/chromium/issues/detail?id=238071
       ImageElement image = new ImageElement();//document.createElement('img');
@@ -219,7 +219,7 @@ class BaseTexture extends EventTarget {
       }
       image.src = imageUrl;
       this._load(image, scaleMode);
-      baseTexture.imageUrl = imageUrl;
+      this.imageUrl = imageUrl;
       BaseTextureCache[imageUrl] = this;
     } else this._load(baseTexture.source, baseTexture.scaleMode);
   }
