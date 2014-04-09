@@ -333,7 +333,7 @@ class WebGLRenderer {
  * @param buffer {List} a standard WebGL buffer 
  */
   void renderDisplayObject(DisplayObject displayObject, Point
-      projection, [Buffer buffer = null]) {
+      projection, [Framebuffer buffer = null]) {
     // reset the render session data..
     this.renderSession.drawCount = 0;
     this.renderSession.currentBlendMode = 9999;
@@ -453,45 +453,48 @@ class WebGLRenderer {
  * @param gl {webglContext} the WebGL context
  * @static
  */
-  static Texture createWebGLTexture(Texture texture1, RenderingContext gl) {
+  static createWebGLTexture(Texture texture, RenderingContext gl) => createWebGLTextureFromBaseTexture(texture.baseTexture, gl);
+  
+  
+      
+  static createWebGLTextureFromBaseTexture(BaseTexture texture, RenderingContext gl){
     
-    BaseTexture texture = texture1.baseTexture;
-
     int id = _getIndexFirst(gl);
 
-    if (texture.hasLoaded) {
+        if (texture.hasLoaded) {
 
-      texture._glTextures[id] = gl.createTexture();
+          texture._glTextures[id] = gl.createTexture();
 
-      gl.bindTexture(RenderingContext.TEXTURE_2D, texture._glTextures[id]);
-      gl.pixelStorei(RenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
+          gl.bindTexture(RenderingContext.TEXTURE_2D, texture._glTextures[id]);
+          gl.pixelStorei(RenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
 
-      gl.texImage2D(RenderingContext.TEXTURE_2D, 0, RenderingContext.RGBA,
-          RenderingContext.RGBA, RenderingContext.UNSIGNED_BYTE, texture.source);
-      gl.texParameteri(RenderingContext.TEXTURE_2D,
-          RenderingContext.TEXTURE_MAG_FILTER, texture.scaleMode == scaleModes['LINEAR'] ?
-          RenderingContext.LINEAR : RenderingContext.NEAREST);
-      gl.texParameteri(RenderingContext.TEXTURE_2D,
-          RenderingContext.TEXTURE_MIN_FILTER, texture.scaleMode == scaleModes['LINEAR'] ?
-          RenderingContext.LINEAR : RenderingContext.NEAREST);
+          gl.texImage2D(RenderingContext.TEXTURE_2D, 0, RenderingContext.RGBA,
+              RenderingContext.RGBA, RenderingContext.UNSIGNED_BYTE, texture.source);
+          gl.texParameteri(RenderingContext.TEXTURE_2D,
+              RenderingContext.TEXTURE_MAG_FILTER, texture.scaleMode == scaleModes['LINEAR'] ?
+              RenderingContext.LINEAR : RenderingContext.NEAREST);
+          gl.texParameteri(RenderingContext.TEXTURE_2D,
+              RenderingContext.TEXTURE_MIN_FILTER, texture.scaleMode == scaleModes['LINEAR'] ?
+              RenderingContext.LINEAR : RenderingContext.NEAREST);
 
-      // reguler...
+          // reguler...
 
-      if (!texture._powerOf2) {
-        gl.texParameteri(RenderingContext.TEXTURE_2D,
-            RenderingContext.TEXTURE_WRAP_S, RenderingContext.CLAMP_TO_EDGE);
-        gl.texParameteri(TEXTURE_2D, TEXTURE_WRAP_T, CLAMP_TO_EDGE);
-      } else {
-        gl.texParameteri(RenderingContext.TEXTURE_2D,
-            RenderingContext.TEXTURE_WRAP_S, RenderingContext.REPEAT);
-        gl.texParameteri(RenderingContext.TEXTURE_2D,
-            RenderingContext.TEXTURE_WRAP_T, RenderingContext.REPEAT);
-      }
+          if (!texture._powerOf2) {
+            gl.texParameteri(RenderingContext.TEXTURE_2D,
+                RenderingContext.TEXTURE_WRAP_S, RenderingContext.CLAMP_TO_EDGE);
+            gl.texParameteri(TEXTURE_2D, TEXTURE_WRAP_T, CLAMP_TO_EDGE);
+          } else {
+            gl.texParameteri(RenderingContext.TEXTURE_2D,
+                RenderingContext.TEXTURE_WRAP_S, RenderingContext.REPEAT);
+            gl.texParameteri(RenderingContext.TEXTURE_2D,
+                RenderingContext.TEXTURE_WRAP_T, RenderingContext.REPEAT);
+          }
 
-      gl.bindTexture(RenderingContext.TEXTURE_2D, null);
-    }
+          gl.bindTexture(RenderingContext.TEXTURE_2D, null);
+        }
 
-    return texture._glTextures[id];
+        return texture._glTextures[id];
+    
   }
 
   /**

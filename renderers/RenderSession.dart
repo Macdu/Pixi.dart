@@ -2,7 +2,7 @@ part of pixi;
 
 class RenderSession{
   
-  CanvasRenderingContext context = null;
+  CanvasRenderingContext2D context = null;
   
   RenderingContext gl = null;
   

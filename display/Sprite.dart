@@ -311,13 +311,13 @@ class Sprite extends DisplayObjectContainer {
     // if the sprite is not visible or the alpha is 0 then no need to render this element
     if (this.visible == false || this.alpha == 0) return;
 
-    var frame = this.texture.frame;
-    var context = renderSession.context;
+    Rectangle frame = this.texture.frame;
+    CanvasRenderingContext2D context = renderSession.context;
     Texture texture = this.texture;
 
     if (this.blendMode != renderSession.currentBlendMode) {
       renderSession.currentBlendMode = this.blendMode;
-      context.globalCompositeOperation = blendModes[renderSession.currentBlendMode];
+      context.globalCompositeOperation = blendModesCanvas[renderSession.currentBlendMode];
     }
 
     if (this._mask != null) {
@@ -361,7 +361,7 @@ class Sprite extends DisplayObjectContainer {
 
         }
 
-        context.drawImage(this.tintedTexture, 0, 0, frame.width, frame.height, (this.anchor.x) * -frame.width, (this.anchor.y) * -frame.height, frame.width, frame.height);
+        context.drawImageScaledFromSource(this.tintedTexture, 0, 0, frame.width, frame.height, (this.anchor.x) * -frame.width, (this.anchor.y) * -frame.height, frame.width, frame.height);
       } else {
 
 
@@ -369,10 +369,10 @@ class Sprite extends DisplayObjectContainer {
         if (texture.trim != null) {
           Rectangle trim = texture.trim;
 
-          context.drawImage(this.texture.baseTexture.source, frame.x, frame.y, frame.width, frame.height, trim.x - this.anchor.x * trim.width, trim.y - this.anchor.y * trim.height, frame.width, frame.height);
+          context.drawImageScaledFromSource(this.texture.baseTexture.source as CanvasImageSource, frame.x, frame.y, frame.width, frame.height, trim.x - this.anchor.x * trim.width, trim.y - this.anchor.y * trim.height, frame.width, frame.height);
         } else {
 
-          context.drawImage(this.texture.baseTexture.source, frame.x, frame.y, frame.width, frame.height, (this.anchor.x) * -frame.width, (this.anchor.y) * -frame.height, frame.width, frame.height);
+          context.drawImageScaledFromSource(this.texture.baseTexture.source as CanvasImageSource, frame.x, frame.y, frame.width, frame.height, (this.anchor.x) * -frame.width, (this.anchor.y) * -frame.height, frame.width, frame.height);
         }
 
       }

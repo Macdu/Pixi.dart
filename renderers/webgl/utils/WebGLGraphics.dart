@@ -19,12 +19,12 @@ class WebGLGraphics {
  * @param graphics {Graphics}
  * @param renderSession {Object}
  */
-  static void renderGraphics(Graphics graphics, Map renderSession) //projection, offset)
+  static void renderGraphics(Graphics graphics, RenderSession renderSession) //projection, offset)
   {
-    RenderingContext gl = renderSession['gl'];
-    Point projection = renderSession['projection'],
-        offset = renderSession['offset'];
-    PrimitiveShader shader = renderSession['shaderManager'].primitiveShader;
+    RenderingContext gl = renderSession.gl;
+    Point projection = renderSession.projection,
+        offset = renderSession.offset;
+    PrimitiveShader shader = renderSession.shaderManager.primitiveShader;
 
     int id = WebGLRenderer._getIndexFirst(gl);
 
@@ -53,7 +53,7 @@ class WebGLGraphics {
       WebGLGraphics.updateGraphics(graphics, gl);
     }
 
-    renderSession['shaderManager'].activatePrimitiveShader();
+    renderSession.shaderManager.activatePrimitiveShader();
 
     // This  could be speeded up for sure!
 
@@ -65,7 +65,10 @@ class WebGLGraphics {
     gl.uniform2f(shader.projectionVector, projection.x, -projection.y);
     gl.uniform2f(shader.offsetVector, -offset.x, -offset.y);
 
-    gl.uniform3fv(shader.tintColor, hex2rgb(graphics.tint));
+    gl.uniform3fv(shader.tintColor, new Float32List.fromList(hex2rgb(graphics.tint).fold(
+        new List<double>(), 
+          (List<double> liste, int value)=>liste..add(value.toDouble())
+          )));
 
     gl.uniform1f(shader.alpha, graphics.worldAlpha);
     gl.bindBuffer(ARRAY_BUFFER, webGL['buffer']);
@@ -78,7 +81,7 @@ class WebGLGraphics {
 
     gl.drawElements(TRIANGLE_STRIP, webGL['indices'].length, UNSIGNED_SHORT, 0);
 
-    renderSession['shaderManager'].deactivatePrimitiveShader();
+    renderSession.shaderManager.deactivatePrimitiveShader();
 
     // return to default shader...
     //  PIXI.activateShader(PIXI.defaultShader);
@@ -478,7 +481,7 @@ class WebGLGraphics {
     double g = color[1] * alpha;
     double b = color[2] * alpha;
 
-    var triangles = PolyK.Triangulate(points);
+    List triangles = Polyk.Triangulate(points);
 
     double vertPos = verts.length / 6;
 

@@ -50,7 +50,7 @@ class WebGLSpriteBatch {
 
   bool drawing = false;
   int currentBatchSize = 0;
-  Texture currentBaseTexture = null;
+  BaseTexture currentBaseTexture = null;
 
   RenderingContext gl;
 
@@ -60,7 +60,7 @@ class WebGLSpriteBatch {
 
   int currentBlendMode = 99999;
 
-  Map renderSession;
+  RenderSession renderSession;
 
   var shader;
 
@@ -149,9 +149,9 @@ class WebGLSpriteBatch {
 *
 * @param renderSession {RenderSession} the RenderSession
 */
-  void begin(Map renderSession) {
+  void begin(RenderSession renderSession) {
     this.renderSession = renderSession;
-    this.shader = this.renderSession['shaderManager'].defaultShader;
+    this.shader = this.renderSession.shaderManager.defaultShader;
 
     this.start();
   }
@@ -195,8 +195,8 @@ class WebGLSpriteBatch {
 
     Float32List verticies = this.vertices;
 
-    int width = sprite.texture.frame.width;
-    int height = sprite.texture.frame.height;
+    int width = sprite.texture.frame.width.toInt();
+    int height = sprite.texture.frame.height.toInt();
 
     // TODO trim??
     double aX = sprite.anchor.x;
@@ -206,7 +206,7 @@ class WebGLSpriteBatch {
 
     if (sprite.texture.trim != null) {
       // if the sprite is trimmed then we need to add the extra space before transforming the sprite coords..
-      Point trim = sprite.texture.trim;
+      Rectangle trim = sprite.texture.trim;
 
       w1 = trim.x - aX * trim.width;
       w0 = w1 + width;
@@ -301,9 +301,9 @@ class WebGLSpriteBatch {
     // set the textures uvs temporarily
     // TODO create a separate texture so that we can tile part of a texture
 
-    if (!tilingSprite.texture._uvs == null) tilingSprite._uvs = new TextureUvs();
+    if (tilingSprite.texture._uvs == null) tilingSprite.texture._uvs = new TextureUvs();
 
-    Float32List uvs = tilingSprite.texture._uvs;
+    TextureUvs uvs = tilingSprite.texture._uvs;
 
     tilingSprite.tilePosition.x %= texture.baseTexture.width;
     tilingSprite.tilePosition.y %= texture.baseTexture.height;
@@ -314,16 +314,16 @@ class WebGLSpriteBatch {
     double scaleX = (tilingSprite.width / texture.baseTexture.width) / (tilingSprite.tileScale.x * tilingSprite.tileScaleOffset.x);
     double scaleY = (tilingSprite.height / texture.baseTexture.height) / (tilingSprite.tileScale.y * tilingSprite.tileScaleOffset.y);
 
-    uvs.x0 = 0 - offsetX;
-    uvs.y0 = 0 - offsetY;
+    uvs.x0 = (0 - offsetX).toDouble();
+    uvs.y0 = (0 - offsetY).toDouble();
 
     uvs.x1 = (1 * scaleX) - offsetX;
-    uvs.y1 = 0 - offsetY;
+    uvs.y1 = (0 - offsetY).toDouble();
 
     uvs.x2 = (1 * scaleX) - offsetX;
     uvs.y2 = (1 * scaleY) - offsetY;
 
-    uvs.x3 = 0 - offsetX;
+    uvs.x3 = (0 - offsetX).toDouble();
     uvs.y3 = (1 * scaleY) - offsetY;
 
     // get the tilingSprites current alpha
@@ -416,7 +416,7 @@ class WebGLSpriteBatch {
     int id = WebGLRenderer._getIndexFirst(gl);
 
     // bind the current texture
-    gl.bindTexture(TEXTURE_2D, (this.currentBaseTexture._glTextures[id] != null) ? this.currentBaseTexture._glTextures[id] : createWebGLTexture(this.currentBaseTexture, gl));
+    gl.bindTexture(TEXTURE_2D, (this.currentBaseTexture._glTextures[id] != null) ? this.currentBaseTexture._glTextures[id] : WebGLRenderer.createWebGLTextureFromBaseTexture(this.currentBaseTexture, gl));
 
     // upload the verts to the buffer
 
@@ -438,7 +438,7 @@ class WebGLSpriteBatch {
     this.currentBatchSize = 0;
 
     // increment the draw count
-    this.renderSession['drawCount']++;
+    this.renderSession.drawCount++;
   }
 
   /**
@@ -466,7 +466,7 @@ class WebGLSpriteBatch {
     gl.bindBuffer(ELEMENT_ARRAY_BUFFER, this.indexBuffer);
 
     // set the projection
-    Point projection = this.renderSession['projection'];
+    Point projection = this.renderSession.projection;
     gl.uniform2f(this.shader.projectionVector, projection.x, projection.y);
 
     // set the pointers

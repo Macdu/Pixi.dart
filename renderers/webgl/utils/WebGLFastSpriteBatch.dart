@@ -32,10 +32,10 @@ class WebGLFastSpriteBatch {
   BaseTexture currentBaseTexture = null;
 
   int currentBlendMode = 0;
-  Map renderSession = null;
+  RenderSession renderSession = null;
 
 
-  WebGLShaderManager shader = null;
+  PixiFastShader shader = null;
 
   Matrix matrix = null;
 
@@ -84,9 +84,9 @@ class WebGLFastSpriteBatch {
     this.currentBlendMode = 99999;
   }
 
-  void begin(SpriteBatch spriteBatch, Map renderSession) {
+  void begin(SpriteBatch spriteBatch, RenderSession renderSession) {
     this.renderSession = renderSession;
-    this.shader = this.renderSession['shaderManager'].fastShader;
+    this.shader = this.renderSession.shaderManager.fastShader;
 
     this.matrix = spriteBatch.worldTransform;
 
@@ -131,17 +131,18 @@ class WebGLFastSpriteBatch {
       if (sprite.texture._uvs == null) return;
     }
 
-    Float32List uvs, verticies = this.vertices;
+    TextureUvs uvs;
+    Float32List verticies = this.vertices;
     int width, height, index;
     double w0, w1, h0, h1;
 
     uvs = sprite.texture._uvs;
 
 
-    width = sprite.texture.frame.width;
-    height = sprite.texture.frame.height;
+    width = sprite.texture.frame.width.toInt();
+    height = sprite.texture.frame.height.toInt();
 
-    if (sprite.texture.trim) {
+    if (sprite.texture.trim != null) {
       // if the sprite is trimmed then we need to add the extra space before transforming the sprite coords..
       Rectangle trim = sprite.texture.trim;
 
@@ -264,7 +265,7 @@ class WebGLFastSpriteBatch {
 
     // bind the current texture
 
-    if (!this.currentBaseTexture._glTextures[id]) PIXI.createWebGLTexture(
+    if (!this.currentBaseTexture._glTextures[id]) WebGLRenderer.createWebGLTextureFromBaseTexture(
         this.currentBaseTexture, gl);
 
     gl.bindTexture(TEXTURE_2D, this.currentBaseTexture._glTextures[id]
@@ -290,7 +291,7 @@ class WebGLFastSpriteBatch {
     this.currentBatchSize = 0;
 
     // increment the draw count
-    this.renderSession['drawCount']++;
+    this.renderSession.drawCount++;
   }
 
 
@@ -309,7 +310,7 @@ class WebGLFastSpriteBatch {
     gl.bindBuffer(ELEMENT_ARRAY_BUFFER, this.indexBuffer);
 
     // set the projection
-    var projection = this.renderSession['projection'];
+    Point projection = this.renderSession.projection;
     gl.uniform2f(this.shader.projectionVector, projection.x, projection.y);
 
     // set the matrix

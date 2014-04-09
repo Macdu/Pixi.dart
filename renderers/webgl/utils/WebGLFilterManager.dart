@@ -16,11 +16,11 @@ class WebGLFilterManager {
   RenderingContext gl;
   List<FilterTexture> texturePool;
 
-  Map renderSession;
+  RenderSession renderSession;
   var defaultShader;
 
-  int width;
-  int height;
+  double width;
+  double height;
 
   Framebuffer buffer;
 
@@ -72,11 +72,11 @@ class WebGLFilterManager {
 * @param renderSession {RenderSession} 
 * @param buffer {ArrayBuffer} 
 */
-  void begin(Map renderSession, Buffer buffer) {
+  void begin(RenderSession renderSession, Framebuffer buffer) {
     this.renderSession = renderSession;
-    this.defaultShader = renderSession['shaderManager'].defaultShader;
+    this.defaultShader = renderSession.shaderManager.defaultShader;
 
-    Point projection = this.renderSession['projection'];
+    Point projection = this.renderSession.projection;
 
     this.width = projection.x * 2;
     this.height = -projection.y * 2;
@@ -91,8 +91,8 @@ class WebGLFilterManager {
   void pushFilter(filterBlock) {
     gl = this.gl;
 
-    Point projection = this.renderSession['projection'];
-    Point offset = this.renderSession['offset'];
+    Point projection = this.renderSession.projection;
+    Point offset = this.renderSession.offset;
 
 
     // filter program
@@ -106,9 +106,9 @@ class WebGLFilterManager {
 
     FilterTexture texture = this.texturePool.removeLast();
     if (texture == null) {
-      texture = new FilterTexture(this.gl, this.width, this.height);
+      texture = new FilterTexture(this.gl, this.width.toInt(), this.height.toInt());
     } else {
-      texture.resize(this.width, this.height);
+      texture.resize(this.width.toInt(), this.height.toInt());
     }
 
     gl.bindTexture(TEXTURE_2D, texture.texture);
@@ -164,8 +164,8 @@ class WebGLFilterManager {
     var filterBlock = this.filterStack.removeLast();
     var filterArea = filterBlock.target.filterArea;
     FilterTexture texture = filterBlock._glFilterTexture;
-    Point projection = this.renderSession['projection'];
-    Point offset = this.renderSession['offset'];
+    Point projection = this.renderSession.projection;
+    Point offset = this.renderSession.offset;
 
     if (filterBlock.filterPasses.length > 1) {
       gl.viewport(0, 0, filterArea.width, filterArea.height);
@@ -198,7 +198,7 @@ class WebGLFilterManager {
       FilterTexture inputTexture = texture;
       FilterTexture outputTexture = this.texturePool.removeLast();
       if (outputTexture == null) outputTexture = new FilterTexture(this.gl,
-          this.width, this.height);
+          this.width.toInt(), this.height.toInt());
 
       // need to clear this FBO as it may have some left over elements from a previous filter.
       gl.bindFramebuffer(FRAMEBUFFER, outputTexture.frameBuffer);
@@ -238,8 +238,8 @@ class WebGLFilterManager {
     this.offsetY -= filterArea.y;
 
 
-    int sizeX = this.width;
-    int sizeY = this.height;
+    int sizeX = this.width.toInt();
+    int sizeY = this.height.toInt();
 
     double offsetX = 0.0;
     double offsetY = 0.0;
@@ -382,7 +382,7 @@ class WebGLFilterManager {
     // draw the filter...
     gl.drawElements(TRIANGLES, 6, UNSIGNED_SHORT, 0);
 
-    this.renderSession['drawCount']++;
+    this.renderSession.drawCount++;
   }
 
   /**

@@ -36,7 +36,7 @@ class WebGLMaskManager {
 * @param maskData {Array}
 * @param renderSession {RenderSession}
 */
-  void pushMask(Graphics maskData, Map renderSession) {
+  void pushMask(Graphics maskData, RenderSession renderSession) {
     RenderingContext gl = this.gl;
 
     if (this.maskStack.length == 0) {
@@ -64,7 +64,7 @@ class WebGLMaskManager {
 *
 * @param renderSession {RenderSession} an object containing all the useful parameters
 */
-  void popMask(Map renderSession) {
+  void popMask(RenderSession renderSession) {
     RenderingContext gl = this.gl;
 
     Graphics maskData = this.maskStack.removeLast();

@@ -37,7 +37,7 @@ class PixiShader {
 
   List attributes = [];
 
-  Map uniforms;
+  Map<String,dynamic> uniforms;
 
   // get and store the uniforms for the shader
   UniformLocation uSampler, projectionVector, offsetVector, dimensions;
@@ -67,7 +67,7 @@ class PixiShader {
     RenderingContext gl = this.gl;
 
     Program program = compileProgram(gl, (this.vertexSrc != null) ?
-        this.VertexSrc : PixiShader.defaultVertexSrc, this.fragmentSrc);
+        this.vertexSrc : PixiShader.defaultVertexSrc, this.fragmentSrc);
 
     gl.useProgram(program);
 
@@ -98,11 +98,13 @@ class PixiShader {
 
     // End worst hack eva //
 
+    this.uniforms["uniformLoacations"] = new Map<String,UniformLocation>();
     // add those custom shaders!
-    for (PixiUniform key in this.uniforms) {
+    this.uniforms.forEach((String key,Map uniform){
       // get the uniform locations..
-      key.uniformLocation = gl.getUniformLocation(program, key);
-    }
+      uniform["uniformLocation"] = gl.getUniformLocation(program, key);
+    });
+      
 
     this.initUniforms();
 
@@ -119,68 +121,94 @@ class PixiShader {
   void initUniforms() {
     this.textureCount = 1;
     RenderingContext gl = this.gl;
-    PixiUniform uniform;
+    Map uniform;
 
-    for (PixiUniform key in this.uniforms) {
+    this.uniforms.forEach((String _, Map key){
       uniform = key;
 
-      int type = uniform.type;
+      String type = uniform['type'];
 
       if (type == "sampler2D") {
-        uniform._init = false;
+        uniform['_init'] = false;
 
-        if (uniform.value != null) {
+        if (uniform.containsKey('value')) {
           this.initSampler2D(uniform);
         }
       } else if (type == "mat2" || type == "mat3" || type == "mat4") {
         //  These require special handling
-        uniform.glMatrix = true;
-        uniform.glValueLength = 1;
+        uniform['glMatrix'] = true;
+        uniform['glValueLength'] = 1;
 
         if (type == "mat2") {
-          uniform.glFunc = gl.uniformMatrix2fv;
+          uniform['glFunc'] = gl.uniformMatrix2fv;
         } else if (type == "mat3") {
-          uniform.glFunc = gl.uniformMatrix3fv;
+          uniform['glFunc'] = gl.uniformMatrix3fv;
         } else if (type == "mat4") {
-          uniform.glFunc = gl.uniformMatrix4fv;
+          uniform['glFunc'] = gl.uniformMatrix4fv;
         }
       } else {
         //  GL function reference
-        uniform.setReferenceGLFunction();
+        //TODO: don't know what to do
+        //uniform['setReferenceGLFunction();
 
         if (type == '2f' || type == '2i') {
-          uniform.glValueLength = 2;
+          uniform['glValueLength'] = 2;
         } else if (type == '3f' || type == '3i') {
-          uniform.glValueLength = 3;
+          uniform['glValueLength'] = 3;
         } else if (type == '4f' || type == '4i') {
-          uniform.glValueLength = 4;
+          uniform['glValueLength'] = 4;
         } else {
-          uniform.glValueLength = 1;
+          uniform['glValueLength'] = 1;
         }
       }
-    }
+    });
+    
 
   }
+  
+  
+  static final List<int> _textureNumber = [
+                                           TEXTURE0,
+                                           TEXTURE2,
+                                           TEXTURE3,
+                                           TEXTURE4,
+                                           TEXTURE5,
+                                           TEXTURE6,
+                                           TEXTURE7,
+                                           TEXTURE8,
+                                           TEXTURE9,
+                                           TEXTURE10,
+                                           TEXTURE11,
+                                           TEXTURE12,
+                                           TEXTURE13,
+                                           TEXTURE14,
+                                           TEXTURE15,
+                                           TEXTURE16,
+                                           TEXTURE17,
+                                           TEXTURE18,
+                                           TEXTURE19,
+                                           
+                                           ];
 
   /**
 * Initialises a Sampler2D uniform (which may only be available later on after initUniforms once the texture has loaded)
 *
 * @method initSampler2D
 */
-  void initSampler2D(UniformLocation uniform) {
-    if (uniform.value == null || uniform.value.baseTexture == null ||
-        !uniform.value.baseTexture.hasLoaded) {
+  void initSampler2D(Map<String,dynamic> uniform) {
+    if (!uniform.containsKey('value') || uniform['value'].baseTexture == null ||
+        !uniform['value'].baseTexture.hasLoaded) {
       return;
     }
 
     RenderingContext gl = this.gl;
 
-    gl.activeTexture(uniform.getTextureFromCount(this.textureCount));
-    gl.bindTexture(TEXTURE_2D, uniform.value.baseTexture._glTexture);
+    gl.activeTexture(_textureNumber[this.textureCount]);
+    gl.bindTexture(TEXTURE_2D, uniform['value'].baseTexture._glTextures[WebGLRenderer._getIndexFirst(gl)]);
 
     //  Extended texture data
-    if (uniform.textureData != null) {
-      Map data = uniform.textureData;
+    if (uniform.containsKey('textureData')) {
+      Map data = uniform['textureData'];
 
       // GLTexture = mag linear, min linear_mipmap_linear, wrap repeat + gl.generateMipmap(gl.TEXTURE_2D);
       // GLTextureLinear = mag/min linear, wrap clamp
@@ -218,7 +246,7 @@ class PixiShader {
       } else {
         //  void texImage2D(GLenum target, GLint level, GLenum internalformat, GLenum format, GLenum type, ImageData? pixels);
         gl.texImage2D(TEXTURE_2D, 0, format, RGBA, UNSIGNED_BYTE,
-            uniform.value.baseTexture.source);
+            uniform['value'].baseTexture.source);
       }
 
       gl.texParameteri(TEXTURE_2D, TEXTURE_MAG_FILTER, magFilter);
@@ -227,9 +255,9 @@ class PixiShader {
       gl.texParameteri(TEXTURE_2D, TEXTURE_WRAP_T, wrapT);
     }
 
-    gl.uniform1i(uniform.uniformLocation, this.textureCount);
+    gl.uniform1i(uniform['uniformLocation'], this.textureCount);
 
-    uniform._init = true;
+    uniform['_init'] = true;
 
     this.textureCount++;
 
@@ -242,44 +270,44 @@ class PixiShader {
 */
   void syncUniforms() {
     this.textureCount = 1;
-    PixiUniform uniform;
+    Map uniform;
     RenderingContext gl = this.gl;
 
     //  This would probably be faster in an array and it would guarantee key order
-    for (PixiUniform key in this.uniforms) {
+    this.uniforms.forEach((String index, Map key) {
 
       uniform = key;
 
-      if (uniform.glValueLength == 1) {
-        if (uniform.glMatrix == true) {
-          uniform.glFunc(uniform.uniformLocation, uniform.transpose,
-              uniform.value);
+      if (uniform['glValueLength'] == 1) {
+        if (uniform['glMatrix'] == true) {
+          uniform['glFunc'](uniform['uniformLocation'], uniform['transpose'],
+              uniform['value']);
         } else {
-          uniform.glFunc(uniform.uniformLocation, uniform.value);
+          uniform['glFunc'](uniform['uniformLocation'], uniform['value']);
         }
-      } else if (uniform.glValueLength == 2) {
-        uniform.glFunc(uniform.uniformLocation, uniform.value.x, uniform.value.y
+      } else if (uniform['glValueLength'] == 2) {
+        uniform['glFunc'](uniform['uniformLocation'], uniform['value']['x'], uniform['value']['y']
             );
-      } else if (uniform.glValueLength == 3) {
-        uniform.glFunc(uniform.uniformLocation, uniform.value.x,
-            uniform.value.y, uniform.value.z);
-      } else if (uniform.glValueLength == 4) {
-        uniform.glFunc(uniform.uniformLocation, uniform.value.x,
-            uniform.value.y, uniform.value.z, uniform.value.w);
-      } else if (uniform.type == 'sampler2D') {
-        if (uniform._init) {
-          gl.activeTexture(uniform.getTextureFromCount(this.textureCount));
+      } else if (uniform['glValueLength'] == 3) {
+        uniform['glFunc'](uniform['uniformLocation'], uniform['value']['x'],
+            uniform['value']['y'], uniform['value']['z']);
+      } else if (uniform['glValueLength'] == 4) {
+        uniform['glFunc'](uniform['uniformLocation'], uniform['value']['x'],
+            uniform['value']['y'], uniform['value']['z'], uniform['value']['w']);
+      } else if (uniform['type'] == 'sampler2D') {
+        if (uniform['_init']) {
+          gl.activeTexture(_textureNumber[this.textureCount]);
           gl.bindTexture(TEXTURE_2D,
-              (uniform.value.baseTexture._glTextures[WebGLRenderer._getIndexFirst(gl)] !=
-              null) ? uniform.value.baseTexture._glTextures[WebGLRenderer._getIndexFirst(gl)]
-              : createWebGLTexture(uniform.value.baseTexture, gl));
-          gl.uniform1i(uniform.uniformLocation, this.textureCount);
+              (uniform['value'].baseTexture._glTextures[WebGLRenderer._getIndexFirst(gl)] !=
+              null) ? uniform['value'].baseTexture._glTextures[WebGLRenderer._getIndexFirst(gl)]
+              : WebGLRenderer.createWebGLTexture(uniform['value'].baseTexture, gl));
+          gl.uniform1i(uniform['uniformLocation'], this.textureCount);
           this.textureCount++;
         } else {
           this.initSampler2D(uniform);
         }
       }
-    }
+    });
 
   }
 

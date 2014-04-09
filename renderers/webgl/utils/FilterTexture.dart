@@ -9,7 +9,7 @@ class FilterTexture {
 
   // next time to create a frame buffer and texture
   Framebuffer frameBuffer;
-  Texture texture;
+  var texture;
 
   int width;
   int height;

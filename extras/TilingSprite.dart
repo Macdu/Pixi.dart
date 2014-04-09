@@ -192,7 +192,7 @@ class TilingSprite extends Sprite {
     // check blend mode
     if (this.blendMode != renderSession.currentBlendMode) {
       renderSession.currentBlendMode = this.blendMode;
-      context.globalCompositeOperation = blendModes[renderSession.currentBlendMode];
+      context.globalCompositeOperation = blendModesCanvas[renderSession.currentBlendMode];
     }
 
     context.beginPath();

@@ -2,7 +2,6 @@ part of pixi;
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
  */
-
 class PrimitiveShader {
 
 
