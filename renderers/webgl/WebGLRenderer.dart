@@ -15,8 +15,6 @@ List<RenderingContext> glContexts = [];
 class WebGLRenderer {
 
 
-  int type = WEBGL_RENDERER;
-
   // do a catch.. only 1 webGL renderer..
   /**
        * Whether the render view is transparent
@@ -60,7 +58,7 @@ class WebGLRenderer {
 
   int glContextId;
 
-  static int _globalGlContextId;
+  static int _globalGlContextId = 0;
 
   Point projection = new Point();
 
@@ -163,11 +161,11 @@ class WebGLRenderer {
     RenderingContext gl = this.gl;
     this.glContextId = WebGLRenderer._globalGlContextId++;
 
-    glContexts[this.glContextId] = gl;
+    glContexts.add(gl);
 
-    if (blendModesWebGL == []) {
+    if (blendModesWebGL.isEmpty) {
       blendModesWebGL = [];
-
+      /*
       blendModesWebGL[blendModes['NORMAL']] = [RenderingContext.ONE,
           RenderingContext.ONE_MINUS_SRC_ALPHA];
       blendModesWebGL[blendModes['ADD']] = [RenderingContext.SRC_ALPHA,
@@ -202,6 +200,42 @@ class WebGLRenderer {
           RenderingContext.ONE_MINUS_SRC_ALPHA];
       blendModesWebGL[blendModes['LUMINOSITY']] = [RenderingContext.ONE,
           RenderingContext.ONE_MINUS_SRC_ALPHA];
+          */
+      
+      blendModesWebGL.addAll([[RenderingContext.ONE,
+                RenderingContext.ONE_MINUS_SRC_ALPHA],
+               [RenderingContext.SRC_ALPHA,
+                RenderingContext.DST_ALPHA],
+              [RenderingContext.DST_COLOR,
+                RenderingContext.ONE_MINUS_SRC_ALPHA],
+              [RenderingContext.SRC_ALPHA,
+                RenderingContext.ONE],
+             [RenderingContext.ONE,
+                RenderingContext.ONE_MINUS_SRC_ALPHA],
+              [RenderingContext.ONE,
+                RenderingContext.ONE_MINUS_SRC_ALPHA],
+              [RenderingContext.ONE,
+                RenderingContext.ONE_MINUS_SRC_ALPHA],
+              [RenderingContext.ONE,
+                RenderingContext.ONE_MINUS_SRC_ALPHA],
+              [RenderingContext.ONE,
+                RenderingContext.ONE_MINUS_SRC_ALPHA],
+              [RenderingContext.ONE,
+                RenderingContext.ONE_MINUS_SRC_ALPHA],
+              [RenderingContext.ONE,
+                RenderingContext.ONE_MINUS_SRC_ALPHA],
+              [RenderingContext.ONE,
+                RenderingContext.ONE_MINUS_SRC_ALPHA],
+              [RenderingContext.ONE,
+                RenderingContext.ONE_MINUS_SRC_ALPHA],
+              [RenderingContext.ONE,
+                RenderingContext.ONE_MINUS_SRC_ALPHA],
+              [RenderingContext.ONE,
+                RenderingContext.ONE_MINUS_SRC_ALPHA],
+              [RenderingContext.ONE,
+                RenderingContext.ONE_MINUS_SRC_ALPHA],
+              [RenderingContext.ONE,
+                RenderingContext.ONE_MINUS_SRC_ALPHA]]);
     }
 
 

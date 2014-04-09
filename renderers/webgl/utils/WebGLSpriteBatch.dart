@@ -73,7 +73,7 @@ class WebGLSpriteBatch {
  * @param gl {WebGLContext} the current WebGL drawing context
  *
  */
-  WebGLSpriteBatch(RenderingContextgl) {
+  WebGLSpriteBatch(RenderingContext gl) {
 
 
     //the total number of floats in our batch

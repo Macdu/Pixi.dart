@@ -415,8 +415,8 @@ class WebGLFilterManager {
     gl.bindBuffer(ARRAY_BUFFER, this.uvBuffer);
     gl.bufferData(ARRAY_BUFFER, this.uvArray, STATIC_DRAW);
 
-    this.colorArray = new Float32List.fromList([1.0, 0xFFFFFF, 1.0, 0xFFFFFF,
-        1.0, 0xFFFFFF, 1.0, 0xFFFFFF]);
+    this.colorArray = new Float32List.fromList([1.0, 0xFFFFFF.toDouble(), 1.0, 0xFFFFFF.toDouble(),
+        1.0, 0xFFFFFF.toDouble(), 1.0, 0xFFFFFF.toDouble()]);
 
     gl.bindBuffer(ARRAY_BUFFER, this.colorBuffer);
     gl.bufferData(ARRAY_BUFFER, this.colorArray, STATIC_DRAW);

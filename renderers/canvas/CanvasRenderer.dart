@@ -105,47 +105,87 @@ class CanvasRenderer {
   CanvasRenderer([int width = 800, int height = 600, CanvasElement view = null, bool this.transparent = false]) {
     defaultRenderer = (defaultRenderer != null) ? defaultRenderer : this;
 
+    if(view == null)view = new CanvasElement();
 
-
-    if (blendModesCanvas == []) {
+    if (blendModesCanvas.isEmpty) {
 
       if (canUseNewCanvasBlendModes()) {
-        blendModesCanvas[blendModes['NORMAL']] = "source-over";
-        blendModesCanvas[blendModes['ADD']] = "lighter"; //IS THIS OK???
-        blendModesCanvas[blendModes['MULTIPLY']] = "multiply";
-        blendModesCanvas[blendModes['SCREEN']] = "screen";
-        blendModesCanvas[blendModes['OVERLAY']] = "overlay";
-        blendModesCanvas[blendModes['DARKEN']] = "darken";
-        blendModesCanvas[blendModes['LIGHTEN']] = "lighten";
-        blendModesCanvas[blendModes['COLOR_DODGE']] = "color-dodge";
-        blendModesCanvas[blendModes['COLOR_BURN']] = "color-burn";
-        blendModesCanvas[blendModes['HARD_LIGHT']] = "hard-light";
-        blendModesCanvas[blendModes['SOFT_LIGHT']] = "soft-light";
-        blendModesCanvas[blendModes['DIFFERENCE']] = "difference";
-        blendModesCanvas[blendModes['EXCLUSION']] = "exclusion";
-        blendModesCanvas[blendModes['HUE']] = "hue";
-        blendModesCanvas[blendModes['SATURATION']] = "saturation";
-        blendModesCanvas[blendModes['COLOR']] = "color";
-        blendModesCanvas[blendModes['LUMINOSITY']] = "luminosity";
+        /*
+          blendModesCanvas[blendModes['NORMAL']] = "source-over";
+          blendModesCanvas[blendModes['ADD']] = "lighter"; //IS THIS OK???
+          blendModesCanvas[blendModes['MULTIPLY']] = "multiply";
+          blendModesCanvas[blendModes['SCREEN']] = "screen";
+          blendModesCanvas[blendModes['OVERLAY']] = "overlay";
+          blendModesCanvas[blendModes['DARKEN']] = "darken";
+          blendModesCanvas[blendModes['LIGHTEN']] = "lighten";
+          blendModesCanvas[blendModes['COLOR_DODGE']] = "color-dodge";
+          blendModesCanvas[blendModes['COLOR_BURN']] = "color-burn";
+          blendModesCanvas[blendModes['HARD_LIGHT']] = "hard-light";
+          blendModesCanvas[blendModes['SOFT_LIGHT']] = "soft-light";
+          blendModesCanvas[blendModes['DIFFERENCE']] = "difference";
+          blendModesCanvas[blendModes['EXCLUSION']] = "exclusion";
+          blendModesCanvas[blendModes['HUE']] = "hue";
+          blendModesCanvas[blendModes['SATURATION']] = "saturation";
+          blendModesCanvas[blendModes['COLOR']] = "color";
+          blendModesCanvas[blendModes['LUMINOSITY']] = "luminosity";
+        */
+        
+        blendModesCanvas.addAll(["source-over",
+                "lighter", //IS THIS OK???
+                "multiply",
+                "screen",
+                "overlay",
+                "darken",
+                "lighten",
+                "color-dodge",
+                "color-burn",
+                "hard-light",
+                "soft-light",
+                "difference",
+                "exclusion",
+                "hue",
+                "saturation",
+                "color",
+                "luminosity"]);       
       } else {
-        // this means that the browser does not support the cool new blend modes in canvas "cough" ie "cough"
-        blendModesCanvas[blendModes['NORMAL']] = "source-over";
-        blendModesCanvas[blendModes['ADD']] = "lighter"; //IS THIS OK???
-        blendModesCanvas[blendModes['MULTIPLY']] = "source-over";
-        blendModesCanvas[blendModes['SCREEN']] = "source-over";
-        blendModesCanvas[blendModes['OVERLAY']] = "source-over";
-        blendModesCanvas[blendModes['DARKEN']] = "source-over";
-        blendModesCanvas[blendModes['LIGHTEN']] = "source-over";
-        blendModesCanvas[blendModes['COLOR_DODGE']] = "source-over";
-        blendModesCanvas[blendModes['COLOR_BURN']] = "source-over";
-        blendModesCanvas[blendModes['HARD_LIGHT']] = "source-over";
-        blendModesCanvas[blendModes['SOFT_LIGHT']] = "source-over";
-        blendModesCanvas[blendModes['DIFFERENCE']] = "source-over";
-        blendModesCanvas[blendModes['EXCLUSION']] = "source-over";
-        blendModesCanvas[blendModes['HUE']] = "source-over";
-        blendModesCanvas[blendModes['SATURATION']] = "source-over";
-        blendModesCanvas[blendModes['COLOR']] = "source-over";
-        blendModesCanvas[blendModes['LUMINOSITY']] = "source-over";
+        /*
+          // this means that the browser does not support the cool new blend modes in canvas "cough" ie "cough"
+          blendModesCanvas[blendModes['NORMAL']] = "source-over";
+          blendModesCanvas[blendModes['ADD']] = "lighter"; //IS THIS OK???
+          blendModesCanvas[blendModes['MULTIPLY']] = "source-over";
+          blendModesCanvas[blendModes['SCREEN']] = "source-over";
+          blendModesCanvas[blendModes['OVERLAY']] = "source-over";
+          blendModesCanvas[blendModes['DARKEN']] = "source-over";
+          blendModesCanvas[blendModes['LIGHTEN']] = "source-over";
+          blendModesCanvas[blendModes['COLOR_DODGE']] = "source-over";
+          blendModesCanvas[blendModes['COLOR_BURN']] = "source-over";
+          blendModesCanvas[blendModes['HARD_LIGHT']] = "source-over";
+          blendModesCanvas[blendModes['SOFT_LIGHT']] = "source-over";
+          blendModesCanvas[blendModes['DIFFERENCE']] = "source-over";
+          blendModesCanvas[blendModes['EXCLUSION']] = "source-over";
+          blendModesCanvas[blendModes['HUE']] = "source-over";
+          blendModesCanvas[blendModes['SATURATION']] = "source-over";
+          blendModesCanvas[blendModes['COLOR']] = "source-over";
+          blendModesCanvas[blendModes['LUMINOSITY']] = "source-over";
+        */
+        
+        blendModesCanvas.addAll(["source-over",
+                "lighter", //IS THIS OK???
+                "source-over",
+                "source-over",
+                "source-over",
+                "source-over",
+                "source-over",
+                "source-over",
+                "source-over",
+                "source-over",
+                "source-over",
+                "source-over",
+                "source-over",
+                "source-over",
+                "source-over",
+                "source-over",
+                "source-over"]);     
       }
     }
     this.width = width;

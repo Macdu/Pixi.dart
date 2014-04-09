@@ -295,13 +295,13 @@ abstract class DisplayObject {
 
   double _rotationCache = null;
 
-  bool _mouseIsDown;
+  bool _mouseIsDown = false;
 
-  bool _hit;
+  bool _hit = false;
 
-  bool _isDown;
+  bool _isDown = false;
 
-  bool _isOver;
+  bool _isOver = false;
 
   InteractionData _touchData;
 

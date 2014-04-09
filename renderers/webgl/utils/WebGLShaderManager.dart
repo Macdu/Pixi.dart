@@ -6,8 +6,8 @@ part of pixi;
 class WebGLShaderManager {
 
   int maxAttibs = 10;
-  List<bool> attribState = [];
-  List<bool> tempAttribState = [];
+  List<bool> attribState = new List(10);
+  List<bool> tempAttribState = new List(10);
 
   RenderingContext gl;
 
@@ -30,7 +30,7 @@ class WebGLShaderManager {
 */
   WebGLShaderManager(RenderingContext gl) {
 
-    for (var i = 0; i < this.maxAttibs; i++) {
+    for (int i = 0; i < this.maxAttibs; i++) {
       this.attribState[i] = false;
     }
 

@@ -37,7 +37,7 @@ class PixiShader {
 
   List attributes = [];
 
-  Map<String,dynamic> uniforms;
+  Map<String,dynamic> uniforms = {};
 
   // get and store the uniforms for the shader
   UniformLocation uSampler, projectionVector, offsetVector, dimensions;
@@ -98,7 +98,6 @@ class PixiShader {
 
     // End worst hack eva //
 
-    this.uniforms["uniformLoacations"] = new Map<String,UniformLocation>();
     // add those custom shaders!
     this.uniforms.forEach((String key,Map uniform){
       // get the uniform locations..

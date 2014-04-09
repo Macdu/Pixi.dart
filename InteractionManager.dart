@@ -276,7 +276,7 @@ class InteractionManager {
         if (!item.interactiveChildren) over = true;
 
         if (!item._isOver) {
-          if (item.mouseover) item.mouseover(this.mouse);
+          item.mouseover(this.mouse);
           item._isOver = true;
         }
       } else {
@@ -452,7 +452,7 @@ class InteractionManager {
     interactionData.target = item;
 
     //a sprite or display object with a hit area defined
-    if (item.hitArea && item.hitArea.contains) {
+    if (item.hitArea != null) {
       if (item.hitArea.contains(x, y)) {
         //if(isSprite)
         interactionData.target = item;

@@ -123,7 +123,7 @@ class Stage extends DisplayObjectContainer {
   void setBackgroundColor(int backgroundColor) {
     this.backgroundColor = backgroundColor;
     this.backgroundColorSplit = hex2rgb(this.backgroundColor);
-    var hex = this.backgroundColor.toStringAsPrecision(16);
+    var hex = this.backgroundColor.toRadixString(16);
     hex = '000000'.substring(0, 6 - hex.length) + hex;
     this.backgroundColorString = '#' + hex;
   }

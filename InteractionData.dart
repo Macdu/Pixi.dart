@@ -29,7 +29,8 @@ class InteractionData {
        * @property target
        * @type Sprite
        */
-  Sprite target = null;
+  DisplayObjectContainer target = null;
+  //Sprite target = null;
 
   /**
        * When passed to an event handler, this will be the original DOM Event that was captured
