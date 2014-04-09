@@ -186,8 +186,8 @@ class Text extends Sprite {
   void updateTexture() {
     this.texture.baseTexture.width = this.canvas.width;
     this.texture.baseTexture.height = this.canvas.height;
-    this.texture.frame.width = this.canvas.width;
-    this.texture.frame.height = this.canvas.height;
+    this.texture.frame.width = this.canvas.width.toDouble();
+    this.texture.frame.height = this.canvas.height.toDouble();
 
     this._width = this.canvas.width.toDouble();
     this._height = this.canvas.height.toDouble();
@@ -202,10 +202,10 @@ class Text extends Sprite {
 * @param renderSession {RenderSession} 
 * @private
 */
-  void _renderWebGL(Map renderSession) {
+  void _renderWebGL(RenderSession renderSession) {
     if (this.requiresUpdate) {
       this.requiresUpdate = false;
-      updateWebGLTexture(this.texture.baseTexture, renderSession['gl']);
+      WebGLRenderer.updateWebGLTexture(this.texture, renderSession.gl);
     }
 
     super._renderWebGL(renderSession);

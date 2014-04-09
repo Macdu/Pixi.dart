@@ -108,7 +108,7 @@ class SpriteBatch extends DisplayObjectContainer {
       if (child.rotation % (Math.PI * 2) == 0) {
 
         // this is the fastest  way to optimise! - if rotation is 0 then we can avoid any kind of setTransform call
-        context.drawImage(texture.baseTexture.source, frame.x, frame.y, frame.width, frame.height, (((child as Sprite).anchor.x) * (-frame.width * child.scale.x) + child.position.x + 0.5) /*| 0*/, (((child as Sprite).anchor.y) * (-frame.height * child.scale.y) + child.position.y + 0.5) /*| 0*/, frame.width * child.scale.x, frame.height * child.scale.y);
+        context.drawImageScaledFromSource(texture.baseTexture.source as CanvasImageSource, frame.x, frame.y, frame.width, frame.height, (((child as Sprite).anchor.x) * (-frame.width * child.scale.x) + child.position.x + 0.5) /*| 0*/, (((child as Sprite).anchor.y) * (-frame.height * child.scale.y) + child.position.y + 0.5) /*| 0*/, frame.width * child.scale.x, frame.height * child.scale.y);
       } else {
         child.updateTransform();
 
@@ -128,7 +128,7 @@ class SpriteBatch extends DisplayObjectContainer {
 
         context.setTransform(a, c, b, d, child.position.x, child.position.y);
 
-        context.drawImage(texture.baseTexture.source, frame.x, frame.y, frame.width, frame.height, (((child as Sprite).anchor.x) * (-frame.width) + 0.5) /*| 0*/, (((child as Sprite).anchor.y) * (-frame.height) + 0.5) /*| 0*/, frame.width, frame.height);
+        context.drawImageScaledFromSource(texture.baseTexture.source as CanvasImageSource, frame.x, frame.y, frame.width, frame.height, (((child as Sprite).anchor.x) * (-frame.width) + 0.5) /*| 0*/, (((child as Sprite).anchor.y) * (-frame.height) + 0.5) /*| 0*/, frame.width, frame.height);
 
       }
     }

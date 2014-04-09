@@ -236,7 +236,7 @@ class BaseTexture extends EventTarget {
  */
   BaseTexture.fromCanvas(CanvasElement canvas, [int scaleMode = 0]) {
     if (!canvas.attributes.containsKey("_pixiId")) {
-      canvas.attributes['_pixiId'] = 'canvas_' + TextureCacheIdGenerator++;
+      canvas.attributes['_pixiId'] = 'canvas_' + (TextureCacheIdGenerator++).toString();
     }
 
     BaseTexture baseTexture = BaseTextureCache[canvas.attributes['_pixiId']];
