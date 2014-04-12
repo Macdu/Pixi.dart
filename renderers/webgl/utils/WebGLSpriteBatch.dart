@@ -301,15 +301,15 @@ class WebGLSpriteBatch {
     // set the textures uvs temporarily
     // TODO create a separate texture so that we can tile part of a texture
 
-    if (tilingSprite.texture._uvs == null) tilingSprite.texture._uvs = new TextureUvs();
+    if (tilingSprite._uvs == null) tilingSprite._uvs = new TextureUvs();
 
-    TextureUvs uvs = tilingSprite.texture._uvs;
+    TextureUvs uvs = tilingSprite._uvs;
 
     tilingSprite.tilePosition.x %= texture.baseTexture.width;
     tilingSprite.tilePosition.y %= texture.baseTexture.height;
 
-    int offsetX = tilingSprite.tilePosition.x ~/ texture.baseTexture.width;
-    int offsetY = tilingSprite.tilePosition.y ~/ texture.baseTexture.height;
+    double offsetX = tilingSprite.tilePosition.x / texture.baseTexture.width;
+    double offsetY = tilingSprite.tilePosition.y / texture.baseTexture.height;
 
     double scaleX = (tilingSprite.width / texture.baseTexture.width) / (tilingSprite.tileScale.x * tilingSprite.tileScaleOffset.x);
     double scaleY = (tilingSprite.height / texture.baseTexture.height) / (tilingSprite.tileScale.y * tilingSprite.tileScaleOffset.y);

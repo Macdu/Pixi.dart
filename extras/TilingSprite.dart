@@ -58,6 +58,8 @@ class TilingSprite extends Sprite {
        * @default 0xFFFFFF
        */
   int tint = 0xFFFFFF;
+  
+  TextureUvs _uvs;
 
   /**
        * The blend mode to be applied to the sprite
@@ -68,15 +70,21 @@ class TilingSprite extends Sprite {
        */
   int blendMode = blendModes['NORMAL'];
 
-  var tilingTexture;
+  Texture tilingTexture;
 
   var __tilePattern;
 
 
-  TilingSprite(texture, [width = 100.0, height = 100.0]): super(texture) {
-    super.width = width;
-    super.height = height;
+  TilingSprite(Texture texture, [double width = 100.0,double height = 100.0]): super(texture) {
+    this.width = width;
+    this.height = height;
   }
+  
+  double get width => this._width;
+    set width(double value) => this._width = value;
+    
+  double get height => this._height;
+      set height(double value) => this._height = value;
 
 
   /**
@@ -180,11 +188,11 @@ class TilingSprite extends Sprite {
     context.setTransform(transform.a, transform.c, transform.b, transform.d, transform.tx, transform.ty);
 
 
-    if (!this.__tilePattern) {
+    if (this.__tilePattern == null) {
       this.generateTilingTexture(false);
 
-      if (this.tilingTexture) {
-        this.__tilePattern = context.createPattern(this.tilingTexture.baseTexture.source, 'repeat');
+      if (this.tilingTexture != null) {
+        this.__tilePattern = context.createPatternFromImage(this.tilingTexture.baseTexture.source, 'repeat');
       }
 
     }
@@ -310,14 +318,14 @@ class TilingSprite extends Sprite {
 
     if (!texture.baseTexture.hasLoaded) return;
 
-    var baseTexture = texture.baseTexture;
-    var frame = texture.frame;
+    BaseTexture baseTexture = texture.baseTexture;
+    Rectangle frame = texture.frame;
 
     double targetWidth, targetHeight;
 
     // check that the frame is the same size as the base texture.
 
-    var isFrame = frame.width != baseTexture.width || frame.height != baseTexture.height;
+    bool isFrame = frame.width != baseTexture.width || frame.height != baseTexture.height;
 
     this.tilingTexture = texture;
 

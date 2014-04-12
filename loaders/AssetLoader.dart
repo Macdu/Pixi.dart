@@ -29,6 +29,10 @@ class AssetLoader extends EventTarget {
   bool crossorigin;
 
   int loadCount = 0;
+  
+  Function onProgress = (EventTarget target){};
+  
+  Function onComplete = (EventTarget target){};
 
   /**
          * Maps file extension to loader types
@@ -74,7 +78,7 @@ class AssetLoader extends EventTarget {
    *      data formats include 'xml' and 'fnt'.
    * @param crossorigin {Boolean} Whether requests should be treated as crossorigin
    */
-  AssetLoader(List<String> this.assetURLs, this.crossorigin);
+  AssetLoader(List<String> this.assetURLs, {this.crossorigin : false});
 
   /**
    * Fired when an item has loaded
@@ -125,7 +129,7 @@ class AssetLoader extends EventTarget {
   void load() {
 
     onLoad(evt) {
-      this._onAssetLoaded(evt.loader);
+      this._onAssetLoaded(evt['loader']);
     }
 
     this.loadCount = this.assetURLs.length;
@@ -139,7 +143,7 @@ class AssetLoader extends EventTarget {
       if (fileType == null) fileType = fileName.split('?').removeAt(0).split('.').last.toLowerCase();
 
 
-      EventTarget loader = this.loadersByType(fileName ,fileType, this.crossorigin);
+      EventTarget loader = this.loadersByType(fileType ,fileName, this.crossorigin);
 
       loader.listen('loaded', onLoad);
       loader.load();
@@ -159,14 +163,14 @@ class AssetLoader extends EventTarget {
       'content': this,
       'loader': loader
     });
-    //if (this.onProgress) this.onProgress(loader);
+    this.onProgress(loader);
 
     if (this.loadCount == null) {
       this.fire({
         'type': 'onComplete',
         'content': this
       });
-      //if (this.onComplete) this.onComplete();
+      this.onComplete();
     }
   }
 

@@ -97,30 +97,30 @@ class JsonLoader extends EventTarget {
           // sprite sheet
           String textureUrl = this.baseUrl + this.json['meta']['image'];
           ImageLoader image = new ImageLoader(textureUrl, this.crossorigin);
-          var frameData = this.json['frames'];
+          Map frameData = this.json['frames'];
 
           this.texture = image.texture;
           image.listen('loaded', this.onLoaded);
 
-          for (int i = 0; i < frameData.length; i++) {
-            Map rect = frameData[i]['frame'];
+          frameData.forEach((String key, Map element){
+            Map<String,int> rect = element['frame'];
             if (rect != null) {
-              TextureCache[i] = new Texture(this.texture.baseTexture, new Rectangle(
-                  rect['x'], rect['y'], rect['w'], rect['h']
+              TextureCache[key] = new Texture(this.texture.baseTexture, new Rectangle(
+                  rect['x'].toDouble(), rect['y'].toDouble(), rect['w'].toDouble(), rect['h'].toDouble()
               ));
 
               // check to see if the sprite has been trimmed..
-              if (frameData[i]['trimmed']) {
+              if (frameData[key]['trimmed']) {
 
-                Texture texture = TextureCache[i];
+                Texture texture = TextureCache[key];
 
-                Map actualSize = frameData[i]['sourceSize'];
-                Map realSize = frameData[i]['spriteSourceSize'];
+                Map actualSize = element['sourceSize'];
+                Map realSize = element['spriteSourceSize'];
 
                 texture.trim = new Rectangle(realSize['x'], realSize['y'], actualSize['w'], actualSize['h']);
               }
             }
-          }
+          });
 
           image.load();
 
