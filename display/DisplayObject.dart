@@ -207,14 +207,14 @@ abstract class DisplayObject {
      * @method click
      * @param interactionData {InteractionData}
      */
-  void click(InteractionData interactionData) {}
+  Function click = (InteractionData interactionData) {};
 
   /**
      * A callback that is used when the user clicks the mouse down over the sprite
      * @method mousedown
      * @param interactionData {InteractionData}
      */
-  void mousedown(InteractionData interactionData) {}
+  Function mousedown = (InteractionData interactionData) {};
 
   /**
      * A callback that is used when the user releases the mouse that was over the displayObject
@@ -222,7 +222,7 @@ abstract class DisplayObject {
      * @method mouseup
      * @param interactionData {InteractionData}
      */
-  void mouseup(InteractionData interactionData) {}
+  Function mouseup = (InteractionData interactionData) {};
 
   /**
      * A callback that is used when the user releases the mouse that was over the displayObject but is no longer over the displayObject
@@ -230,26 +230,26 @@ abstract class DisplayObject {
      * @method mouseupoutside
      * @param interactionData {InteractionData}
      */
-  void mouseupoutside(InteractionData interactionData) {}
+  Function mouseupoutside = (InteractionData interactionData) {};
 
   /**
      * A callback that is used when the users mouse rolls over the displayObject
      * @method mouseover
      * @param interactionData {InteractionData}
      */
-  void mouseover(InteractionData interactionData) {}
+  Function mouseover = (InteractionData interactionData) {};
 
   /**
      * A callback that is used when the users mouse leaves the displayObject
      * @method mouseout
      * @param interactionData {InteractionData}
      */
-  void mouseout(InteractionData interactionData) {}
+  Function mouseout = (InteractionData interactionData) {};
 
   /**
      * A callback that is used when the users mouse moves
      */
-  void mousemove(InteractionData interactionData) {}
+  Function mousemove = (InteractionData interactionData) {};
 
 
   /*
@@ -262,21 +262,21 @@ abstract class DisplayObject {
      * @method tap
      * @param interactionData {InteractionData}
      */
-  void tap(InteractionData interactionData) {}
+  Function tap = (InteractionData interactionData) {};
 
   /**
      * A callback that is used when the user touches over the displayObject
      * @method touchstart
      * @param interactionData {InteractionData}
      */
-  void touchstart(InteractionData interactionData) {}
+  Function touchstart = (InteractionData interactionData) {};
 
   /**
      * A callback that is used when the user releases a touch over the displayObject
      * @method touchend
      * @param interactionData {InteractionData}
      */
-  void touchend(InteractionData interactionData) {}
+  Function touchend = (InteractionData interactionData) {};
 
   /**
      * A callback that is used when the user releases the touch that was over the displayObject
@@ -284,9 +284,9 @@ abstract class DisplayObject {
      * @method touchendoutside
      * @param interactionData {InteractionData}
      */
-  void touchendoutside(InteractionData interactionData) {}
+  Function touchendoutside = (InteractionData interactionData) {};
 
-  void touchmove(InteractionData interactionData) {}
+  Function touchmove = (InteractionData interactionData) {};
 
   List _filters;
 
