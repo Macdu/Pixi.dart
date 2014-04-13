@@ -15,7 +15,7 @@ part of pixi;
  * @param url {String} The url of the sprite sheet JSON file
  * @param crossorigin {Boolean} Whether requests should be treated as crossorigin
  */
-class BitmapFontLoader extends EventTarget {
+class BitmapFontLoader extends Loader {
 
   String url;
 

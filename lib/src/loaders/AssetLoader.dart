@@ -40,7 +40,7 @@ class AssetLoader extends EventTarget {
          * @property loadersByType
          * @type Object
          */
-  EventTarget loadersByType(String type,String name ,bool crossorigin) {
+  Loader loadersByType(String type,String name ,bool crossorigin) {
 
     switch (type) {
       case 'jpg':
@@ -128,7 +128,7 @@ class AssetLoader extends EventTarget {
    */
   void load() {
 
-    onLoad(evt) {
+    onLoad(Map evt) {
       this._onAssetLoaded(evt['loader']);
     }
 
@@ -143,7 +143,7 @@ class AssetLoader extends EventTarget {
       if (fileType == null) fileType = fileName.split('?').removeAt(0).split('.').last.toLowerCase();
 
 
-      EventTarget loader = this.loadersByType(fileType ,fileName, this.crossorigin);
+      Loader loader = this.loadersByType(fileType ,fileName, this.crossorigin);
 
       loader.listen('loaded', onLoad);
       loader.load();
@@ -156,7 +156,7 @@ class AssetLoader extends EventTarget {
    * @method onAssetLoaded
    * @private
    */
-  void _onAssetLoaded(EventTarget loader) {
+  void _onAssetLoaded(Loader loader) {
     this.loadCount--;
     this.fire({
       'type': 'onProgress',

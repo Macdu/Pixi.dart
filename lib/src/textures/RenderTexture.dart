@@ -59,7 +59,7 @@ class RenderTexture extends EventTarget {
   BaseTexture baseTexture = new BaseTexture();
 
   // each render texture can only belong to one renderer at the moment if its webGL
-  var renderer;
+  Renderer renderer;
 
   var textureBuffer;
 
@@ -73,7 +73,7 @@ class RenderTexture extends EventTarget {
  * @param width {Number} The width of the render texture
  * @param height {Number} The height of the render texture
  */
-  RenderTexture([int width = 100, int height = 100, renderer = null]) {
+  RenderTexture([int width = 100, int height = 100,Renderer renderer = null]) {
 
     /**
      * The with of the render texture
@@ -163,8 +163,8 @@ class RenderTexture extends EventTarget {
  * @private
  */
   void renderWebGL(DisplayObjectContainer displayObject, [Point position = null, bool clear = false]) {
-    //TOOD replace position with matrix..
-    RenderingContext gl = this.renderer.gl;
+    //TODO replace position with matrix..
+    RenderingContext gl = (this.renderer as WebGLRenderer).gl;
 
     gl.colorMask(true, true, true, true);
 
@@ -198,7 +198,7 @@ class RenderTexture extends EventTarget {
     WebGLRenderer.updateTextures();
 
     //
-    this.renderer.renderDisplayObject(displayObject, this.projection, this.textureBuffer.frameBuffer);
+    (this.renderer as WebGLRenderer).renderDisplayObject(displayObject, this.projection, this.textureBuffer.frameBuffer);
 
     displayObject.worldTransform = originalWorldTransform;
   }
@@ -231,7 +231,7 @@ class RenderTexture extends EventTarget {
 
     CanvasRenderingContext2D context = this.textureBuffer.context;
 
-    this.renderer.renderDisplayObject(displayObject, context);
+    (this.renderer as CanvasRenderer).renderDisplayObject(displayObject, context);
 
     context.setTransform(1, 0, 0, 1, 0, 0);
   }

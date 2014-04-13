@@ -13,7 +13,7 @@ part of pixi;
  * @param {String} url the url of the JSON file
  * @param {Boolean} crossorigin
  */
-class AtlasLoader extends EventTarget {
+class AtlasLoader extends Loader {
 
   String url;
 

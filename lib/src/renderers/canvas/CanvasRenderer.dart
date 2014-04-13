@@ -7,7 +7,7 @@ part of pixi;
  * the CanvasRenderer draws the stage and all its content onto a 2d canvas. This renderer should be used for browsers that do not support webGL.
  * Dont forget to add the view to your DOM or you will not see anything :)
  */
-class CanvasRenderer {
+class CanvasRenderer extends Renderer{
 
   int type = CANVAS_RENDERER;
 
@@ -59,13 +59,6 @@ class CanvasRenderer {
            */
   int height;
 
-  /**
-           * The canvas element that everything is drawn to
-           *
-           * @property view
-           * @type HTMLCanvasElement
-           */
-  CanvasElement view;
 
   /**
            * The canvas 2d context that everything is drawn with

@@ -14,7 +14,7 @@ part of pixi;
  * @param url {String} The url of the image
  * @param crossorigin {Boolean} Whether requests should be treated as crossorigin
  */
-class ImageLoader extends EventTarget {
+class ImageLoader extends Loader {
 
   Texture texture;
 

@@ -22,7 +22,7 @@ part of pixi;
  * @param url {String} The url of the JSON file
  * @param crossorigin {Boolean} Whether requests should be treated as crossorigin
  */
-class SpineLoader extends EventTarget {
+class SpineLoader extends Loader {
 
   String url;
 

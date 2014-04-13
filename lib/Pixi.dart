@@ -49,6 +49,7 @@ part 'src/filters/SmartBlurFilter.dart';
 part 'src/filters/TwistFilter.dart';
 
 part 'src/loaders/AssetLoader.dart';
+part 'src/loaders/Loader.dart';
 part 'src/loaders/AtlasLoader.dart';
 part 'src/loaders/BitmapFontLoader.dart';
 part 'src/loaders/ImageLoader.dart';
@@ -58,6 +59,7 @@ part 'src/loaders/SpriteSheetLoader.dart';
 
 part 'src/primitives/Graphics.dart';
 
+part 'src/renderers/Renderer.dart';
 part 'src/renderers/RenderSession.dart';
 
 part 'src/renderers/canvas/CanvasRenderer.dart';

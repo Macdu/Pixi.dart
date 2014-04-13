@@ -12,7 +12,7 @@ List<RenderingContext> glContexts = [];
  * So no need for Sprite Batch's or Sprite Cloud's
  * Dont forget to add the view to your DOM or you will not see anything :)
  */
-class WebGLRenderer {
+class WebGLRenderer extends Renderer{
 
 
   // do a catch.. only 1 webGL renderer..
@@ -44,13 +44,6 @@ class WebGLRenderer {
        */
   int height;
 
-  /**
-       * The canvas element that everything is drawn to
-       *
-       * @property view
-       * @type HTMLCanvasElement
-       */
-  CanvasElement view;
 
   Map<String, bool> options = {};
 

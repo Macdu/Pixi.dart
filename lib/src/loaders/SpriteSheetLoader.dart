@@ -18,7 +18,7 @@ part of pixi;
  * @param url {String} The url of the sprite sheet JSON file
  * @param crossorigin {Boolean} Whether requests should be treated as crossorigin
  */
-class SpriteSheetLoader extends EventTarget {
+class SpriteSheetLoader extends Loader {
 
 
   String url;
@@ -88,7 +88,7 @@ class SpriteSheetLoader extends EventTarget {
  *
  * @method load
  */
-  void load([_]) {
+  void load() {
     JsonLoader jsonLoader = new JsonLoader(this.url, this.crossorigin);
     jsonLoader.listen('loaded', (Map event) {
       this.json = event['content'].json;
