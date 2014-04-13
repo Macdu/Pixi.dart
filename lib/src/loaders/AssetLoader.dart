@@ -165,7 +165,7 @@ class AssetLoader extends EventTarget {
     });
     this.onProgress(loader);
 
-    if (this.loadCount == null) {
+    if (this.loadCount <= 0) {
       this.fire({
         'type': 'onComplete',
         'content': this
