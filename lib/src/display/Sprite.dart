@@ -36,6 +36,8 @@ class Sprite extends DisplayObjectContainer {
      * @type Texture
      */
   Texture texture;
+  
+  TextureUvs _uvs;
 
   /**
      * The width of the sprite (this is initially set by the texture)
@@ -257,7 +259,7 @@ class Sprite extends DisplayObjectContainer {
 
     // do a quick check to see if this element has a mask or a filter.
     if (this._mask != null || this._filters != null) {
-      var spriteBatch = renderSession.spriteBatch;
+      WebGLSpriteBatch spriteBatch = renderSession.spriteBatch;
 
       if (this._mask != null) {
         spriteBatch.stop();
@@ -404,7 +406,8 @@ class Sprite extends DisplayObjectContainer {
    * @return {Sprite} A new Sprite using a texture from the texture cache matching the frameId
    */
   static Sprite fromFrame(String frameId) {
-    var texture = TextureCache[frameId];
+    //var texture = TextureCache[frameId];
+    Texture texture = new Texture.fromFrame(frameId);
     if (texture == null) throw new Exception('The frameId "' + frameId + '" does not exist in the texture cache');
     return new Sprite(texture);
   }

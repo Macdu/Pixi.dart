@@ -58,8 +58,6 @@ class TilingSprite extends Sprite {
        * @default 0xFFFFFF
        */
   int tint = 0xFFFFFF;
-  
-  TextureUvs _uvs;
 
   /**
        * The blend mode to be applied to the sprite

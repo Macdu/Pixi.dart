@@ -185,7 +185,7 @@ class WebGLSpriteBatch {
     }
 
     // get the uvs for the texture
-    var uvs = sprite.texture._uvs;
+    TextureUvs uvs = (sprite._uvs != null) ? sprite._uvs : sprite.texture._uvs;
     // if the uvs have not updated then no point rendering just yet!
     if (uvs == null) return;
 
@@ -195,8 +195,8 @@ class WebGLSpriteBatch {
 
     Float32List verticies = this.vertices;
 
-    int width = sprite.texture.frame.width.toInt();
-    int height = sprite.texture.frame.height.toInt();
+    double width = sprite.texture.frame.width;
+    double height = sprite.texture.frame.height;
 
     // TODO trim??
     double aX = sprite.anchor.x;
