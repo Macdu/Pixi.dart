@@ -36,7 +36,7 @@ class Sprite extends DisplayObjectContainer {
      * @type Texture
      */
   Texture texture;
-  
+
   TextureUvs _uvs;
 
   /**
@@ -170,7 +170,7 @@ class Sprite extends DisplayObjectContainer {
   * @param matrix {Matrix} the transformation matrix of the sprite
   * @return {Rectangle} the framing rectangle
   */
-  Rectangle getBounds({Matrix matrix : null}) {
+  Rectangle getBounds({Matrix matrix: null}) {
 
     if (matrix == null) matrix = this.worldTransform;
 
@@ -405,10 +405,9 @@ class Sprite extends DisplayObjectContainer {
    * @param frameId {String} The frame Id of the texture in the cache
    * @return {Sprite} A new Sprite using a texture from the texture cache matching the frameId
    */
-  static Sprite fromFrame(String frameId) {
-    //var texture = TextureCache[frameId];
+  factory Sprite.fromFrame(String frameId) {
     Texture texture = new Texture.fromFrame(frameId);
-    if (texture == null) throw new Exception('The frameId "' + frameId + '" does not exist in the texture cache');
+    if (texture == null) throw new Exception('The frameId "' + frameId.toString() + '" does not exist in the texture cache' /*+ this*/);
     return new Sprite(texture);
   }
 
@@ -422,7 +421,7 @@ class Sprite extends DisplayObjectContainer {
    * @param imageId {String} The image url of the texture
    * @return {Sprite} A new Sprite using a texture from the texture cache matching the image id
    */
-  static Sprite fromImage(String imageId, crossorigin, scaleMode) {
+  factory Sprite.fromImage(String imageId,[ bool crossorigin = true, int scaleMode = 0]) {
     Texture texture = new Texture.fromImage(imageId, crossorigin, scaleMode);
     return new Sprite(texture);
   }

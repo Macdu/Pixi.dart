@@ -19,7 +19,7 @@ class Polygon {
 
   Polygon(List points) {
     //if this is a flat list of numbers, convert it to points
-    if (points[0] is int) {
+    if (points[0] is double) {
       List p = [];
       for (int i = 0,
           il = points.length; i < il; i += 2) {
@@ -55,7 +55,7 @@ class Polygon {
    * @param y {Number} The Y coordinate of the point to test
    * @return {Boolean} Whether the x/y coordinates are within this polygon
    */
-  bool contains(int x, int y) {
+  bool contains(double x, double y) {
     bool inside = false;
 
     // use some raycasting to test hits

@@ -195,6 +195,7 @@ class BaseTexture extends EventTarget {
     this.source.src = newSrc;
   }
 
+
   /**
  * Helper function that returns a base texture based on an image url
  * If the image is not in the base texture cache it will be created and loaded
@@ -206,9 +207,10 @@ class BaseTexture extends EventTarget {
  * @param scaleMode {Number} Should be one of the PIXI.scaleMode consts
  * @return BaseTexture
  */
-  BaseTexture.fromImage(String imageUrl, bool crossorigin, [int scaleMode = 0]) {
+  factory BaseTexture.fromImage(String imageUrl,[ bool crossorigin = true, int scaleMode = 0]) {
     BaseTexture baseTexture = BaseTextureCache[imageUrl];
-    crossorigin = !crossorigin;
+
+    //if(crossorigin === undefined)crossorigin = true;
 
     if (baseTexture == null) {
       // new Image() breaks tex loading in some versions of Chrome.
@@ -218,10 +220,12 @@ class BaseTexture extends EventTarget {
         image.crossOrigin = '';
       }
       image.src = imageUrl;
-      this._load(image, scaleMode);
-      this.imageUrl = imageUrl;
-      BaseTextureCache[imageUrl] = this;
-    } else this._load(baseTexture.source, baseTexture.scaleMode);
+      baseTexture = new BaseTexture(image, scaleMode);
+      baseTexture.imageUrl = imageUrl;
+      BaseTextureCache[imageUrl] = baseTexture;
+    }
+
+    return baseTexture;
   }
 
   /**
@@ -234,19 +238,20 @@ class BaseTexture extends EventTarget {
  * @param scaleMode {Number} Should be one of the PIXI.scaleMode consts
  * @return BaseTexture
  */
-  BaseTexture.fromCanvas(CanvasElement canvas, [int scaleMode = 0]) {
+  factory BaseTexture.fromCanvas(CanvasElement canvas,[ int scaleMode = 0]) {
     if (!canvas.attributes.containsKey("_pixiId")) {
-      canvas.attributes['_pixiId'] = 'canvas_' + (TextureCacheIdGenerator++).toString();
+      canvas.attributes['_pixiId'] = 'canvas_${TextureCacheIdGenerator++}';
     }
 
     BaseTexture baseTexture = BaseTextureCache[canvas.attributes['_pixiId']];
 
     if (baseTexture == null) {
-      this._load(canvas, scaleMode);
-      BaseTextureCache[canvas.attributes['_pixiId']] = this;
+      baseTexture = new BaseTexture(canvas, scaleMode);
+      BaseTextureCache[canvas.attributes['_pixiId']] = baseTexture;
+    }
 
-    } else this._load(baseTexture.source, baseTexture.scaleMode);
-
+    return baseTexture;
   }
+
 
 }

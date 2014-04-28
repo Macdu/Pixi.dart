@@ -47,10 +47,10 @@ class Texture extends EventTarget {
   bool updateFrame = false;
 
   TextureUvs _uvs;
-  
+
   List _glTextures;
-  
-  Map<String , CanvasImageSource> tintCache = {};
+
+  Map<String, CanvasImageSource> tintCache = {};
 
   /**
  * @class Texture
@@ -63,6 +63,7 @@ class Texture extends EventTarget {
     this._load(baseTexture, frame);
   }
 
+
   /**
  * Helper function that returns a texture based on an image url
  * If the image is not in the texture cache it will be  created and loaded
@@ -74,16 +75,14 @@ class Texture extends EventTarget {
  * @param scaleMode {Number} Should be one of the PIXI.scaleMode consts
  * @return Texture
  */
-  Texture.fromImage(String imageUrl, [bool crossorigin = false, int scaleMode = 0]) {
-    Texture texture = TextureCache[imageUrl];
+  factory Texture.fromImage(String imageUrl,[ bool crossorigin = true, int scaleMode = 0]) {
 
-    if (texture == null) {
-      this._load(new BaseTexture.fromImage(imageUrl, crossorigin, scaleMode));
-      TextureCache[imageUrl] = texture;
-    } else this._load(texture.baseTexture, texture.frame);
+    if (!TextureCache.containsKey(imageUrl) || TextureCache[imageUrl] == null) {
+      TextureCache[imageUrl] = new Texture(new BaseTexture.fromImage(imageUrl, crossorigin, scaleMode));
+    }
 
+    return TextureCache[imageUrl];
   }
-
 
   /**
  * Helper function that returns a texture based on a frame id
@@ -94,13 +93,12 @@ class Texture extends EventTarget {
  * @param frameId {String} The frame id of the texture
  * @return Texture
  */
-  Texture.fromFrame(String frameId) {
-    Texture texture = TextureCache[frameId];
-    if (texture == null) throw new Exception('The frameId "' + frameId + '" does not exist in the texture cache ');
-    this._load(texture.baseTexture, texture.frame);
+  factory Texture.fromFrame(String frameId) {
+    if (!TextureCache.containsKey(frameId)) throw new Exception('The frameId "' + frameId.toString() + '" does not exist in the texture cache ');
+    //TODO change it
+    WebGLRenderer.updateTextureFrame(TextureCache[frameId]);
+    return TextureCache[frameId];
   }
-
-
 
   /**
  * Helper function that returns a texture based on a canvas element
@@ -112,7 +110,7 @@ class Texture extends EventTarget {
  * @param scaleMode {Number} Should be one of the PIXI.scaleMode consts
  * @return Texture
  */
-  Texture.fromCanvas(CanvasElement canvas, [scaleMode = 0]) {
+  Texture.fromCanvas(CanvasElement canvas,[ int scaleMode = 0]) {
     BaseTexture baseTexture = new BaseTexture.fromCanvas(canvas, scaleMode);
 
     this._load(baseTexture);
@@ -163,7 +161,7 @@ class Texture extends EventTarget {
  */
   void onBaseTextureLoaded([_]) {
     BaseTexture baseTexture = this.baseTexture;
-    
+
     if (this.noFrame) this.frame = new Rectangle(0.0, 0.0, baseTexture.width.toDouble(), baseTexture.height.toDouble());
 
     this.setFrame(this.frame);
@@ -274,4 +272,3 @@ class TextureUvs {
 
 
 }
-
