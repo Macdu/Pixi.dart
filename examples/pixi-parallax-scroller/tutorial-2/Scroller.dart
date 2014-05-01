@@ -1,4 +1,4 @@
-import '../../../lib/Pixi.dart';
+import 'package:pixi/pixi.dart';
 import 'Mid.dart';
 import 'Far.dart';
 

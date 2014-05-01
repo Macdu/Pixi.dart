@@ -538,7 +538,7 @@ class WebGLRenderer extends Renderer{
 
     int id = _getIndexFirst(gl);
 
-    if (texture._glTextures[id]) {
+    if (texture._glTextures.length - 1 >= id) {
       gl.bindTexture(RenderingContext.TEXTURE_2D, texture._glTextures[id]);
       gl.pixelStorei(RenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
 

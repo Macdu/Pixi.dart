@@ -1,5 +1,5 @@
 import 'dart:html';
-import '../../../lib/Pixi.dart';
+import 'package:pixi/pixi.dart';
 
 Stage stage;
 var renderer;

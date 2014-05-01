@@ -1,5 +1,5 @@
 import 'dart:math';
-import '../../../lib/Pixi.dart';
+import 'package:pixi/pixi.dart';
 
 class WallSpritesPool {
 
