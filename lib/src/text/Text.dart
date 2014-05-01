@@ -135,7 +135,7 @@ class Text extends Sprite {
     double maxLineWidth = 0.0;
     for (int i = 0; i < lines.length; i++) {
       double lineWidth = this.context.measureText(lines[i]).width;
-      lineWidths[i] = lineWidth;
+      lineWidths.add(lineWidth);
       maxLineWidth = Math.max(maxLineWidth, lineWidth);
     }
     this.canvas.width = (maxLineWidth + this.style['strokeThickness']).toInt();
@@ -165,11 +165,11 @@ class Text extends Sprite {
         linePosition.x += (maxLineWidth - lineWidths[i]) / 2;
       }
 
-      if (this.style['stroke'] && this.style['strokeThickness']) {
+      if (this.style['stroke'] != null && this.style['strokeThickness'] != null) {
         this.context.strokeText(lines[i], linePosition.x, linePosition.y);
       }
 
-      if (this.style['fill']) {
+      if (this.style['fill'] != null) {
         this.context.fillText(lines[i], linePosition.x, linePosition.y);
       }
     }

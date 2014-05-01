@@ -16,7 +16,7 @@ part of pixi;
  * @param [antialias=false] {Boolean} sets antialias (only applicable in webGL chrome at the moment)
  *
  */
-Renderer autoDetectRenderer([int width = 800,int height = 800,CanvasElement view = null,bool transparent = false,bool antialias = false])
+Renderer autoDetectRenderer([int width = 800,int height = 600,CanvasElement view = null,bool transparent = false,bool antialias = false])
 {
 
     // BORROWED from Mr Doob (mrdoob.com)
