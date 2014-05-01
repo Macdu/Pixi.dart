@@ -30,7 +30,7 @@ class MovieClip extends Sprite {
      * @type Number
      * @default 1
      */
-  int animationSpeed = 1;
+  double animationSpeed = 1.0;
 
   /**
      * Whether or not the movie clip repeats after playing.
@@ -57,7 +57,7 @@ class MovieClip extends Sprite {
      * @default 0
      * @readOnly
      */
-  int currentFrame = 0;
+  double currentFrame = 0.0;
 
   /**
      * [read-only] Indicates if the MovieClip is currently playing
@@ -110,7 +110,7 @@ class MovieClip extends Sprite {
    * @method gotoAndStop
    * @param frameNumber {Number} frame index to stop at
    */
-  void gotoAndStop(int frameNumber) {
+  void gotoAndStop(double frameNumber) {
     this.playing = false;
     this.currentFrame = frameNumber;
     double round = this.currentFrame + 0.5;
@@ -123,7 +123,7 @@ class MovieClip extends Sprite {
    * @method gotoAndPlay
    * @param frameNumber {Number} frame index to start at
    */
-  void gotoAndPlay(int frameNumber) {
+  void gotoAndPlay(double frameNumber) {
     this.currentFrame = frameNumber;
     this.playing = true;
   }
@@ -146,7 +146,7 @@ class MovieClip extends Sprite {
     if (this.loop || round < this.textures.length) {
       this.setTexture(this.textures[(round % this.textures.length).toInt()]);
     } else if (round >= this.textures.length) {
-      this.gotoAndStop(this.textures.length - 1);
+      this.gotoAndStop((this.textures.length - 1).toDouble());
       if (this.onComplete != null) {
         this.onComplete();
       }
