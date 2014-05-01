@@ -248,7 +248,8 @@ class Texture extends EventTarget {
  */
   static Texture removeTextureFromCache(id) {
     Texture texture = TextureCache[id];
-    TextureCache[id] = null;
+    TextureCache.remove(id);
+    BaseTextureCache.remove(id);
     return texture;
   }
 

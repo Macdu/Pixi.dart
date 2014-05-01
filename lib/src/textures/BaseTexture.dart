@@ -175,7 +175,7 @@ class BaseTexture extends EventTarget {
  */
   void destroy() {
     if (this.imageUrl != null) {
-      BaseTextureCache[this.imageUrl] = null;
+      BaseTextureCache.remove(this.imageUrl);
       this.imageUrl = null;
       if (this.source is ImageElement) this.source.src = null; else if (this.source is CanvasElement) this.source.src = null;
     }
