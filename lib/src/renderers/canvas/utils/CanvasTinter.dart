@@ -23,18 +23,21 @@ class CanvasTinter {
  * @param sprite {Sprite} the sprite to tint
  * @param color {Number} the color to use to tint the sprite with
  */
-  static CanvasImageSource getTintedTexture(Sprite sprite, int color) {
+  static CanvasElement getTintedTexture(Sprite sprite, int color) {
 
     Texture texture = sprite.texture;
 
     color = CanvasTinter.roundColor(color);
 
-    String stringColor = "#" + ("00000" + (color | 0).toString()).substring(-6);
+    String baseColor = ("00000" + (color | 0).toString());
+    String stringColor = "#" + baseColor.substring(baseColor.length - 6);
 
-    if (texture.tintCache[stringColor] != null) return texture.tintCache[stringColor];
+    if (texture.tintCache == null) texture.tintCache = {};
+
+    if (texture.tintCache.containsKey(stringColor)) return texture.tintCache[stringColor];
 
     // clone texture..
-    CanvasElement canvas = (CanvasTinter.canvas != null) ? CanvasTinter.canvas : new CanvasElement();
+    CanvasElement canvas = (CanvasTinter.canvas != null) ? (CanvasTinter.canvas != null) : new CanvasElement();
 
     //PIXI.CanvasTinter.tintWithPerPixel(texture, stringColor, canvas);
 
@@ -68,12 +71,13 @@ class CanvasTinter {
   static void tintWithMultiply(Texture texture, int color, CanvasElement canvas) {
     CanvasRenderingContext2D context = canvas.getContext("2d");
 
-    var frame = texture.frame;
+    Rectangle frame = texture.frame;
 
-    canvas.width = frame.width;
-    canvas.height = frame.height;
+    canvas.width = frame.width.toInt();
+    canvas.height = frame.height.toInt();
 
-    context.fillStyle = "#" + ("00000" + color.toString()).substring(-6);
+    String baseStyle = ("00000" + (color | 0).toString());
+    context.fillStyle = "#" + baseStyle.substring(baseStyle.length - 6);
 
     context.fillRect(0, 0, frame.width, frame.height);
 
@@ -96,15 +100,17 @@ class CanvasTinter {
   static void tintWithOverlay(Texture texture, int color, CanvasElement canvas) {
     CanvasRenderingContext2D context = canvas.getContext("2d");
 
-    var frame = texture.frame;
+    Rectangle frame = texture.frame;
 
-    canvas.width = frame.width;
-    canvas.height = frame.height;
+    canvas.width = frame.width.toInt();
+    canvas.height = frame.height.toInt();
 
 
 
     context.globalCompositeOperation = "copy";
-    context.fillStyle = "#" + ("00000" + (color).toString()).substring(-6);
+
+    String baseStyle = ("00000" + (color | 0).toString());
+    context.fillStyle = "#" + baseStyle.substring(baseStyle.length - 6);
     context.fillRect(0, 0, frame.width, frame.height);
 
     context.globalCompositeOperation = "destination-atop";
@@ -156,10 +162,10 @@ class CanvasTinter {
  * @method roundColor
  * @param color {number} the color to round, should be a hex color
  */
-  static num roundColor(int color) {
-    var step = CanvasTinter.cacheStepsPerColorChannel;
+  static int roundColor(int color) {
+    int step = CanvasTinter.cacheStepsPerColorChannel;
 
-    var rgbValues = hex2rgb(color);
+    List<int> rgbValues = hex2rgb(color);
 
     rgbValues[0] = Math.min(255, (rgbValues[0] / step) * step);
     rgbValues[1] = Math.min(255, (rgbValues[1] / step) * step);
@@ -175,7 +181,7 @@ class CanvasTinter {
  * @property cacheStepsPerColorChannel
  * @type Number
  */
-  static int cacheStepsPerColorChannel = 8;
+  static const int cacheStepsPerColorChannel = 8;
   /**
  * 
  * Number of steps which will be used as a cap when rounding colors
@@ -191,10 +197,10 @@ class CanvasTinter {
  * @property canUseMultiply
  * @type Boolean
  */
-  static bool canUseMultiply = canUseNewCanvasBlendModes();
-
-  static Function tintMethod = CanvasTinter.canUseMultiply ? CanvasTinter.tintWithMultiply : CanvasTinter.tintWithPerPixel;
+  static final bool canUseMultiply = canUseNewCanvasBlendModes();
   
-  static CanvasElement canvas = null;
+  static CanvasElement canvas;
+
+  static final tintMethod = CanvasTinter.canUseMultiply ? CanvasTinter.tintWithMultiply : CanvasTinter.tintWithPerPixel;
 
 }

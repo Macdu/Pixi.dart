@@ -32,7 +32,7 @@ class AssetLoader extends EventTarget {
   
   Function onProgress = (EventTarget target){};
   
-  Function onComplete = (EventTarget target){};
+  Function onComplete = (){};
 
   /**
          * Maps file extension to loader types

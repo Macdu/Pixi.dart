@@ -87,7 +87,7 @@ class Sprite extends DisplayObjectContainer {
 
   CanvasBuffer buffer;
 
-  var tintedTexture;
+  CanvasElement tintedTexture;
 
   Sprite(Texture texture) {
 
@@ -349,7 +349,6 @@ class Sprite extends DisplayObjectContainer {
         //TODO: set the property to dart
         //context[renderSession.smoothProperty] = (renderSession.scaleMode == scaleModes['LINEAR']);
       }
-
       if (this.tint != 0xFFFFFF) {
 
         if (this.cachedTint != this.tint) {

@@ -59,7 +59,7 @@ part of pixi;
  * @method hex2rgb
  * @param hex {Number}
  */
-List<int> hex2rgb(int hex) {
+List<num> hex2rgb(int hex) {
     return [(hex >> 16 & 0xFF) / 255, ( hex >> 8 & 0xFF) / 255, (hex & 0xFF)/ 255];
 }
 
@@ -69,8 +69,8 @@ List<int> hex2rgb(int hex) {
  * @method rgb2hex
  * @param rgb {Array}
  */
-int rgb2hex(List<int> rgb) {
-    return ((rgb[0]*255 << 16) + (rgb[1]*255 << 8) + rgb[2]*255);
+int rgb2hex(List<num> rgb) {
+    return (((rgb[0]*255).toInt() << 16) + ((rgb[1]*255).toInt() << 8) + (rgb[2]*255).toInt());
 }
 
 /*

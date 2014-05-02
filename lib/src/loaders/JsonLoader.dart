@@ -117,7 +117,7 @@ class JsonLoader extends Loader {
                 Map actualSize = element['sourceSize'];
                 Map realSize = element['spriteSourceSize'];
 
-                texture.trim = new Rectangle(realSize['x'], realSize['y'], actualSize['w'], actualSize['h']);
+                texture.trim = new Rectangle(realSize['x'].toDouble(), realSize['y'].toDouble(), actualSize['w'].toDouble(), actualSize['h'].toDouble());
               }
             }
           });
