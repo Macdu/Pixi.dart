@@ -127,30 +127,41 @@ class WebGLRenderer extends Renderer{
     this.view = view;
     this.view.width = this.width;
     this.view.height = this.height;
-
+/*
     Map<String, bool> options = {
       'alpha': this.transparent,
       'antialias': this.antialias, // SPEED UP??
-      'remultipliedAlpha': this.transparent,
+      'premultipliedAlpha': this.transparent,
       'stencil': true
     };
-
+*/
     this.view.onWebGlContextLost.listen(this.handleContextLost);
     this.view.onWebGlContextRestored.listen(this.handleContextRestored);
-
+    
+    this.gl = this.view.getContext3d(
+        alpha: this.transparent,
+        antialias: this.antialias, // SPEED UP??
+        premultipliedAlpha: this.transparent,
+        stencil: true  
+    );
+    if(this.gl == null)throw new Exception(
+        ' This browser does not support webGL. Try using the canvas renderer' + this.toString());
+/*
     try {
-      this.gl = this.view.getContext('experimental-webgl', this.options);
+      this.gl = this.view.getContext('webgl', this.options);
+      if(this.gl == null)throw new Error();
     } catch (e) {
       //try 'webgl'
       try {
-        this.gl = this.view.getContext('webgl', this.options);
+        this.gl = this.view.getContext('experimental-webgl', this.options);
+        if(this.gl == null)throw new Error();
       } catch (e2) {
         // fail, not able to get a context
         throw new Exception(
             ' This browser does not support webGL. Try using the canvas renderer' + this.toString());
       }
     }
-
+*/
     RenderingContext gl = this.gl;
     this.glContextId = WebGLRenderer._globalGlContextId++;
 
