@@ -36,7 +36,7 @@ class InteractionManager {
   List<InteractionData> touchs = [];
 
   // helpers
-  Point tempPoint = new Point();
+  Point tempPoint = new Point(0.0,0.0);
 
   /**
      * 
@@ -258,7 +258,7 @@ class InteractionManager {
     bool over = false;
 
     for (i = 0; i < length; i++) {
-      var item = this.interactiveItems[i];
+      DisplayObject item = this.interactiveItems[i];
 
       // OPTIMISATION - only calculate every time if the mousemove function exists..
       // OK so.. does the object have any other interactive functions?
@@ -266,24 +266,24 @@ class InteractionManager {
       // if(item.mouseover || item.mouseout || item.buttonMode)
       // {
       // ok so there are some functions so lets hit test it..
-      item._hit = this.hitTest(item, this.mouse);
+      item.hit = this.hitTest(item, this.mouse);
       this.mouse.target = item;
       // ok so deal with interactions..
       // looks like there was a hit!
-      if (item._hit && !over) {
+      if (item.hit && !over) {
         if (item.buttonMode) cursor = item.defaultCursor;
 
         if (!item.interactiveChildren) over = true;
 
-        if (!item._isOver) {
+        if (!item.isOver) {
           item.mouseover(this.mouse);
-          item._isOver = true;
+          item.isOver = true;
         }
       } else {
-        if (item._isOver) {
+        if (item.isOver) {
           // roll out!
-          if (item.mouseout) item.mouseout(this.mouse);
-          item._isOver = false;
+          item.mouseout(this.mouse);
+          item.isOver = false;
         }
       }
     }
@@ -305,10 +305,10 @@ class InteractionManager {
     this.mouse.originalEvent = event; //IE uses window.event
     // TODO optimize by not check EVERY TIME! maybe half as often? //
     var rect = this.interactionDOMElement.getBoundingClientRect();
-
+    
     this.mouse.global.x = (event.client.x - rect.left) * (this.target.width / rect.width);
     this.mouse.global.y = (event.client.y - rect.top) * (this.target.height / rect.height);
-
+    
     int length = this.interactiveItems.length;
 
     for (int i = 0; i < length; i++) {
@@ -342,13 +342,13 @@ class InteractionManager {
     for (int i = 0; i < length; i++) {
       DisplayObject item = this.interactiveItems[i];
 
-      item._mouseIsDown = true;
-      item._hit = this.hitTest(item, this.mouse);
+      item.mouseIsDown = true;
+      item.hit = this.hitTest(item, this.mouse);
 
-      if (item._hit) {
+      if (item.hit) {
         //call the function!
         item.mousedown(this.mouse);
-        item._isDown = true;
+        item.isDown = true;
 
         // just the one!
         if (!item.interactiveChildren) break;
@@ -371,18 +371,19 @@ class InteractionManager {
 
     for (int i = 0; i < length; i++) {
       DisplayObject item = this.interactiveItems[i];
-      if (item._isOver) {
+      if (item.isOver) {
         this.mouse.target = item;
         item.mouseout(this.mouse);
-        item._isOver = false;
+        item.isOver = false;
       }
     }
 
     this.mouseOut = true;
-
+    
     // move the mouse to an impossible position
     this.mouse.global.x = -10000.0;
     this.mouse.global.y = -10000.0;
+    
   }
 
   /**
@@ -402,96 +403,102 @@ class InteractionManager {
     for (int i = 0; i < length; i++) {
       DisplayObject item = this.interactiveItems[i];
 
-      item._hit = this.hitTest(item, this.mouse);
+      item.hit = this.hitTest(item, this.mouse);
 
-      if (item._hit && !up) {
+      if (item.hit && !up) {
         //call the function!
         item.mouseup(this.mouse);
-        if (item._isDown) {
+        if (item.isDown) {
           item.click(this.mouse);
         }
 
         if (!item.interactiveChildren) up = true;
       } else {
-        if (item._isDown) {
+        if (item.isDown) {
           item.mouseupoutside(this.mouse);
         }
       }
 
-      item._isDown = false;
+      item.isDown = false;
       //}
     }
   }
 
   /**
- * Tests if the current mouse coordinates hit a sprite
- *
- * @method hitTest
- * @param item {DisplayObject} The displayObject to test for a hit
- * @param interactionData {InteractionData} The interactionData object to update in the case there is a hit
- * @private
- */
-  bool hitTest(DisplayObject item, InteractionData interactionData) {
-    Point global = interactionData.global;
+   * Tests if the current mouse coordinates hit a sprite
+   *
+   * @method hitTest
+   * @param item {DisplayObject} The displayObject to test for a hit
+   * @param interactionData {InteractionData} The interactionData object to update in the case there is a hit
+   * @private
+   */
+  bool hitTest(DisplayObject item,InteractionData interactionData)
+  {
+      Point global = interactionData.global;
 
-    if (!item.worldVisible) return false;
+      if( !item.worldVisible )return false;
 
-    // temp fix for if the element is in a non visible
+      // temp fix for if the element is in a non visible
+     
+     bool isSprite = (item is Sprite);
+      Matrix  worldTransform = item.worldTransform;
+      double a00 = worldTransform.a, a01 = worldTransform.b, a02 = worldTransform.tx,
+          a10 = worldTransform.c, a11 = worldTransform.d, a12 = worldTransform.ty,
+          id = 1 / (a00 * a11 + a01 * -a10),
+          x = a11 * id * global.x + -a01 * id * global.y + (a12 * a01 - a02 * a11) * id,
+          y = a00 * id * global.y + -a10 * id * global.x + (-a12 * a00 + a02 * a10) * id;
 
-    Matrix worldTransform = item.worldTransform;
-    double a00 = worldTransform.a,
-        a01 = worldTransform.b,
-        a02 = worldTransform.tx,
-        a10 = worldTransform.c,
-        a11 = worldTransform.d,
-        a12 = worldTransform.ty,
-        id = 1 / (a00 * a11 + a01 * -a10),
-        x = a11 * id * global.x + -a01 * id * global.y + (a12 * a01 - a02 * a11) * id,
-        y = a00 * id * global.y + -a10 * id * global.x + (-a12 * a00 + a02 * a10) * id;
+      interactionData.target = item;
 
-    interactionData.target = item;
+      //a sprite or display object with a hit area defined
+      if(item.hitArea != null) {
+          if(item.hitArea.contains(x, y)) {
+              //if(isSprite)
+              interactionData.target = item;
 
-    //a sprite or display object with a hit area defined
-    if (item.hitArea != null) {
-      if (item.hitArea.contains(x, y)) {
-        //if(isSprite)
-        interactionData.target = item;
+              return true;
+          }
 
-        return true;
+          return false;
+      }
+      // a sprite with no hitarea defined
+      else if(isSprite)
+      {
+          item = item as Sprite;
+          double width = item.texture.frame.width,
+              height = item.texture.frame.height,
+              x1 = -width * item.anchor.x,
+              y1;
+
+          if(x > x1 && x < x1 + width)
+          {
+              y1 = -height * item.anchor.y;
+
+              if(y > y1 && y < y1 + height)
+              {
+                  // set the target property if a hit is true!
+                  interactionData.target = item;
+                  return true;
+              }
+          }
+      }
+      
+      item = item as DisplayObjectContainer;
+      int length = item.children.length;
+
+      for (int i = 0; i < length; i++)
+      {
+          DisplayObject tempItem = item.children[i];
+          bool hit = this.hitTest(tempItem, interactionData);
+          if(hit)
+          {
+              // hmm.. TODO SET CORRECT TARGET?
+              interactionData.target = item;
+              return true;
+          }
       }
 
       return false;
-    } // a sprite with no hitarea defined
-    else if (item is Sprite) {
-      double width = item.texture.frame.width,
-          height = item.texture.frame.height,
-          x1 = -width * item.anchor.x,
-          y1;
-
-      if (x > x1 && x < x1 + width) {
-        y1 = -height * item.anchor.y;
-
-        if (y > y1 && y < y1 + height) {
-          // set the target property if a hit is true!
-          interactionData.target = item;
-          return true;
-        }
-      }
-    }
-
-    int length = (item as DisplayObjectContainer).children.length;
-
-    for (int i = 0; i < length; i++) {
-      DisplayObject tempItem = (item as DisplayObjectContainer).children[i];
-      bool hit = this.hitTest(tempItem, interactionData);
-      if (hit) {
-        // hmm.. TODO SET CORRECT TARGET?
-        interactionData.target = item;
-        return true;
-      }
-    }
-
-    return false;
   }
 
   /**
@@ -559,20 +566,20 @@ class InteractionManager {
             touchData.global.x = touchEvent.clientX;
             touchData.global.y = touchEvent.clientY;
         }
-        */
+       */        
 
       int length = this.interactiveItems.length;
 
       for (int j = 0; j < length; j++) {
         DisplayObject item = this.interactiveItems[j];
 
-        item._hit = this.hitTest(item, touchData);
+        item.hit = this.hitTest(item, touchData);
 
-        if (item._hit) {
+        if (item.hit) {
           //call the function!
           item.touchstart(touchData);
-          item._isDown = true;
-          item._touchData = touchData;
+          item.isDown = true;
+          item.touchData = touchData;
 
           if (!item.interactiveChildren) break;
         }
@@ -597,8 +604,10 @@ class InteractionManager {
       Touch touchEvent = changedTouches[i];
       InteractionData touchData = this.touchs[touchEvent.identifier];
       bool up = false;
+      /*
       touchData.global.x = (touchEvent.client.x - rect.left) * (this.target.width / rect.width);
       touchData.global.y = (touchEvent.client.y - rect.top) * (this.target.height / rect.height);
+      */
       /*
         if(navigator.isCocoonJS) {
             touchData.global.x = touchEvent.clientX;
@@ -609,8 +618,8 @@ class InteractionManager {
       int length = this.interactiveItems.length;
       for (int j = 0; j < length; j++) {
         DisplayObject item = this.interactiveItems[j];
-        var itemTouchData = item._touchData; // <-- Here!
-        item._hit = this.hitTest(item, touchData);
+        var itemTouchData = item.touchData; // <-- Here!
+        item.hit = this.hitTest(item, touchData);
 
         if (itemTouchData == touchData) {
           // so this one WAS down...
@@ -619,23 +628,23 @@ class InteractionManager {
 
 
 
-          if (item._hit && !up) {
+          if (item.hit && !up) {
             item.touchend(touchData);
-            if (item._isDown) {
+            if (item.isDown) {
               item.tap(touchData);
             }
 
             if (!item.interactiveChildren) up = true;
           } else {
-            if (item._isDown) {
+            if (item.isDown) {
               item.touchendoutside(touchData);
             }
           }
 
-          item._isDown = false;
+          item.isDown = false;
 
 
-          item._touchData = null;
+          item.touchData = null;
 
         }
         /*

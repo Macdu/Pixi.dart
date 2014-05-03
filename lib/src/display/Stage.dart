@@ -39,7 +39,7 @@ class Stage extends DisplayObjectContainer {
      * @property interactive
      * @type Boolean
      */
-  bool interactive = true;
+  bool interactive;
 
   /**
      * The interaction manage for this stage, manages all interactive activity on the stage
@@ -69,9 +69,11 @@ class Stage extends DisplayObjectContainer {
 
   //optimize hit detection a bit
 
-  Stage([int backgroundColor = 0x000000]): super() {
+  Stage([int backgroundColor = 0x000000, bool this.interactive = true]): super() {
 
-    this.interactionManager = new InteractionManager(this);
+    if(interactive){
+      this.interactionManager = new InteractionManager(this);
+    }
 
     this.hitArea = new Rectangle(0.0, 0.0, 100000.0, 100000.0);
 
@@ -110,7 +112,7 @@ class Stage extends DisplayObjectContainer {
       this.interactionManager.dirty = true;
     }
 
-    if (this.interactive != null) this.interactionManager.update();
+    if (this.interactive) this.interactionManager.update();
   }
 
   /**
