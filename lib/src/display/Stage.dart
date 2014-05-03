@@ -69,7 +69,7 @@ class Stage extends DisplayObjectContainer {
 
   //optimize hit detection a bit
 
-  Stage([int backgroundColor = 0x000000, bool this.interactive = true]): super() {
+  Stage([int backgroundColor = 0x000000, bool this.interactive = false]): super() {
 
     if(interactive){
       this.interactionManager = new InteractionManager(this);
