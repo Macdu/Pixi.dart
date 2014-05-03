@@ -86,7 +86,7 @@ class Text extends Sprite {
  * @param [style.wordWrapWidth=100] {Number} The width at which text will wrap
  */
   set style(Map style) {
-    if (style['font'] == null) style['font'] = 'bold 20pt Arial';
+    if (style['font'] == null) style['font'] = 'bold 20px Arial';
     if (style['fill'] == null) style['fill'] = 'black';
     if (style['align'] == null) style['align'] = 'left';
     if (style['stroke'] == null) style['stroke'] = 'black';

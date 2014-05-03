@@ -17,7 +17,7 @@ class BitmapText extends DisplayObjectContainer {
 
   String _text;
 
-  CssStyleDeclaration _style;
+  Map _style;
 
   String fontName;
 
@@ -53,7 +53,7 @@ class BitmapText extends DisplayObjectContainer {
  * @param style.font {String} The size (optional) and bitmap font id (required) eq 'Arial' or '20px Arial' (must have loaded previously)
  * @param [style.align='left'] {String} Alignment for multiline text ('left', 'center' or 'right'), does not affect single line text
  */
-  BitmapText([String text = "", CssStyleDeclaration style = null, int color = 0xFFFFFF]) {
+  BitmapText([String text = "", Map style = null, int color = 0xFFFFFF]) {
     this.tint = color;
     this.text = text;
     this.style = style;
@@ -81,19 +81,19 @@ class BitmapText extends DisplayObjectContainer {
  * @method setStyle
  * @param style {Object} The style parameters, contained as properties of an object
  */
-  set style(CssStyleDeclaration style) {
+  set style(Map style) {
 
-    if (style == null) style = new CssStyleDeclaration();
-    if (style.textAlign.isEmpty) style.textAlign = 'left';
+    if (style == null) style = {};
+    if (style.containsKey('align')) style['align'] = 'left';
     this._style = style;
 
-    List<String> font = style.font.split(' ');
+    List<String> font = style['font'].split(' ');
     this.fontName = font[font.length - 1];
-    this.fontSize = font.length >= 2 ? int.parse(font[font.length - 2], radix: 10) : BitmapText.fonts[this.fontName].size;
+    this.fontSize = font.length >= 2 ? int.parse(font[font.length - 2]/*, radix: 10*/) : BitmapText.fonts[this.fontName]['size'];
 
     this.dirty = true;
   }
-  CssStyleDeclaration get style => this._style;
+  Map get style => this._style;
 
   /**
  * Renders text and updates it when needed
@@ -102,55 +102,55 @@ class BitmapText extends DisplayObjectContainer {
  * @private
  */
   void updateText() {
-    var data = BitmapText.fonts[this.fontName];
+    Map data = BitmapText.fonts[this.fontName];
     Point pos = new Point();
     var prevCharCode = null;
     List<Map> chars = [];
     int maxLineWidth = 0;
     List lineWidths = [];
     int line = 0;
-    double scale = this.fontSize / data.size;
+    double scale = this.fontSize / data['size'];
 
 
     for (int i = 0; i < this.text.length; i++) {
-      String charCode = this.text[i];
-      if (charCode.trim() == "") {
+      int charCode = this.text.codeUnitAt(i);
+      if (this.text[i].trim() == "") {
         lineWidths.add(pos.x);
-        maxLineWidth = Math.max(maxLineWidth, pos.x);
+        maxLineWidth = Math.max(maxLineWidth, pos.x).toInt();
         line++;
 
         pos.x = 0.0;
-        pos.y += data.lineHeight;
+        pos.y += data['lineHeight'].toDouble();
         prevCharCode = null;
         continue;
       }
 
-      var charData = data.chars[charCode];
+      var charData = data['chars'][charCode];
       if (charData == null) continue;
 
-      if (prevCharCode && charData[prevCharCode]) {
+      if (prevCharCode != null && charData.containsKey(prevCharCode)) {
         pos.x += charData.kerning[prevCharCode];
       }
       chars.add({
-        'texture': charData.texture,
+        'texture': charData['texture'],
         'line': line,
         'charCode': charCode,
-        'position': new Point(pos.x + charData.xOffset, pos.y + charData.yOffset)
+        'position': new Point(pos.x + charData['xOffset'].toDouble(), pos.y + charData['yOffset'].toDouble())
       });
-      pos.x += charData.xAdvance;
+      pos.x += charData['xAdvance'].toDouble();
 
       prevCharCode = charCode;
     }
 
     lineWidths.add(pos.x);
-    maxLineWidth = Math.max(maxLineWidth, pos.x);
+    maxLineWidth = Math.max(maxLineWidth, pos.x).toInt();
 
     List<num> lineAlignOffsets = [];
     for (int i = 0; i <= line; i++) {
       double alignOffset = 0.0;
-      if (this.style.textAlign == 'right') {
+      if (this.style['align'] == 'right') {
         alignOffset = maxLineWidth - lineWidths[i];
-      } else if (this.style.textAlign == 'center') {
+      } else if (this.style['align'] == 'center') {
         alignOffset = (maxLineWidth - lineWidths[i]) / 2;
       }
       lineAlignOffsets.add(alignOffset);
@@ -160,7 +160,7 @@ class BitmapText extends DisplayObjectContainer {
     int lenChars = chars.length;
     int tint = this.tint;
     for (int i = 0; i < lenChars; i++) {
-      Sprite c = i < lenChildren ? this.children[i] : this._pool.removeLast(); // get old child if have. if not - take from pool.
+      Sprite c = i < lenChildren ? this.children[i] : (this._pool.length > 0 ? this._pool.removeLast() : null); // get old child if have. if not - take from pool.
 
       if (c != null) c.setTexture(chars[i]['texture']); // check if got one before.
       else c = new Sprite(chars[i]['texture']); // if no create new one.
@@ -177,7 +177,7 @@ class BitmapText extends DisplayObjectContainer {
     while (this.children.length > lenChars) {
       var child = this.getChildAt(this.children.length - 1);
       this._pool.add(child);
-      this.removeChild(child);
+      //this.removeChild(child);
     }
 
 
@@ -197,9 +197,10 @@ class BitmapText extends DisplayObjectContainer {
      * @property textHeight
      * @type Number
      */
-    this.textHeight = (pos.y + data.lineHeight) * scale;
+    this.textHeight = (pos.y + data['lineHeight']) * scale;
   }
 
+  
   /**
  * Updates the transform of this object
  *
@@ -215,6 +216,6 @@ class BitmapText extends DisplayObjectContainer {
     super.updateTransform();
   }
 
-  static Map fonts = {};
+  static Map<String,Map> fonts = {};
 
 }

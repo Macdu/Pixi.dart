@@ -135,7 +135,7 @@ class BitmapFontLoader extends Loader {
           var second = int.parse(kernings[i].attributes['second'], radix: 10);
           var amount = int.parse(kernings[i].attributes['amount'], radix: 10);
 
-          data['chars'][second].kerning[first] = amount;
+          data['chars'][second]['kerning'][first] = amount;
 
         }
 
