@@ -109,7 +109,7 @@ class Stage extends DisplayObjectContainer {
     if (this.dirty) {
       this.dirty = false;
       // update interactive!
-      this.interactionManager.dirty = true;
+      if(interactive)this.interactionManager.dirty = true;
     }
 
     if (this.interactive) this.interactionManager.update();
