@@ -77,9 +77,9 @@ class WebGLSpriteBatch {
 
 
     //the total number of floats in our batch
-    var numVerts = this.size * 4 * this.vertSize;
+    int numVerts = this.size * 4 * this.vertSize;
     //the total number of indices in our batch
-    var numIndices = this.size * 6;
+    int numIndices = this.size * 6;
 
     //vertex data
 
@@ -416,7 +416,7 @@ class WebGLSpriteBatch {
     int id = WebGLRenderer._getIndexFirst(gl);
 
     // bind the current texture
-    gl.bindTexture(TEXTURE_2D, (this.currentBaseTexture._glTextures.contains(id)) ? this.currentBaseTexture._glTextures[id] : WebGLRenderer.createWebGLTextureFromBaseTexture(this.currentBaseTexture, gl));
+    gl.bindTexture(TEXTURE_2D, (this.currentBaseTexture._glTextures.length > id) ? this.currentBaseTexture._glTextures[id] : WebGLRenderer.createWebGLTextureFromBaseTexture(this.currentBaseTexture, gl));
 
     // upload the verts to the buffer
 

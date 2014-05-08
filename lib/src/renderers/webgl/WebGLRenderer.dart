@@ -432,7 +432,7 @@ class WebGLRenderer extends Renderer{
       var glTexture = texture._glTextures[i];
       RenderingContext gl = glContexts[i];
 
-      if (gl && glTexture) {
+      if (gl != null && glTexture != null) {
         gl.deleteTexture(glTexture);
       }
     }
@@ -500,8 +500,11 @@ class WebGLRenderer extends Renderer{
     int id = _getIndexFirst(gl);
 
         if (texture.hasLoaded) {
-
-          texture._glTextures.insert(id, gl.createTexture());
+          
+          if(texture._glTextures.length <= id){
+            texture._glTextures.add(gl.createTexture());
+          }
+          else texture._glTextures[id] =  gl.createTexture();
 
           gl.bindTexture(RenderingContext.TEXTURE_2D, texture._glTextures[id]);
           gl.pixelStorei(RenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
