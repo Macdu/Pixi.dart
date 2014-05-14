@@ -309,8 +309,10 @@ class WebGLGraphics {
 
     // if the first point is the last point - gonna have issues :)
     if (firstPoint.x == lastPoint.x && firstPoint.y == lastPoint.y) {
-      points.removeLast();
-      points.removeLast();
+      if(points.length > 2){
+        points.removeLast();
+        points.removeLast();
+      }
 
       lastPoint = new Point(points[points.length - 2], points[points.length - 1]);
 
