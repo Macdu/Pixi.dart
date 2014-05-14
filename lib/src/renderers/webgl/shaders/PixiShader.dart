@@ -280,9 +280,9 @@ class PixiShader {
       if (uniform['glValueLength'] == 1) {
         if (uniform['glMatrix'] == true) {
           uniform['glFunc'](uniform['uniformLocation'], uniform['transpose'],
-              uniform['value']);
+              getFloat32ListFromIntList(uniform['value']));
         } else {
-          uniform['glFunc'](uniform['uniformLocation'], uniform['value']);
+          uniform['glFunc'](uniform['uniformLocation'],getFloat32ListFromIntList( uniform['value']));
         }
       } else if (uniform['glValueLength'] == 2) {
         uniform['glFunc'](uniform['uniformLocation'], uniform['value']['x'], uniform['value']['y']

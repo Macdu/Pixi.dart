@@ -141,3 +141,9 @@ int getNextPowerOfTwo(int number)
         return result;
     }
 }
+
+List<double> getDoubleListFromInt(List<num> lint) => lint.fold(new List<double>(),
+    (List<double> l,num n) => l..add(n.toDouble())
+    );
+
+Float32List getFloat32ListFromIntList(List<num> lint) => new Float32List.fromList(getDoubleListFromInt(lint));
