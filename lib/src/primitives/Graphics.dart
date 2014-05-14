@@ -217,7 +217,7 @@ class Graphics extends DisplayObjectContainer {
  * @param y {Number} the Y coordinate to move to
  */
   void moveTo(num x, num y) {
-    if (this.currentPath.points.length == 0) this.graphicsData.removeLast();
+    if (this.currentPath.points.length == 0 && this.graphicsData.length > 0) this.graphicsData.removeLast();
 
     this.currentPath = new GraphicData(
       lineWidth: this.lineWidth,
