@@ -152,12 +152,28 @@ class PixiShader {
 
         if (type == '2f' || type == '2i') {
           uniform['glValueLength'] = 2;
+          
+          if(type == '2f')uniform['glFunc'] = gl.uniform2f;
+          else uniform['glFunc'] = gl.uniform2i;
+          
         } else if (type == '3f' || type == '3i') {
           uniform['glValueLength'] = 3;
+          
+          if(type == '3f')uniform['glFunc'] = gl.uniform3f;
+          else uniform['glFunc'] = gl.uniform3i;
+          
         } else if (type == '4f' || type == '4i') {
           uniform['glValueLength'] = 4;
+          
+          if(type == '4f')uniform['glFunc'] = gl.uniform4f;
+          else uniform['glFunc'] = gl.uniform4i;
+          
         } else {
           uniform['glValueLength'] = 1;
+          
+          if(type == '1f')uniform['glFunc'] = gl.uniform1f;
+          else uniform['glFunc'] = gl.uniform1i;
+          
         }
       }
     });
@@ -282,7 +298,7 @@ class PixiShader {
           uniform['glFunc'](uniform['uniformLocation'], uniform['transpose'],
               getFloat32ListFromIntList(uniform['value']));
         } else {
-          uniform['glFunc'](uniform['uniformLocation'],getFloat32ListFromIntList( uniform['value']));
+          uniform['glFunc'](uniform['uniformLocation'],uniform['value']);
         }
       } else if (uniform['glValueLength'] == 2) {
         uniform['glFunc'](uniform['uniformLocation'], uniform['value']['x'], uniform['value']['y']

@@ -88,7 +88,7 @@ class WebGLFilterManager {
 * @method pushFilter
 * @param filterBlock {Object} the filter that will be pushed to the current filter stack
 */
-  void pushFilter(filterBlock) {
+  void pushFilter(Map filterBlock) {
     gl = this.gl;
 
     Point projection = this.renderSession.projection;
@@ -99,41 +99,41 @@ class WebGLFilterManager {
     // OPTIMISATION - the first filter is free if its a simple color change?
     this.filterStack.add(filterBlock);
 
-    var filter = filterBlock.filterPasses[0];
+    var filter = filterBlock['filterPasses'][0];
 
-    this.offsetX += filterBlock.target.filterArea.x;
-    this.offsetY += filterBlock.target.filterArea.y;
+    this.offsetX += filterBlock['target'].filterArea.x.toInt();
+    this.offsetY += filterBlock['target'].filterArea.y.toInt();
 
-    FilterTexture texture = this.texturePool.removeLast();
+    FilterTexture texture = (this.texturePool.length > 0) ? this.texturePool.removeLast() : null;
     if (texture == null) {
-      texture = new FilterTexture(this.gl, this.width.toInt(), this.height.toInt());
+      texture = new FilterTexture(this.gl, this.width, this.height);
     } else {
-      texture.resize(this.width.toInt(), this.height.toInt());
+      texture.resize(this.width, this.height);
     }
 
     gl.bindTexture(TEXTURE_2D, texture.texture);
 
-    filterBlock.target.filterArea = filterBlock.target.getBounds();
+    filterBlock['target'].filterArea = filterBlock['target'].getBounds();
 
-    var filterArea = filterBlock.target.filterArea;
+    Rectangle filterArea = filterBlock['target'].filterArea;
 
-    int padding = filter.padding;
+    double padding = filter.padding;
     filterArea.x -= padding;
     filterArea.y -= padding;
     filterArea.width += padding * 2;
     filterArea.height += padding * 2;
 
     // cap filter to screen size..
-    if (filterArea.x < 0) filterArea.x = 0;
+    if (filterArea.x < 0) filterArea.x = 0.0;
     if (filterArea.width > this.width) filterArea.width = this.width;
-    if (filterArea.y < 0) filterArea.y = 0;
+    if (filterArea.y < 0) filterArea.y = 0.0;
     if (filterArea.height > this.height) filterArea.height = this.height;
 
     //gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA,  filterArea.width, filterArea.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
     gl.bindFramebuffer(FRAMEBUFFER, texture.frameBuffer);
 
     // set view port
-    gl.viewport(0, 0, filterArea.width, filterArea.height);
+    gl.viewport(0, 0, filterArea.width.toInt(), filterArea.height.toInt());
 
     projection.x = filterArea.width / 2;
     projection.y = -filterArea.height / 2;
@@ -150,7 +150,7 @@ class WebGLFilterManager {
     gl.clearColor(0, 0, 0, 0);
     gl.clear(COLOR_BUFFER_BIT);
 
-    filterBlock._glFilterTexture = texture;
+    filterBlock['_glFilterTexture'] = texture;
 
   }
 
@@ -161,14 +161,14 @@ class WebGLFilterManager {
 */
   void popFilter() {
     RenderingContext gl = this.gl;
-    var filterBlock = this.filterStack.removeLast();
-    var filterArea = filterBlock.target.filterArea;
-    FilterTexture texture = filterBlock._glFilterTexture;
+    Map filterBlock = this.filterStack.removeLast();
+    Rectangle filterArea = filterBlock['target'].filterArea;
+    FilterTexture texture = filterBlock['_glFilterTexture'];
     Point projection = this.renderSession.projection;
     Point offset = this.renderSession.offset;
 
-    if (filterBlock.filterPasses.length > 1) {
-      gl.viewport(0, 0, filterArea.width, filterArea.height);
+    if (filterBlock['filterPasses'].length > 1) {
+      gl.viewport(0, 0, filterArea.width.toInt(), filterArea.height.toInt());
 
       gl.bindBuffer(ARRAY_BUFFER, this.vertexBuffer);
 
@@ -196,9 +196,9 @@ class WebGLFilterManager {
       gl.bufferSubData(ARRAY_BUFFER, 0, this.uvArray);
 
       FilterTexture inputTexture = texture;
-      FilterTexture outputTexture = this.texturePool.removeLast();
+      FilterTexture outputTexture = (this.texturePool.length > 0) ? this.texturePool.removeLast() : null;
       if (outputTexture == null) outputTexture = new FilterTexture(this.gl,
-          this.width.toInt(), this.height.toInt());
+          this.width, this.height);
 
       // need to clear this FBO as it may have some left over elements from a previous filter.
       gl.bindFramebuffer(FRAMEBUFFER, outputTexture.frameBuffer);
@@ -206,8 +206,8 @@ class WebGLFilterManager {
 
       gl.disable(BLEND);
 
-      for (int i = 0; i < filterBlock.filterPasses.length - 1; i++) {
-        var filterPass = filterBlock.filterPasses[i];
+      for (int i = 0; i < filterBlock['filterPasses'].length - 1; i++) {
+        var filterPass = filterBlock['filterPasses'][i];
 
         gl.bindFramebuffer(FRAMEBUFFER, outputTexture.frameBuffer);
 
@@ -217,8 +217,8 @@ class WebGLFilterManager {
 
         // draw texture..
         //filterPass.applyFilterPass(filterArea.width, filterArea.height);
-        this.applyFilterPass(filterPass, filterArea, filterArea.width,
-            filterArea.height);
+        this.applyFilterPass(filterPass, filterArea, filterArea.width.toInt(),
+            filterArea.height.toInt());
 
         // swap the textures..
         FilterTexture temp = inputTexture;
@@ -232,10 +232,10 @@ class WebGLFilterManager {
       this.texturePool.add(outputTexture);
     }
 
-    var filter = filterBlock.filterPasses[filterBlock.filterPasses.length - 1];
+    var filter = filterBlock['filterPasses'][filterBlock['filterPasses'].length - 1];
 
-    this.offsetX -= filterArea.x;
-    this.offsetY -= filterArea.y;
+    this.offsetX -= filterArea.x.toInt();
+    this.offsetY -= filterArea.y.toInt();
 
 
     int sizeX = this.width.toInt();
@@ -253,8 +253,8 @@ class WebGLFilterManager {
       var currentFilter = this.filterStack[this.filterStack.length - 1];
       filterArea = currentFilter.target.filterArea;
 
-      sizeX = filterArea.width;
-      sizeY = filterArea.height;
+      sizeX = filterArea.width.toInt();
+      sizeY = filterArea.height.toInt();
 
       offsetX = filterArea.x;
       offsetY = filterArea.y;
@@ -271,7 +271,7 @@ class WebGLFilterManager {
     offset.x = offsetX;
     offset.y = offsetY;
 
-    filterArea = filterBlock.target.filterArea;
+    filterArea = filterBlock['target'].filterArea;
 
     var x = filterArea.x - offsetX;
     var y = filterArea.y - offsetY;
@@ -324,7 +324,7 @@ class WebGLFilterManager {
 
     // return the texture to the pool
     this.texturePool.add(texture);
-    filterBlock._glFilterTexture = null;
+    filterBlock['_glFilterTexture'] = null;
   }
 
 
@@ -336,11 +336,11 @@ class WebGLFilterManager {
 * @param width {Number} the horizontal range of the filter
 * @param height {Number} the vertical range of the filter
 */
-  void applyFilterPass(AbstractFilter filter, Texture filterArea, int width, int
+  void applyFilterPass(AbstractFilter filter, Rectangle filterArea, int width, int
       height) {
     // use program
     RenderingContext gl = this.gl;
-    PixiShader shader = filter.shaders[WebGLRenderer._getIndexFirst(gl)];
+    PixiShader shader = (filter.shaders.length > 0) ? filter.shaders[WebGLRenderer._getIndexFirst(gl)] : null;
 
     if (shader == null) {
       shader = new PixiShader(gl);
@@ -349,7 +349,9 @@ class WebGLFilterManager {
       shader.uniforms = filter.uniforms;
       shader.init();
 
-      filter.shaders[WebGLRenderer._getIndexFirst(gl)] = shader;
+      if(filter.shaders.length <= WebGLRenderer._getIndexFirst(gl)){
+        filter.shaders.add(shader);
+      }else filter.shaders[WebGLRenderer._getIndexFirst(gl)] = shader;
     }
 
     // set the shader
@@ -358,7 +360,7 @@ class WebGLFilterManager {
     gl.uniform2f(shader.projectionVector, width / 2, -height / 2);
     gl.uniform2f(shader.offsetVector, 0, 0);
 
-    if (filter.uniforms['dimensions']) {
+    if (filter.uniforms['dimensions'] != null) {
       filter.uniforms['dimensions']['value'][0] = this.width;//width;
       filter.uniforms['dimensions']['value'][1] = this.height;//height;
       filter.uniforms['dimensions']['value'][2] = this.vertexArray[0];
