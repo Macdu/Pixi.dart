@@ -47,7 +47,7 @@ class Polyk {
  * @method Triangulate
  * 
  */
-  static List Triangulate(List p) {
+  static List Triangulate(List<int> p) {
     bool sign = true;
 
     int n = p.length >> 1;

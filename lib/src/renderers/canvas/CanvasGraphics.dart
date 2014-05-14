@@ -25,14 +25,15 @@ class CanvasGraphics {
     String color = '';
 
     for (int i = 0; i < graphics.graphicsData.length; i++) {
-      Map data = graphics.graphicsData[i];
-      List points = data['points'];
+      GraphicData data = graphics.graphicsData[i];
+      List points = data.points;
+      
+      String style = ('00000' + (data.lineColor).toRadixString(16));
+      context.strokeStyle = color = '#' + style.substring(style.length - 6);
 
-      context.strokeStyle = color = '#' + ('00000' + (data['lineColor']).toString(16)).substring(-6);
+      context.lineWidth = data.lineWidth;
 
-      context.lineWidth = data['lineWidth'];
-
-      if (data['type'] == Graphics.POLY) {
+      if (data.type == Graphics.POLY) {
         context.beginPath();
 
         context.moveTo(points[0], points[1]);
@@ -46,54 +47,57 @@ class CanvasGraphics {
           context.closePath();
         }
 
-        if (data['fill']) {
-          context.globalAlpha = data['fillAlpha'] * worldAlpha;
-          context.fillStyle = color = '#' + ('00000' + (data['fillColor']).toString(16)).substring(-6);
+        if (data.fill) {
+          context.globalAlpha = data.fillAlpha * worldAlpha;
+          String style = ('00000' + (data.fillColor).toRadixString(16));
+          context.fillStyle = color = '#' + style.substring(style.length-6);
           context.fill();
         }
-        if (data['lineWidth'] != null) {
-          context.globalAlpha = data['lineAlpha'] * worldAlpha;
+        if (data.lineWidth != null) {
+          context.globalAlpha = data.lineAlpha * worldAlpha;
           context.stroke();
         }
-      } else if (data['type'] == Graphics.RECT) {
+      } else if (data.type == Graphics.RECT) {
 
-        if (data['fillColor'] == null || data['fillColor'] == 0) {
-          context.globalAlpha = data['fillAlpha'] * worldAlpha;
-          context.fillStyle = color = '#' + ('00000' + (data['fillColor']).toString(16)).substring(-6);
+        if (data.fillColor != null) {
+          context.globalAlpha = data.fillAlpha * worldAlpha;
+          String style = ('00000' + (data.fillColor).toRadixString(16));
+          context.fillStyle = color = '#' + style.substring(style.length-6);
           context.fillRect(points[0], points[1], points[2], points[3]);
 
         }
-        if (data['lineWidth'] != null) {
-          context.globalAlpha = data['lineAlpha'] * worldAlpha;
+        if (data.lineWidth != null) {
+          context.globalAlpha = data.lineAlpha * worldAlpha;
           context.strokeRect(points[0], points[1], points[2], points[3]);
         }
 
-      } else if (data['type'] == Graphics.CIRC) {
+      } else if (data.type == Graphics.CIRC) {
         // TODO - need to be Undefined!
         context.beginPath();
         context.arc(points[0], points[1], points[2], 0, 2 * Math.PI);
         context.closePath();
 
-        if (data['fill'] != null) {
-          context.globalAlpha = data['fillAlpha'] * worldAlpha;
-          context.fillStyle = color = '#' + ('00000' + (data['fillColor']).toString(16)).substring(-6);
+        if (data.fill != null) {
+          context.globalAlpha = data.fillAlpha * worldAlpha;
+          String style = ('00000' + (data.fillColor).toRadixString(16));
+          context.fillStyle = color = '#' + style.substring(style.length-6);
           context.fill();
         }
-        if (data['lineWidth'] != null) {
-          context.globalAlpha = data['lineAlpha'] * worldAlpha;
+        if (data.lineWidth != null) {
+          context.globalAlpha = data.lineAlpha * worldAlpha;
           context.stroke();
         }
-      } else if (data['type'] == Graphics.ELIP) {
+      } else if (data.type == Graphics.ELIP) {
 
         // ellipse code taken from: http://stackoverflow.com/questions/2172798/how-to-draw-an-oval-in-html5-canvas
 
-        List ellipseData = data['points'];
+        List ellipseData = data.points;
 
-        int w = ellipseData[2] * 2;
-        int h = ellipseData[3] * 2;
+        double w = ellipseData[2] * 2;
+        double h = ellipseData[3] * 2;
 
-        int x = ellipseData[0] - w / 2;
-        int y = ellipseData[1] - h / 2;
+        double x = ellipseData[0] - w / 2;
+        double y = ellipseData[1] - h / 2;
 
         context.beginPath();
 
@@ -113,13 +117,14 @@ class CanvasGraphics {
 
         context.closePath();
 
-        if (data['fill'] != null) {
-          context.globalAlpha = data['fillAlpha'] * worldAlpha;
-          context.fillStyle = color = '#' + ('00000' + (data['fillColor']).toString(16)).substring(-6);
+        if (data.fill) {
+          context.globalAlpha = data.fillAlpha * worldAlpha;
+          String style = ('00000' + (data.fillColor).toRadixString(16));
+          context.fillStyle = color = '#' + style.substring(style.length-6);
           context.fill();
         }
-        if (data['lineWidth'] != null) {
-          context.globalAlpha = data['lineAlpha'] * worldAlpha;
+        if (data.lineWidth != null) {
+          context.globalAlpha = data.lineAlpha * worldAlpha;
           context.stroke();
         }
       }
@@ -146,10 +151,10 @@ class CanvasGraphics {
     }
 
     for (int i = 0; i < 1; i++) {
-      Map data = graphics.graphicsData[i];
-      List points = data['points'];
+      GraphicData data = graphics.graphicsData[i];
+      List points = data.points;
 
-      if (data['type'] == Graphics.POLY) {
+      if (data.type == Graphics.POLY) {
         context.beginPath();
         context.moveTo(points[0], points[1]);
 
@@ -162,25 +167,25 @@ class CanvasGraphics {
           context.closePath();
         }
 
-      } else if (data['type'] == Graphics.RECT) {
+      } else if (data.type == Graphics.RECT) {
         context.beginPath();
         context.rect(points[0], points[1], points[2], points[3]);
         context.closePath();
-      } else if (data['type'] == Graphics.CIRC) {
+      } else if (data.type == Graphics.CIRC) {
         // TODO - need to be Undefined!
         context.beginPath();
         context.arc(points[0], points[1], points[2], 0, 2 * Math.PI);
         context.closePath();
-      } else if (data['type'] == Graphics.ELIP) {
+      } else if (data.type == Graphics.ELIP) {
 
         // ellipse code taken from: http://stackoverflow.com/questions/2172798/how-to-draw-an-oval-in-html5-canvas
-        List ellipseData = data['points'];
+        List<double> ellipseData = data.points;
 
-        int w = ellipseData[2] * 2;
-        int h = ellipseData[3] * 2;
+        double w = ellipseData[2] * 2;
+        double h = ellipseData[3] * 2;
 
-        int x = ellipseData[0] - w / 2;
-        int y = ellipseData[1] - h / 2;
+        double x = ellipseData[0] - w / 2;
+        double y = ellipseData[1] - h / 2;
 
         context.beginPath();
 

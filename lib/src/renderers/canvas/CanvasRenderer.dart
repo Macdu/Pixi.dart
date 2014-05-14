@@ -397,7 +397,7 @@ class CanvasBuffer {
     this.width = width;
     this.height = height;
 
-    this.canvas = document.createElement("canvas");
+    this.canvas = new CanvasElement();
     this.context = this.canvas.getContext("2d");
 
     this.canvas.width = width;

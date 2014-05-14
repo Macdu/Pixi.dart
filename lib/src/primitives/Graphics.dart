@@ -4,6 +4,29 @@ part of pixi;
  */
 
 
+class GraphicData{
+  
+  int lineWidth;
+  int lineColor;
+  double lineAlpha;
+  int fillColor;
+  double fillAlpha;
+  bool fill;
+  int type;
+  List<double> points;
+  
+  GraphicData({
+    this.lineWidth,
+    this.lineColor,
+    this.lineAlpha,
+    this.fillColor,
+    this.fillAlpha,
+    this.fill,
+    this.type,
+    this.points});
+  
+}
+
 /**
  * The Graphics class contains a set of methods that you can use to create primitive shapes and lines.
  * It is important to know that with the webGL renderer only simple polygons can be filled at this stage
@@ -27,9 +50,9 @@ class Graphics extends DisplayObjectContainer {
 
   bool filling = false;
 
-  bool clearDirty;
+  bool clearDirty = false;
 
-  var fillColor;
+  int fillColor;
 
   /**
        * The width of any lines drawn
@@ -45,7 +68,7 @@ class Graphics extends DisplayObjectContainer {
        * @property lineColor
        * @type String
        */
-  String lineColor = "black";
+  int lineColor = 0x000000;
 
   /**
        * Graphics data
@@ -54,7 +77,7 @@ class Graphics extends DisplayObjectContainer {
        * @type Array
        * @private
        */
-  List graphicsData = [];
+  List<GraphicData> graphicsData = [];
 
 
   /**
@@ -82,9 +105,9 @@ class Graphics extends DisplayObjectContainer {
        * @type Object
        * @private
        */
-  Map currentPath = {
-    'points': []
-  };
+  GraphicData currentPath = new GraphicData(
+    points: []
+  );
 
   /**
        * Array containing some WebGL-related properties used by the WebGL renderer
@@ -93,7 +116,7 @@ class Graphics extends DisplayObjectContainer {
        * @type Array
        * @private
        */
-  List _webGL = [];
+  List<WebGLGraphicData> _webGL = [];
 
   /**
        * Whether this shape is being used as a mask
@@ -164,23 +187,23 @@ class Graphics extends DisplayObjectContainer {
  * @param color {Number} color of the line to draw, will update the object's stored style
  * @param alpha {Number} alpha of the line to draw, will update the object's stored style
  */
-  void lineStyle([int lineWidth = 0, String color = "black", double alpha = 1.0]) {
-    if (this.currentPath['points'].length == 0) this.graphicsData.removeLast();
+  void lineStyle([int lineWidth = 0,int color = 0x000000, double alpha = 1.0]) {
+    if (this.currentPath.points.length == 0 && this.graphicsData.length > 0) this.graphicsData.removeLast();
 
     this.lineWidth = lineWidth;
     this.lineColor = color;
     this.lineAlpha = alpha;
 
-    this.currentPath = {
-      'lineWidth': this.lineWidth,
-      'lineColor': this.lineColor,
-      'lineAlpha': this.lineAlpha,
-      'fillColor': this.fillColor,
-      'fillAlpha': this.fillAlpha,
-      'fill': this.filling,
-      'points': [],
-      'type': Graphics.POLY
-    };
+    this.currentPath = new GraphicData(
+      lineWidth: this.lineWidth,
+      lineColor: this.lineColor,
+      lineAlpha: this.lineAlpha,
+      fillColor: this.fillColor,
+      fillAlpha: this.fillAlpha,
+      fill: this.filling,
+      points: [],
+      type: Graphics.POLY
+    );
 
     this.graphicsData.add(this.currentPath);
 
@@ -193,21 +216,21 @@ class Graphics extends DisplayObjectContainer {
  * @param x {Number} the X coordinate to move to
  * @param y {Number} the Y coordinate to move to
  */
-  void moveTo(int x, int y) {
-    if (this.currentPath['points'].length == 0) this.graphicsData.removeLast();
+  void moveTo(num x, num y) {
+    if (this.currentPath.points.length == 0) this.graphicsData.removeLast();
 
-    this.currentPath = {
-      'lineWidth': this.lineWidth,
-      'lineColor': this.lineColor,
-      'lineAlpha': this.lineAlpha,
-      'fillColor': this.fillColor,
-      'fillAlpha': this.fillAlpha,
-      'fill': this.filling,
-      'points': [],
-      'type': Graphics.POLY
-    };
+    this.currentPath = new GraphicData(
+      lineWidth: this.lineWidth,
+      lineColor: this.lineColor,
+      lineAlpha: this.lineAlpha,
+      fillColor: this.fillColor,
+      fillAlpha: this.fillAlpha,
+      fill: this.filling,
+      points: [],
+      type: Graphics.POLY
+    );
 
-    this.currentPath['points'].add(x, y);
+    this.currentPath.points.addAll([x.toDouble(), y.toDouble()]);
 
     this.graphicsData.add(this.currentPath);
 
@@ -221,8 +244,8 @@ class Graphics extends DisplayObjectContainer {
  * @param x {Number} the X coordinate to draw to
  * @param y {Number} the Y coordinate to draw to
  */
-  void lineTo(int x, int y) {
-    this.currentPath['points'].add(x, y);
+  void lineTo(num x, num y) {
+    this.currentPath.points.addAll([x.toDouble(), y.toDouble()]);
     this.dirty = true;
 
   }
@@ -235,7 +258,7 @@ class Graphics extends DisplayObjectContainer {
  * @param color {Number} the color of the fill
  * @param alpha {Number} the alpha of the fill
  */
-  beginFill([String color = "black", double alpha = 1.0]) {
+  beginFill([int color = 0x000000, double alpha = 1.0]) {
 
     this.filling = true;
     this.fillColor = color;
@@ -262,19 +285,19 @@ class Graphics extends DisplayObjectContainer {
  * @param width {Number} The width of the rectangle
  * @param height {Number} The height of the rectangle
  */
-  void drawRect(int x, int y, int width, int height) {
-    if (this.currentPath['points'].length == 0) this.graphicsData.removeLast();
+  void drawRect(num x, num y, num width, num height) {
+    if (this.currentPath.points.length == 0) this.graphicsData.removeLast();
 
-    this.currentPath = {
-      'lineWidth': this.lineWidth,
-      'lineColor': this.lineColor,
-      'lineAlpha': this.lineAlpha,
-      'fillColor': this.fillColor,
-      'fillAlpha': this.fillAlpha,
-      'fill': this.filling,
-      'points': [x, y, width, height],
-      'type': Graphics.RECT
-    };
+    this.currentPath = new GraphicData(
+      lineWidth: this.lineWidth,
+      lineColor: this.lineColor,
+      lineAlpha: this.lineAlpha,
+      fillColor: this.fillColor,
+      fillAlpha: this.fillAlpha,
+      fill: this.filling,
+      points: [x.toDouble(), y.toDouble(), width.toDouble(), height.toDouble()],
+      type: Graphics.RECT
+    );
 
     this.graphicsData.add(this.currentPath);
     this.dirty = true;
@@ -289,20 +312,20 @@ class Graphics extends DisplayObjectContainer {
  * @param y {Number} The Y coordinate of the center of the circle
  * @param radius {Number} The radius of the circle
  */
-  void drawCircle(int x, int y, double radius) {
+  void drawCircle(num x, num y, double radius) {
 
-    if (this.currentPath['points'].length == 0) this.graphicsData.removeLast();
+    if (this.currentPath.points.length == 0) this.graphicsData.removeLast();
 
-    this.currentPath = {
-      'lineWidth': this.lineWidth,
-      'lineColor': this.lineColor,
-      'lineAlpha': this.lineAlpha,
-      'fillColor': this.fillColor,
-      'fillAlpha': this.fillAlpha,
-      'fill': this.filling,
-      'points': [x, y, radius, radius],
-      'type': Graphics.CIRC
-    };
+    this.currentPath = new GraphicData(
+      lineWidth: this.lineWidth,
+      lineColor: this.lineColor,
+      lineAlpha: this.lineAlpha,
+      fillColor: this.fillColor,
+      fillAlpha: this.fillAlpha,
+      fill: this.filling,
+      points: [x.toDouble(), y.toDouble(), radius, radius],
+      type: Graphics.CIRC
+    );
 
     this.graphicsData.add(this.currentPath);
     this.dirty = true;
@@ -318,20 +341,20 @@ class Graphics extends DisplayObjectContainer {
  * @param width {Number} The width of the ellipse
  * @param height {Number} The height of the ellipse
  */
-  void drawEllipse(int x, int y, int width, int height) {
+  void drawEllipse(num x, num y, num width, num height) {
 
-    if (this.currentPath['points'].length == 0) this.graphicsData.removeLast();
+    if (this.currentPath.points.length == 0) this.graphicsData.removeLast();
 
-    this.currentPath = {
-      'lineWidth': this.lineWidth,
-      'lineColor': this.lineColor,
-      'lineAlpha': this.lineAlpha,
-      'fillColor': this.fillColor,
-      'fillAlpha': this.fillAlpha,
-      'fill': this.filling,
-      'points': [x, y, width, height],
-      'type': Graphics.ELIP
-    };
+    this.currentPath = new GraphicData(
+      lineWidth: this.lineWidth,
+      lineColor: this.lineColor,
+      lineAlpha: this.lineAlpha,
+      fillColor: this.fillColor,
+      fillAlpha: this.fillAlpha,
+      fill: this.filling,
+      points: [x.toDouble(), y.toDouble(), width.toDouble(), height.toDouble()],
+      type: Graphics.ELIP
+    );
 
     this.graphicsData.add(this.currentPath);
     this.dirty = true;
@@ -555,11 +578,11 @@ class Graphics extends DisplayObjectContainer {
     double x, y, w, h;
 
     for (int i = 0; i < this.graphicsData.length; i++) {
-      Map data = this.graphicsData[i];
-      int type = data['type'];
-      int lineWidth = data['lineWidth'];
+      GraphicData data = this.graphicsData[i];
+      int type = data.type;
+      int lineWidth = data.lineWidth;
 
-      points = data['points'];
+      points = data.points;
 
       if (type == Graphics.RECT) {
         x = points[0] - lineWidth / 2;

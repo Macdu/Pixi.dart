@@ -3,12 +3,36 @@ part of pixi;
  * @author Mat Groves http://matgroves.com/ @Doormat23
  */
 
-class WebGLGraphics {
-  /**
+class WebGLGraphicData {
+
+  List<double> points;
+  List<int> indices;
+  int lastIndex;
+  Buffer buffer;
+  Buffer indexBuffer;
+  Float32List glPoints;
+  Uint16List glIndicies;
+
+  WebGLGraphicData({
+    this.points,
+    this.indices,
+    this.lastIndex, 
+    this.buffer,
+    this.indexBuffer,
+    this.glPoints,
+    this.glIndicies
+    });
+
+}
+
+/**
  * A set of functions used by the webGL renderer to draw the primitive graphics data
  *
  * @class WebGLGraphics
+ * @private
+ * @static
  */
+class WebGLGraphics {
 
   /**
  * Renders the graphics object
@@ -28,15 +52,14 @@ class WebGLGraphics {
 
     int id = WebGLRenderer._getIndexFirst(gl);
 
-    if (graphics._webGL[id] == null) graphics._webGL[id] = {
-      'points': [],
-      'indices': [],
-      'lastIndex': 0,
-      'buffer': gl.createBuffer(),
-      'indexBuffer': gl.createBuffer()
-    };
+    if (graphics._webGL.length <= id || graphics._webGL[id] == null) {
 
-    Map webGL = graphics._webGL[id];
+      WebGLGraphicData data = new WebGLGraphicData(points: [], indices: [], lastIndex: 0, buffer: gl.createBuffer(), indexBuffer: gl.createBuffer());
+
+      if (graphics._webGL.length <= id) graphics._webGL.add(data); else graphics._webGL[id] = data;
+    }
+
+    WebGLGraphicData webGL = graphics._webGL[id];
 
     if (graphics.dirty) {
       graphics.dirty = false;
@@ -44,9 +67,9 @@ class WebGLGraphics {
       if (graphics.clearDirty) {
         graphics.clearDirty = false;
 
-        webGL['lastIndex'] = 0;
-        webGL['points'] = [];
-        webGL['indices'] = [];
+        webGL.lastIndex = 0;
+        webGL.points = [];
+        webGL.indices = [];
 
       }
 
@@ -65,21 +88,18 @@ class WebGLGraphics {
     gl.uniform2f(shader.projectionVector, projection.x, -projection.y);
     gl.uniform2f(shader.offsetVector, -offset.x, -offset.y);
 
-    gl.uniform3fv(shader.tintColor, new Float32List.fromList(hex2rgb(graphics.tint).fold(
-        new List<double>(), 
-          (List<double> liste, int value)=>liste..add(value.toDouble())
-          )));
+    gl.uniform3fv(shader.tintColor, new Float32List.fromList(hex2rgb(graphics.tint)));
 
     gl.uniform1f(shader.alpha, graphics.worldAlpha);
-    gl.bindBuffer(ARRAY_BUFFER, webGL['buffer']);
+    gl.bindBuffer(ARRAY_BUFFER, webGL.buffer);
 
     gl.vertexAttribPointer(shader.aVertexPosition, 2, FLOAT, false, 4 * 6, 0);
     gl.vertexAttribPointer(shader.colorAttribute, 4, FLOAT, false, 4 * 6, 2 * 4);
 
     // set the index buffer!
-    gl.bindBuffer(ELEMENT_ARRAY_BUFFER, webGL['indexBuffer']);
+    gl.bindBuffer(ELEMENT_ARRAY_BUFFER, webGL.indexBuffer);
 
-    gl.drawElements(TRIANGLE_STRIP, webGL['indices'].length, UNSIGNED_SHORT, 0);
+    gl.drawElements(TRIANGLE_STRIP, webGL.indices.length, UNSIGNED_SHORT, 0);
 
     renderSession.shaderManager.deactivatePrimitiveShader();
 
@@ -97,39 +117,41 @@ class WebGLGraphics {
  * @param gl {WebGLContext} the current WebGL drawing context
  */
   static void updateGraphics(Graphics graphics, RenderingContext gl) {
-    Map webGL = graphics._webGL[WebGLRenderer._getIndexFirst(gl)];
 
-    for (int i = webGL['lastIndex']; i < graphics.graphicsData.length; i++) {
-      Map data = graphics.graphicsData[i];
+    int id = WebGLRenderer._getIndexFirst(gl);
+    WebGLGraphicData webGL = graphics._webGL[id];
 
-      if (data['type'] == Graphics.POLY) {
-        if (data['fill']) {
-          if (data['points'].length > 3) WebGLGraphics.buildPoly(data, webGL);
+    for (int i = webGL.lastIndex; i < graphics.graphicsData.length; i++) {
+      GraphicData data = graphics.graphicsData[i];
+
+      if (data.type == Graphics.POLY) {
+        if (data.fill) {
+          if (data.points.length > 3) WebGLGraphics.buildPoly(data, webGL);
         }
 
-        if (data['lineWidth'] > 0) {
+        if (data.lineWidth > 0) {
           WebGLGraphics.buildLine(data, webGL);
         }
-      } else if (data['type'] == Graphics.RECT) {
+      } else if (data.type == Graphics.RECT) {
         WebGLGraphics.buildRectangle(data, webGL);
-      } else if (data['type'] = Graphics.CIRC || data['type'] == Graphics.ELIP) {
+      } else if (data.type == Graphics.CIRC || data.type == Graphics.ELIP) {
         WebGLGraphics.buildCircle(data, webGL);
       }
     }
 
-    webGL['lastIndex'] = graphics.graphicsData.length;
+    webGL.lastIndex = graphics.graphicsData.length;
 
 
 
-    webGL['glPoints'] = new Float32List.fromList(webGL['points']);
+    webGL.glPoints = new Float32List.fromList(webGL.points);
 
-    gl.bindBuffer(ARRAY_BUFFER, webGL['buffer']);
-    gl.bufferData(ARRAY_BUFFER, webGL['glPoints'], STATIC_DRAW);
+    gl.bindBuffer(ARRAY_BUFFER, webGL.buffer);
+    gl.bufferData(ARRAY_BUFFER, webGL.glPoints, STATIC_DRAW);
 
-    webGL['glIndicies'] = new Uint16List.fromList(webGL['indices']);
+    webGL.glIndicies = new Uint16List.fromList(webGL.indices);
 
-    gl.bindBuffer(ELEMENT_ARRAY_BUFFER, webGL['indexBuffer']);
-    gl.bufferData(ELEMENT_ARRAY_BUFFER, webGL['glIndicies'], STATIC_DRAW);
+    gl.bindBuffer(ELEMENT_ARRAY_BUFFER, webGL.indexBuffer);
+    gl.bufferData(ELEMENT_ARRAY_BUFFER, webGL.glIndicies, STATIC_DRAW);
   }
 
   /**
@@ -141,29 +163,29 @@ class WebGLGraphics {
  * @param graphicsData {Graphics} The graphics object containing all the necessary properties
  * @param webGLData {Object}
  */
-  static void buildRectangle(Map graphicsData, Map webGLData) {
+  static void buildRectangle(GraphicData graphicsData, WebGLGraphicData webGLData) {
     // --- //
     // need to convert points to a nice regular data
     //
-    List<int> rectData = graphicsData['points'];
-    int x = rectData[0];
-    int y = rectData[1];
-    int width = rectData[2];
-    int height = rectData[3];
+    List<double> rectData = graphicsData.points;
+    double x = rectData[0];
+    double y = rectData[1];
+    double width = rectData[2];
+    double height = rectData[3];
 
 
-    if (graphicsData.containsKey('fill')) {
-      List<int> color = hex2rgb(graphicsData['fillColor']);
-      double alpha = graphicsData['fillAlpha'];
+    if (graphicsData.fill) {
+      List<num> color = hex2rgb(graphicsData.fillColor);
+      double alpha = graphicsData.fillAlpha;
 
       double r = color[0] * alpha;
       double g = color[1] * alpha;
       double b = color[2] * alpha;
 
-      List verts = webGLData['points'];
-      List indices = webGLData['indices'];
+      List verts = webGLData.points;
+      List indices = webGLData.indices;
 
-      double vertPos = verts.length / 6;
+      int vertPos = verts.length ~/ 6;
 
       // start
       verts.addAll([x, y]);
@@ -172,25 +194,25 @@ class WebGLGraphics {
       verts.addAll([x + width, y]);
       verts.addAll([r, g, b, alpha]);
 
-      verts.add([x, y + height]);
-      verts.add([r, g, b, alpha]);
+      verts.addAll([x, y + height]);
+      verts.addAll([r, g, b, alpha]);
 
-      verts.add([x + width, y + height]);
-      verts.add([r, g, b, alpha]);
+      verts.addAll([x + width, y + height]);
+      verts.addAll([r, g, b, alpha]);
 
       // insert 2 dead triangles..
       indices.addAll([vertPos, vertPos, vertPos + 1, vertPos + 2, vertPos + 3, vertPos + 3]);
     }
 
-    if (graphicsData.containsKey('lineWidth')) {
-      List tempPoints = graphicsData['points'];
+    if (graphicsData.lineWidth != null) {
+      List<double> tempPoints = graphicsData.points;
 
-      graphicsData['points'] = [x, y, x + width, y, x + width, y + height, x, y + height, x, y];
+      graphicsData.points = [x, y, x + width, y, x + width, y + height, x, y + height, x, y];
 
 
       WebGLGraphics.buildLine(graphicsData, webGLData);
 
-      graphicsData['points'] = tempPoints;
+      graphicsData.points = tempPoints;
     }
   }
 
@@ -203,32 +225,32 @@ class WebGLGraphics {
  * @param graphicsData {Graphics} The graphics object to draw
  * @param webGLData {Object}
  */
-  static void buildCircle(Map graphicsData, Map webGLData) {
+  static void buildCircle(GraphicData graphicsData, WebGLGraphicData webGLData) {
 
     // need to convert points to a nice regular data
-    List rectData = graphicsData['points'];
-    int x = rectData[0];
-    int y = rectData[1];
-    int width = rectData[2];
-    int height = rectData[3];
+    List<double> rectData = graphicsData.points;
+    double x = rectData[0];
+    double y = rectData[1];
+    double width = rectData[2];
+    double height = rectData[3];
 
     int totalSegs = 40;
     double seg = (Math.PI * 2) / totalSegs;
 
     int i = 0;
 
-    if (graphicsData.containsKey('fill')) {
-      List color = hex2rgb(graphicsData['fillColor']);
-      double alpha = graphicsData['fillAlpha'];
+    if (graphicsData.fill) {
+      List<num> color = hex2rgb(graphicsData.fillColor);
+      double alpha = graphicsData.fillAlpha;
 
       double r = color[0] * alpha;
       double g = color[1] * alpha;
       double b = color[2] * alpha;
 
-      List verts = webGLData['points'];
-      List indices = webGLData['indices'];
+      List verts = webGLData.points;
+      List indices = webGLData.indices;
 
-      double vecPos = verts.length / 6;
+      int vecPos = verts.length ~/ 6;
 
       indices.add(vecPos);
 
@@ -237,24 +259,24 @@ class WebGLGraphics {
 
         verts.addAll([x + Math.sin(seg * i) * width, y + Math.cos(seg * i) * height, r, g, b, alpha]);
 
-        indices.add([vecPos++, vecPos++]);
+        indices.addAll([vecPos++, vecPos++]);
       }
 
       indices.add(vecPos - 1);
     }
 
-    if (graphicsData.containsKey('lineWidth')) {
-      List tempPoints = graphicsData['points'];
+    if (graphicsData.lineWidth != null) {
+      List tempPoints = graphicsData.points;
 
-      graphicsData['points'] = [];
+      graphicsData.points = [];
 
       for (i = 0; i < totalSegs + 1; i++) {
-        graphicsData['points'].addAll([x + Math.sin(seg * i) * width, y + Math.cos(seg * i) * height]);
+        graphicsData.points.addAll([x + Math.sin(seg * i) * width, y + Math.cos(seg * i) * height]);
       }
 
       WebGLGraphics.buildLine(graphicsData, webGLData);
 
-      graphicsData['points'] = tempPoints;
+      graphicsData.points = tempPoints;
     }
   }
 
@@ -267,15 +289,15 @@ class WebGLGraphics {
  * @param graphicsData {Graphics} The graphics object containing all the necessary properties
  * @param webGLData {Object}
  */
-  static void buildLine(Map graphicsData, Map webGLData) {
+  static void buildLine(GraphicData graphicsData, WebGLGraphicData webGLData) {
     // TODO OPTIMISE!
     int i = 0;
 
-    List points = graphicsData['points'];
+    List<double> points = graphicsData.points;
     if (points.length == 0) return;
 
     // if the line width is an odd number add 0.5 to align to a whole pixel
-    if (graphicsData['lineWidth'] % 2 == 1) {
+    if (graphicsData.lineWidth % 2 != 0) {
       for (i = 0; i < points.length; i++) {
         points[i] += 0.5;
       }
@@ -283,7 +305,7 @@ class WebGLGraphics {
 
     // get first and last point.. figure out the middle!
     Point firstPoint = new Point(points[0], points[1]);
-    Point lastPoint = new Point(points[points.length - 2], points.last);
+    Point lastPoint = new Point(points[points.length - 2], points[points.length - 1]);
 
     // if the first point is the last point - gonna have issues :)
     if (firstPoint.x == lastPoint.x && firstPoint.y == lastPoint.y) {
@@ -299,26 +321,26 @@ class WebGLGraphics {
       points.addAll([midPointX, midPointY]);
     }
 
-    List verts = webGLData['points'];
-    List indices = webGLData['indices'];
+    List verts = webGLData.points;
+    List<int> indices = webGLData.indices;
     double length = points.length / 2;
-    double indexCount = points.length.toDouble();
-    double indexStart = verts.length / 6;
+    int indexCount = points.length;
+    int indexStart = verts.length ~/ 6;
 
     // DRAW the Line
-    double width = graphicsData['lineWidth'] / 2;
+    double width = graphicsData.lineWidth / 2;
 
     // sort color
-    List color = hex2rgb(graphicsData['lineColor']);
-    double alpha = graphicsData['lineAlpha'];
+    List<num> color = hex2rgb(graphicsData.lineColor);
+    double alpha = graphicsData.lineAlpha;
     double r = color[0] * alpha;
     double g = color[1] * alpha;
     double b = color[2] * alpha;
 
-    num px, py, p1x, p1y, p2x, p2y, p3x, p3y;
-    num perpx, perpy, perp2x, perp2y, perp3x, perp3y;
-    num a1, b1, c1, a2, b2, c2;
-    num denom, pdist, dist;
+    double px, py, p1x, p1y, p2x, p2y, p3x, p3y;
+    double perpx, perpy, perp2x, perp2y, perp3x, perp3y;
+    double a1, b1, c1, a2, b2, c2;
+    double denom, pdist, dist;
 
     p1x = points[0];
     p1y = points[1];
@@ -426,10 +448,10 @@ class WebGLGraphics {
     }
 
     p1x = points[((length - 2) * 2).toInt()];
-    p1y = points[((length - 2) * 2 + 1).toInt()];
+    p1y = points[((length - 2) * 2).toInt() + 1];
 
     p2x = points[((length - 1) * 2).toInt()];
-    p2y = points[((length - 1) * 2 + 1).toInt()];
+    p2y = points[((length - 1) * 2).toInt() + 1];
 
     perpx = -(p1y - p2y);
     perpy = p1x - p2x;
@@ -464,26 +486,26 @@ class WebGLGraphics {
  * @param graphicsData {Graphics} The graphics object containing all the necessary properties
  * @param webGLData {Object}
  */
-  static void buildPoly(Map graphicsData, Map webGLData) {
-    List points = graphicsData['points'];
+  static void buildPoly(GraphicData graphicsData, WebGLGraphicData webGLData) {
+    List<double> points = graphicsData.points;
     if (points.length < 6) return;
 
     // get first and last point.. figure out the middle!
-    List verts = webGLData['points'];
-    List indices = webGLData['indices'];
+    List verts = webGLData.points;
+    List<int> indices = webGLData.indices;
 
-    double length = points.length / 2;
+    int length = points.length ~/ 2;
 
     // sort color
-    List color = hex2rgb(graphicsData['fillColor']);
-    double alpha = graphicsData['fillAlpha'];
+    List<num> color = hex2rgb(graphicsData.fillColor);
+    double alpha = graphicsData.fillAlpha;
     double r = color[0] * alpha;
     double g = color[1] * alpha;
     double b = color[2] * alpha;
 
-    List triangles = Polyk.Triangulate(points);
+    List<int> triangles = Polyk.Triangulate(points.fold(new List<int>(), (List<int> l, double v)=>l..add(v.toInt())));
 
-    double vertPos = verts.length / 6;
+    int vertPos = verts.length ~/ 6;
 
     int i = 0;
 
