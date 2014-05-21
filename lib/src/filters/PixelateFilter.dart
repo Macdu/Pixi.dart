@@ -9,7 +9,7 @@ part of pixi;
  * @class PixelateFilter
  * @contructor
  */
-class PixelareFilter extends AbstractFilter{
+class PixelateFilter extends AbstractFilter{
   
   
   PixelateFilter()
