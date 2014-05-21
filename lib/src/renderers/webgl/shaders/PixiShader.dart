@@ -23,9 +23,14 @@ class PixiShader {
   /**
       * @property {list} fragmentSrc - The fragment shader.
       */
-  List fragmentSrc = ['precision lowp float;', 'varying vec2 vTextureCoord;',
-      'varying vec4 vColor;', 'uniform sampler2D uSampler;', 'void main(void) {',
-      '   gl_FragColor = texture2D(uSampler, vTextureCoord) * vColor ;', '}'];
+  List fragmentSrc = [
+                      'precision lowp float;',
+                      'varying vec2 vTextureCoord;',
+                      'varying vec4 vColor;',
+                      'uniform sampler2D uSampler;',
+                      'void main(void) {',
+                      '   gl_FragColor = texture2D(uSampler, vTextureCoord) * vColor ;',
+                      '}'];
 
   List vertexSrc = null;
 
@@ -133,7 +138,8 @@ class PixiShader {
         if (uniform.containsKey('value')) {
           this.initSampler2D(uniform);
         }
-      } else if (type == "mat2" || type == "mat3" || type == "mat4") {
+      }
+      else if (type == "mat2" || type == "mat3" || type == "mat4") {
         //  These require special handling
         uniform['glMatrix'] = true;
         uniform['glValueLength'] = 1;
@@ -145,7 +151,21 @@ class PixiShader {
         } else if (type == "mat4") {
           uniform['glFunc'] = gl.uniformMatrix4fv;
         }
-      } else {
+      } else if (type == "1fv" || type == "2fv" || type == "3fv" || type == "4fv"){
+          //  These require special handling
+          uniform['glValueLength'] = 1;
+      
+          if (type == "1fv") {
+            uniform['glFunc'] = gl.uniform1fv;
+          } else if (type == "2fv") {
+            uniform['glFunc'] = gl.uniform2fv;
+          } else if (type == "3fv") {
+            uniform['glFunc'] = gl.uniform3fv;
+          } else if (type == "4fv") {
+            uniform['glFunc'] = gl.uniform4fv;
+          }
+      }
+      else {
         //  GL function reference
         //TODO: don't know what to do
         //uniform['setReferenceGLFunction();
@@ -180,30 +200,6 @@ class PixiShader {
     
 
   }
-  
-  
-  static final List<int> _textureNumber = [
-                                           TEXTURE0,
-                                           TEXTURE2,
-                                           TEXTURE3,
-                                           TEXTURE4,
-                                           TEXTURE5,
-                                           TEXTURE6,
-                                           TEXTURE7,
-                                           TEXTURE8,
-                                           TEXTURE9,
-                                           TEXTURE10,
-                                           TEXTURE11,
-                                           TEXTURE12,
-                                           TEXTURE13,
-                                           TEXTURE14,
-                                           TEXTURE15,
-                                           TEXTURE16,
-                                           TEXTURE17,
-                                           TEXTURE18,
-                                           TEXTURE19,
-                                           
-                                           ];
 
   /**
 * Initialises a Sampler2D uniform (which may only be available later on after initUniforms once the texture has loaded)
@@ -218,8 +214,12 @@ class PixiShader {
 
     RenderingContext gl = this.gl;
 
-    gl.activeTexture(_textureNumber[this.textureCount]);
-    gl.bindTexture(TEXTURE_2D, uniform['value'].baseTexture._glTextures[WebGLRenderer._getIndexFirst(gl)]);
+    gl.activeTexture(TEXTURE0 + this.textureCount);
+    int id = WebGLRenderer._getIndexFirst(gl);
+    if(uniform['value'].baseTexture._glTextures.length <= id || uniform['value'].baseTexture._glTextures[id] == null){
+      gl.bindTexture(TEXTURE_2D, null);
+    }
+    else gl.bindTexture(TEXTURE_2D, uniform['value'].baseTexture._glTextures[id]);
 
     //  Extended texture data
     if (uniform.containsKey('textureData')) {
@@ -297,6 +297,8 @@ class PixiShader {
         if (uniform['glMatrix'] == true) {
           uniform['glFunc'](uniform['uniformLocation'], uniform['transpose'],
               getFloat32ListFromIntList(uniform['value']));
+        } else if(uniform['value'] is List<num>){
+          uniform['glFunc'](uniform['uniformLocation'],getFloat32ListFromIntList(uniform['value']));
         } else {
           uniform['glFunc'](uniform['uniformLocation'],uniform['value']);
         }
@@ -311,11 +313,11 @@ class PixiShader {
             uniform['value']['y'], uniform['value']['z'], uniform['value']['w']);
       } else if (uniform['type'] == 'sampler2D') {
         if (uniform['_init']) {
-          gl.activeTexture(_textureNumber[this.textureCount]);
+          gl.activeTexture(TEXTURE0 + this.textureCount);
           gl.bindTexture(TEXTURE_2D,
-              (uniform['value'].baseTexture._glTextures[WebGLRenderer._getIndexFirst(gl)] !=
-              null) ? uniform['value'].baseTexture._glTextures[WebGLRenderer._getIndexFirst(gl)]
-              : WebGLRenderer.createWebGLTexture(uniform['value'].baseTexture, gl));
+              (uniform['value'].baseTexture._glTextures.length > WebGLRenderer._getIndexFirst(gl))
+               ? uniform['value'].baseTexture._glTextures[WebGLRenderer._getIndexFirst(gl)]
+              : WebGLRenderer.createWebGLTextureFromBaseTexture(uniform['value'].baseTexture, gl));
           gl.uniform1i(uniform['uniformLocation'], this.textureCount);
           this.textureCount++;
         } else {

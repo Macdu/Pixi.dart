@@ -5,14 +5,14 @@ part of pixi;
 
 class FilterTexture {
 
-  RenderingContext gl;
-
-  // next time to create a frame buffer and texture
   Framebuffer frameBuffer;
+
   var texture;
 
-  int width;
-  int height;
+  double width;
+  double height;
+
+  RenderingContext gl;
 
   /**
 * @class FilterTexture
@@ -22,7 +22,7 @@ class FilterTexture {
 * @param height {Number} the vertical range of the filter
 * @private
 */
-  FilterTexture(RenderingContext gl, int width, int height) {
+  FilterTexture(RenderingContext gl, double width, double height) {
     /**
      * @property gl
      * @type WebGLContext
@@ -38,11 +38,10 @@ class FilterTexture {
     gl.texParameteri(TEXTURE_2D, TEXTURE_MIN_FILTER, LINEAR);
     gl.texParameteri(TEXTURE_2D, TEXTURE_WRAP_S, CLAMP_TO_EDGE);
     gl.texParameteri(TEXTURE_2D, TEXTURE_WRAP_T, CLAMP_TO_EDGE);
-    gl.bindFramebuffer(FRAMEBUFFER, this.frameBuffer);
+    //gl.bindFramebuffer(FRAMEBUFFER, this.framebuffer );
 
     gl.bindFramebuffer(FRAMEBUFFER, this.frameBuffer);
-    gl.framebufferTexture2D(FRAMEBUFFER, COLOR_ATTACHMENT0, TEXTURE_2D,
-        this.texture, 0);
+    gl.framebufferTexture2D(FRAMEBUFFER, COLOR_ATTACHMENT0, TEXTURE_2D, this.texture, 0);
 
     this.resize(width, height);
   }
@@ -66,7 +65,7 @@ class FilterTexture {
  * @param width {Number} the new width of the texture
  * @param height {Number} the new height of the texture
  */
-  void resize(int width, int height) {
+  void resize(double width, double height) {
     if (this.width == width && this.height == height) return;
 
     this.width = width;
@@ -75,8 +74,7 @@ class FilterTexture {
     RenderingContext gl = this.gl;
 
     gl.bindTexture(TEXTURE_2D, this.texture);
-    gl.texImage2D(TEXTURE_2D, 0, RGBA, width, height, 0, RGBA, UNSIGNED_BYTE,
-        null);
+    gl.texImage2D(TEXTURE_2D, 0, RGBA, width.toInt(), height.toInt(), 0, RGBA, UNSIGNED_BYTE, null);
 
   }
 
@@ -92,4 +90,5 @@ class FilterTexture {
     this.frameBuffer = null;
     this.texture = null;
   }
+
 }

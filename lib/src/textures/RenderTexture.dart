@@ -25,7 +25,7 @@ part of pixi;
     doc.addChild(sprite);
     renderTexture.render(doc);  // Renders to center of renderTexture
 **/
-class RenderTexture extends EventTarget {
+class RenderTexture extends EventTarget implements Texture{
 
   /**
        * The with of the render texture
@@ -117,8 +117,11 @@ class RenderTexture extends EventTarget {
     if (this.renderer is WebGLRenderer) {
       RenderingContext gl = this.renderer.gl;
 
-      this.textureBuffer = new FilterTexture(gl, this.width, this.height);
-      this.baseTexture._glTextures[WebGLRenderer._getIndexFirst(gl)] = this.textureBuffer.texture;
+      this.textureBuffer = new FilterTexture(gl, this.width.toDouble(), this.height.toDouble());
+      if(WebGLRenderer._getIndexFirst(gl) < this.baseTexture._glTextures.length){
+        this.baseTexture._glTextures[WebGLRenderer._getIndexFirst(gl)] = this.textureBuffer.texture;
+      }
+      else this.baseTexture._glTextures.add(this.textureBuffer.texture);
 
       this.render = this.renderWebGL;
       this.projection = new Point(this.width / 2, -this.height / 2);
@@ -163,16 +166,16 @@ class RenderTexture extends EventTarget {
  * @private
  */
   void renderWebGL(DisplayObjectContainer displayObject, [Point position = null, bool clear = false]) {
-    //TODO replace position with matrix..
+    //TOOD replace position with matrix..
     RenderingContext gl = (this.renderer as WebGLRenderer).gl;
 
     gl.colorMask(true, true, true, true);
 
     gl.viewport(0, 0, this.width, this.height);
 
-    gl.bindFramebuffer(FRAMEBUFFER, this.textureBuffer.frameBuffer);
+    gl.bindFramebuffer(FRAMEBUFFER, this.textureBuffer.frameBuffer );
 
-    if (clear) this.textureBuffer.clear();
+    if(clear)this.textureBuffer.clear();
 
     // THIS WILL MESS WITH HIT TESTING!
     List<DisplayObject> children = displayObject.children;
@@ -181,23 +184,24 @@ class RenderTexture extends EventTarget {
     Matrix originalWorldTransform = displayObject.worldTransform;
     displayObject.worldTransform = RenderTexture.tempMatrix;
     // modify to flip...
-    displayObject.worldTransform.d = -1.toDouble();
-    displayObject.worldTransform.ty = this.projection.y * -2;
+    displayObject.worldTransform.d = -1.0;
+    displayObject.worldTransform.ty = this.projection.y * -2.0;
 
-    if (position != null) {
-      displayObject.worldTransform.tx = position.x;
-      displayObject.worldTransform.ty -= position.y;
+    if(position != null)
+    {
+        displayObject.worldTransform.tx = position.x;
+        displayObject.worldTransform.ty -= position.y;
     }
 
-    for (int i = 0,
-        j = children.length; i < j; i++) {
-      children[i].updateTransform();
+    for(int i=0,j=children.length; i<j; i++)
+    {
+        children[i].updateTransform();
     }
 
     // update the textures!
     WebGLRenderer.updateTextures();
 
-    //
+    // 
     (this.renderer as WebGLRenderer).renderDisplayObject(displayObject, this.projection, this.textureBuffer.frameBuffer);
 
     displayObject.worldTransform = originalWorldTransform;
@@ -238,5 +242,56 @@ class RenderTexture extends EventTarget {
 
   static Matrix tempMatrix = new Matrix();
 
+
+
+  // TODO: implement _glTextures
+  @override
+  List _glTextures;
+
+
+  @override
+  void _load(BaseTexture baseTexture, [Rectangle frame = null]) {
+    // TODO: implement _load
+  }
+
+  @override
+  void _updateWebGLuvs() {
+    // TODO: implement _updateWebGLuvs
+  }
+
+  // TODO: implement _uvs
+  @override
+  TextureUvs _uvs = null;
+
+  @override
+  void destroy([bool destroyBase = false]) {
+    // TODO: implement destroy
+  }
+
+  // TODO: implement noFrame
+  @override
+  bool noFrame = false;
+
+  @override
+  void onBaseTextureLoaded([_]) {
+    // TODO: implement onBaseTextureLoaded
+  }
+
+  @override
+  void setFrame(Rectangle frame) {
+    // TODO: implement setFrame
+  }
+
+  // TODO: implement tintCache
+  @override
+  Map<String, CanvasImageSource> tintCache = {};
+
+  // TODO: implement trim
+  @override
+  Rectangle trim;
+
+  // TODO: implement updateFrame
+  @override
+  bool updateFrame = false;
 
 }
