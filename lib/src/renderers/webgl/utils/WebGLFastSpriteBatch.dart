@@ -265,8 +265,8 @@ class WebGLFastSpriteBatch {
 
     // bind the current texture
 
-    if (!this.currentBaseTexture._glTextures[id]) WebGLRenderer.createWebGLTextureFromBaseTexture(
-        this.currentBaseTexture, gl);
+    if (this.currentBaseTexture._glTextures.length <= id || this.currentBaseTexture._glTextures[id] == null) 
+      WebGLRenderer.createWebGLTextureFromBaseTexture(this.currentBaseTexture, gl);
 
     gl.bindTexture(TEXTURE_2D, this.currentBaseTexture._glTextures[id]
         );// || PIXI.createWebGLTexture(this.currentBaseTexture, gl));

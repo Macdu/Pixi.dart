@@ -25,7 +25,7 @@ part of pixi;
  */
 class SpriteBatch extends DisplayObjectContainer {
 
-  Texture textureThing;
+  //Texture textureThing;
 
   bool ready = false;
 
@@ -33,7 +33,7 @@ class SpriteBatch extends DisplayObjectContainer {
   
   double rotationCache;
 
-  SpriteBatch(this.textureThing): super();
+  SpriteBatch(/*this.textureThing*/): super();
 
   /*
    * Initialises the spriteBatch
@@ -57,7 +57,7 @@ class SpriteBatch extends DisplayObjectContainer {
   * @private
   */
   void _renderWebGL(RenderSession renderSession) {
-    if (!this.visible || this.alpha <= 0 || this.children.length != 0) return;
+    if (!this.visible || this.alpha <= 0 || this.children.length == 0) return;
 
     if (!this.ready) this.initWebGL(renderSession.gl);
 
