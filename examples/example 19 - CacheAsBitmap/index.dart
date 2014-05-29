@@ -31,11 +31,12 @@ void main(){
 
   stage.addChild(alienContainer);
 
-
+  bool isTurning = true;
   stage.mousedown = stage.touchstart = (InteractionData)
   {
+    isTurning = !isTurning;
     //alienContainer.cacheAsBitmap = !alienContainer.cacheAsBitmap
-    window.console.log(alienContainer.getLocalBounds());
+    //window.console.log(alienContainer.getLocalBounds());
 
 //    var sprite = new PIXI.Sprite(alienContainer.generateTexture());
 //    stage.addChild(sprite);
@@ -44,11 +45,14 @@ void main(){
   };
 
   void animate(num _) {
+      
+    if(isTurning){
       // just for fun, lets rotate mr rabbit a little
-      for (int i = 0; i < aliens.length; i++)
-    {
-      Sprite alien = aliens[i];
-      alien.rotation += 0.1;
+        for (int i = 0; i < aliens.length; i++)
+      {
+        Sprite alien = aliens[i];
+        alien.rotation += 0.1;
+      }
     }
 
     count += 0.01;
