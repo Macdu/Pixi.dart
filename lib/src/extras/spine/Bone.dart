@@ -1,3 +1,4 @@
+part of spine;
 /******************************************************************************
  * Spine Runtimes Software License
  * Version 2.1
@@ -28,46 +29,28 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using System;
+class Bone {
+		static bool yDown;
 
-namespace Spine {
-	public class Bone {
-		static public bool yDown;
+		BoneData _data;
+		Bone _parent;
+		double x, y, rotation, scaleX, scaleY;
+		double m00, m01, m10, m11;
+		double worldX, worldY, worldRotation, worldScaleX, worldScaleY;
 
-		internal BoneData data;
-		internal Bone parent;
-		internal float x, y, rotation, scaleX, scaleY;
-		internal float m00, m01, m10, m11;
-		internal float worldX, worldY, worldRotation, worldScaleX, worldScaleY;
-
-		public BoneData Data { get { return data; } }
-		public Bone Parent { get { return parent; } }
-		public float X { get { return x; } set { x = value; } }
-		public float Y { get { return y; } set { y = value; } }
-		public float Rotation { get { return rotation; } set { rotation = value; } }
-		public float ScaleX { get { return scaleX; } set { scaleX = value; } }
-		public float ScaleY { get { return scaleY; } set { scaleY = value; } }
-
-		public float M00 { get { return m00; } }
-		public float M01 { get { return m01; } }
-		public float M10 { get { return m10; } }
-		public float M11 { get { return m11; } }
-		public float WorldX { get { return worldX; } }
-		public float WorldY { get { return worldY; } }
-		public float WorldRotation { get { return worldRotation; } }
-		public float WorldScaleX { get { return worldScaleX; } }
-		public float WorldScaleY { get { return worldScaleY; } }
+		BoneData get data => data;
+		Bone get parent => parent;
 
 		/// <param name="parent">May be null.</param>
-		public Bone (BoneData data, Bone parent) {
-			if (data == null) throw new ArgumentNullException("data cannot be null.");
-			this.data = data;
-			this.parent = parent;
-			SetToSetupPose();
+		Bone (BoneData data, Bone parent) {
+			if (data == null) throw new ArgumentError("data cannot be null.");
+			this._data = data;
+			this._parent = parent;
+			setToSetupPose();
 		}
 
 		/// <summary>Computes the world SRT using the parent bone and the local SRT.</summary>
-		public void UpdateWorldTransform (bool flipX, bool flipY) {
+		void updateWorldTransform (bool flipX, bool flipY) {
 			Bone parent = this.parent;
 			if (parent != null) {
 				worldX = x * parent.m00 + y * parent.m01 + parent.worldX;
@@ -87,9 +70,9 @@ namespace Spine {
 				worldScaleY = scaleY;
 				worldRotation = rotation;
 			}
-			float radians = worldRotation * (float)Math.PI / 180;
-			float cos = (float)Math.Cos(radians);
-			float sin = (float)Math.Sin(radians);
+			double radians = worldRotation * Math.PI / 180;
+			double cos = Math.cos(radians);
+			double sin = Math.sin(radians);
 			m00 = cos * worldScaleX;
 			m10 = sin * worldScaleX;
 			m01 = -sin * worldScaleY;
@@ -104,7 +87,7 @@ namespace Spine {
 			}
 		}
 
-		public void SetToSetupPose () {
+		void setToSetupPose () {
 			BoneData data = this.data;
 			x = data.x;
 			y = data.y;
@@ -113,8 +96,9 @@ namespace Spine {
 			scaleY = data.scaleY;
 		}
 
-		override public String ToString () {
+		@override
+		String toString () {
 			return data.name;
 		}
 	}
-}
+
