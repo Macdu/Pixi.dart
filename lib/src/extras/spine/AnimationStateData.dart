@@ -1,3 +1,4 @@
+part of spine;
 /******************************************************************************
  * Spine Runtimes Software License
  * Version 2.1
@@ -28,42 +29,56 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using System;
-using System.Collections.Generic;
+class _KeyValuePair<TKey,TValue>{
+  
+  TKey key;
+  TValue value;
+  
+  _KeyValuePair(TKey this.key, TValue this.value);
+  
+  @override
+  String toString(){
+    return '[' + key.toString() + ' ,' + value.toString() + ']';
+  }
+  
+}
 
-namespace Spine {
-	public class AnimationStateData {
-		internal SkeletonData skeletonData;
-		private Dictionary<KeyValuePair<Animation, Animation>, float> animationToMixTime = new Dictionary<KeyValuePair<Animation, Animation>, float>();
-		internal float defaultMix;
+class AnimationStateData {
+		SkeletonData _skeletonData;
+		Map<_KeyValuePair<Animation, Animation>, double> animationToMixTime = new Map<_KeyValuePair<Animation, Animation>, double>();
+		double defaultMix;
 
-		public SkeletonData SkeletonData { get { return skeletonData; } }
-		public float DefaultMix { get { return defaultMix; } set { defaultMix = value; } }
+		SkeletonData get skeletonData => skeletonData; 
 
-		public AnimationStateData (SkeletonData skeletonData) {
-			this.skeletonData = skeletonData;
+		AnimationStateData (SkeletonData skeletonData) {
+			this._skeletonData = skeletonData;
 		}
 
-		public void SetMix (String fromName, String toName, float duration) {
-			Animation from = skeletonData.FindAnimation(fromName);
-			if (from == null) throw new ArgumentException("Animation not found: " + fromName);
-			Animation to = skeletonData.FindAnimation(toName);
-			if (to == null) throw new ArgumentException("Animation not found: " + toName);
-			SetMix(from, to, duration);
+		void setMix (fromAnimation_or_name,toAnimation_or_name, double duration) {
+		  Animation from,to;
+		  if(fromAnimation_or_name is String && toAnimation_or_name is String){
+  			from = skeletonData.findAnimation(fromAnimation_or_name);
+  			if (from == null) throw new ArgumentError("Animation not found: " + fromAnimation_or_name);
+  			to = skeletonData.findAnimation(toAnimation_or_name);
+  			if (to == null) throw new ArgumentError("Animation not found: " + toAnimation_or_name);
+  		else if(fromAnimation_or_name is Animation && toAnimation_or_name is Animation){
+  		  from = fromAnimation_or_name;
+  		  to = toAnimation_or_name;
+        if (from == null) throw new ArgumentError("from cannot be null.");
+        if (to == null) throw new ArgumentError("to cannot be null.");
+  		}
+  		else throw new ArgumentError();
+  			
+      _KeyValuePair<Animation, Animation> key = new _KeyValuePair<Animation, Animation>(from, to);
+      animationToMixTime.remove(key);
+      animationToMixTime[key] = duration;
+			
 		}
 
-		public void SetMix (Animation from, Animation to, float duration) {
-			if (from == null) throw new ArgumentNullException("from cannot be null.");
-			if (to == null) throw new ArgumentNullException("to cannot be null.");
-			KeyValuePair<Animation, Animation> key = new KeyValuePair<Animation, Animation>(from, to);
-			animationToMixTime.Remove(key);
-			animationToMixTime.Add(key, duration);
-		}
 
-		public float GetMix (Animation from, Animation to) {
-			KeyValuePair<Animation, Animation> key = new KeyValuePair<Animation, Animation>(from, to);
-			float duration;
-			if (animationToMixTime.TryGetValue(key, out duration)) return duration;
+		double getMix (Animation from, Animation to) {
+			_KeyValuePair<Animation, Animation> key = new _KeyValuePair<Animation, Animation>(from, to);
+			if (animationToMixTime.containsKey(key)) return animationToMixTime[key];
 			return defaultMix;
 		}
 	}
