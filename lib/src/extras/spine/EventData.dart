@@ -1,3 +1,4 @@
+part of spine;
 /******************************************************************************
  * Spine Runtimes Software License
  * Version 2.1
@@ -28,21 +29,21 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using System;
+class EventData {
+  
+    String _name;
+		String get name => _name;
+		int integer;
+		double float;
+		String string;
 
-namespace Spine {
-	public class Event {
-		public EventData Data { get; private set; }
-		public int Int { get; set; }
-		public float Float { get; set; }
-		public String String { get; set; }
-
-		public Event (EventData data) {
-			Data = data;
+		EventData (String name) {
+			if (name == null) throw new ArgumentError("name cannot be null.");
+			this._name = name;
 		}
 
-		override public String ToString () {
-			return Data.Name;
+		@override
+		String toString () {
+			return name;
 		}
 	}
-}

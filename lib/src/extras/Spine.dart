@@ -9,3 +9,5 @@ part 'spine/AnimationStateData.dart';
 part 'spine/Atlas.dart';
 part 'spine/Bone.dart';
 part 'spine/BoneData.dart';
+part 'spine/Event.dart';
+part 'spine/EventData.dart';
