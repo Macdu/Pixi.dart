@@ -1,3 +1,4 @@
+part of spine;
 /******************************************************************************
  * Spine Runtimes Software License
  * Version 2.1
@@ -28,36 +29,27 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using System;
-
-namespace Spine {
-	public class BoneData {
-		internal BoneData parent;
-		internal String name;
-		internal float length, x, y, rotation, scaleX = 1, scaleY = 1;
-		internal bool inheritScale = true, inheritRotation = true;
+class BoneData {
+  
+		BoneData _parent;
+		String _name;
+		double length, x, y, rotation, scaleX = 1.0, scaleY = 1.0;
+		bool inheritScale = true, inheritRotation = true;
 
 		/// <summary>May be null.</summary>
-		public BoneData Parent { get { return parent; } }
-		public String Name { get { return name; } }
-		public float Length { get { return length; } set { length = value; } }
-		public float X { get { return x; } set { x = value; } }
-		public float Y { get { return y; } set { y = value; } }
-		public float Rotation { get { return rotation; } set { rotation = value; } }
-		public float ScaleX { get { return scaleX; } set { scaleX = value; } }
-		public float ScaleY { get { return scaleY; } set { scaleY = value; } }
-		public bool InheritScale { get { return inheritScale; } set { inheritScale = value; } }
-		public bool InheritRotation { get { return inheritRotation; } set { inheritRotation = value; } }
+		BoneData get parent => _parent;
+		String get name => _name;
 
 		/// <param name="parent">May be null.</param>
-		public BoneData (String name, BoneData parent) {
-			if (name == null) throw new ArgumentNullException("name cannot be null.");
-			this.name = name;
-			this.parent = parent;
+		BoneData (String name, BoneData parent) {
+			if (name == null) throw new ArgumentError("name cannot be null.");
+			this._name = name;
+			this._parent = parent;
 		}
 
-		override public String ToString () {
+		@override
+    String toString () {
 			return name;
 		}
 	}
-}
+
