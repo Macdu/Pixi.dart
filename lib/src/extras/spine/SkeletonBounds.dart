@@ -1,3 +1,4 @@
+part of spine;
 /******************************************************************************
  * Spine Runtimes Software License
  * Version 2.1
@@ -28,77 +29,69 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using System;
-using System.Collections.Generic;
+class SkeletonBounds {
+  
+		List<Polygon> polygonPool = new List<Polygon>();
+		double minX, minY, maxX, maxY;
+		
+		List<BoundingBoxAttachment> _boundingBoxes = new List<BoundingBoxAttachment>();
+		List<Polygon> _polygons = new List<Polygon>();
 
-namespace Spine {
-	public class SkeletonBounds {
-		private List<Polygon> polygonPool = new List<Polygon>();
-		private float minX, minY, maxX, maxY;
+		List<BoundingBoxAttachment> get boundingBoxes => _boundingBoxes;
+		List<Polygon> get polygons => _polygons;
+		double get width => maxX - minX;
+		double get height => maxY - minY;
 
-		public List<BoundingBoxAttachment> BoundingBoxes { get; private set; }
-		public List<Polygon> Polygons { get; private set; }
-		public float MinX { get { return minX; } set { minX = value; } }
-		public float MinY { get { return minY; } set { minY = value; } }
-		public float MaxX { get { return maxX; } set { maxX = value; } }
-		public float MaxY { get { return maxY; } set { maxY = value; } }
-		public float Width { get { return maxX - minX; } }
-		public float Height { get { return maxY - minY; } }
-
-		public SkeletonBounds () {
-			BoundingBoxes = new List<BoundingBoxAttachment>();
-			Polygons = new List<Polygon>();
-		}
-
-		public void Update (Skeleton skeleton, bool updateAabb) {
-			List<BoundingBoxAttachment> boundingBoxes = BoundingBoxes;
-			List<Polygon> polygons = Polygons;
+		void update (Skeleton skeleton, bool updateAabb) {
+			List<BoundingBoxAttachment> boundingBoxes = _boundingBoxes;
+			List<Polygon> polygons = _polygons;
 			List<Slot> slots = skeleton.slots;
-			int slotCount = slots.Count;
-			float x = skeleton.x, y = skeleton.y;
+			int slotCount = slots.length;
+			double x = skeleton.x, y = skeleton.y;
 
-			boundingBoxes.Clear();
-			foreach (Polygon polygon in polygons)
-				polygonPool.Add(polygon);
-			polygons.Clear();
+			boundingBoxes.clear();
+			for(Polygon polygon in polygons)
+				polygonPool.add(polygon);
+			polygons.clear();
 
 			for (int i = 0; i < slotCount; i++) {
 				Slot slot = slots[i];
 				BoundingBoxAttachment boundingBox = slot.attachment as BoundingBoxAttachment;
 				if (boundingBox == null) continue;
-				boundingBoxes.Add(boundingBox);
+				boundingBoxes.add(boundingBox);
 
 				Polygon polygon = null;
-				int poolCount = polygonPool.Count;
+				int poolCount = polygonPool.length;
 				if (poolCount > 0) {
 					polygon = polygonPool[poolCount - 1];
-					polygonPool.RemoveAt(poolCount - 1);
+					polygonPool.removeAt(poolCount - 1);
 				} else
 					polygon = new Polygon();
-				polygons.Add(polygon);
+				polygons.add(polygon);
 
-				int count = boundingBox.Vertices.Length;
-				polygon.Count = count;
-				if (polygon.Vertices.Length < count) polygon.Vertices = new float[count];
-				boundingBox.ComputeWorldVertices(x, y, slot.bone, polygon.Vertices);
+				int count = boundingBox.vertices.length;
+				polygon.length = count;
+				if (polygon.vertices.length < count) polygon.vertices = new List<double>(count);
+				boundingBox.computeWorldVertices(x, y, slot.bone, polygon.vertices);
 			}
 
 			if (updateAabb) aabbCompute();
 		}
 
-		private void aabbCompute () {
-			float minX = int.MaxValue, minY = int.MaxValue, maxX = int.MinValue, maxY = int.MinValue;
-			List<Polygon> polygons = Polygons;
-			for (int i = 0, n = polygons.Count; i < n; i++) {
+		void aabbCompute () {
+			double minX = double.MAX_FINITE, minY = double.MAX_FINITE,
+			    maxX = -double.MAX_FINITE, maxY = -double.MAX_FINITE;
+			List<Polygon> polygons = _polygons;
+			for (int i = 0, n = polygons.length; i < n; i++) {
 				Polygon polygon = polygons[i];
-				float[] vertices = polygon.Vertices;
-				for (int ii = 0, nn = polygon.Count; ii < nn; ii += 2) {
-					float x = vertices[ii];
-					float y = vertices[ii + 1];
-					minX = Math.Min(minX, x);
-					minY = Math.Min(minY, y);
-					maxX = Math.Max(maxX, x);
-					maxY = Math.Max(maxY, y);
+				List<double> vertices = polygon.vertices;
+				for (int ii = 0, nn = polygon.length; ii < nn; ii += 2) {
+					double x = vertices[ii];
+					double y = vertices[ii + 1];
+					minX = Math.min(minX, x);
+					minY = Math.min(minY, y);
+					maxX = Math.max(maxX, x);
+					maxY = Math.max(maxY, y);
 				}
 			}
 			this.minX = minX;
@@ -109,24 +102,24 @@ namespace Spine {
 
 
 		/// <summary>Returns true if the axis aligned bounding box contains the point.</summary>
-		public bool AabbContainsPoint (float x, float y) {
+		bool aabbContainsPoint (double x, double y) {
 			return x >= minX && x <= maxX && y >= minY && y <= maxY;
 		}
 
 		/// <summary>Returns true if the axis aligned bounding box intersects the line segment.</summary>
-		public bool AabbIntersectsSegment (float x1, float y1, float x2, float y2) {
-			float minX = this.minX;
-			float minY = this.minY;
-			float maxX = this.maxX;
-			float maxY = this.maxY;
+		bool aabbIntersectsSegment (double x1, double y1, double x2, double y2) {
+		  double minX = this.minX;
+		  double minY = this.minY;
+		  double maxX = this.maxX;
+		  double maxY = this.maxY;
 			if ((x1 <= minX && x2 <= minX) || (y1 <= minY && y2 <= minY) || (x1 >= maxX && x2 >= maxX) || (y1 >= maxY && y2 >= maxY))
 				return false;
-			float m = (y2 - y1) / (x2 - x1);
-			float y = m * (minX - x1) + y1;
+			double m = (y2 - y1) / (x2 - x1);
+			double y = m * (minX - x1) + y1;
 			if (y > minY && y < maxY) return true;
 			y = m * (maxX - x1) + y1;
 			if (y > minY && y < maxY) return true;
-			float x = (minY - y1) / m + x1;
+			double x = (minY - y1) / m + x1;
 			if (x > minX && x < maxX) return true;
 			x = (maxY - y1) / m + x1;
 			if (x > minX && x < maxX) return true;
@@ -134,22 +127,22 @@ namespace Spine {
 		}
 
 		/// <summary>Returns true if the axis aligned bounding box intersects the axis aligned bounding box of the specified bounds.</summary>
-		public bool AabbIntersectsSkeleton (SkeletonBounds bounds) {
+		bool aabbIntersectsSkeleton (SkeletonBounds bounds) {
 			return minX < bounds.maxX && maxX > bounds.minX && minY < bounds.maxY && maxY > bounds.minY;
 		}
 
 		/// <summary>Returns true if the polygon contains the point.</summary>
-		public bool ContainsPoint (Polygon polygon, float x, float y) {
-			float[] vertices = polygon.Vertices;
-			int nn = polygon.Count;
+		bool containsPointWithPolygon (Polygon polygon, double x, double y) {
+			List<double> vertices = polygon.vertices;
+			int nn = polygon.length;
 
 			int prevIndex = nn - 2;
 			bool inside = false;
 			for (int ii = 0; ii < nn; ii += 2) {
-				float vertexY = vertices[ii + 1];
-				float prevY = vertices[prevIndex + 1];
+			  double vertexY = vertices[ii + 1];
+			  double prevY = vertices[prevIndex + 1];
 				if ((vertexY < y && prevY >= y) || (prevY < y && vertexY >= y)) {
-					float vertexX = vertices[ii];
+				  double vertexX = vertices[ii];
 					if (vertexX + (y - vertexY) / (prevY - vertexY) * (vertices[prevIndex] - vertexX) < x) inside = !inside;
 				}
 				prevIndex = ii;
@@ -159,38 +152,38 @@ namespace Spine {
 
 		/// <summary>Returns the first bounding box attachment that contains the point, or null. When doing many checks, it is usually more
 		/// efficient to only call this method if {@link #aabbContainsPoint(float, float)} returns true.</summary>
-		public BoundingBoxAttachment ContainsPoint (float x, float y) {
-			List<Polygon> polygons = Polygons;
-			for (int i = 0, n = polygons.Count; i < n; i++)
-				if (ContainsPoint(polygons[i], x, y)) return BoundingBoxes[i];
+		BoundingBoxAttachment containsPoint (double x, double y) {
+			List<Polygon> polygons = _polygons;
+			for (int i = 0, n = polygons.length; i < n; i++)
+				if (containsPointWithPolygon(polygons[i], x, y)) return _boundingBoxes[i];
 			return null;
 		}
 
 		/// <summary>Returns the first bounding box attachment that contains the line segment, or null. When doing many checks, it is usually
 		/// more efficient to only call this method if {@link #aabbIntersectsSegment(float, float, float, float)} returns true.</summary>
-		public BoundingBoxAttachment IntersectsSegment (float x1, float y1, float x2, float y2) {
-			List<Polygon> polygons = Polygons;
-			for (int i = 0, n = polygons.Count; i < n; i++)
-				if (IntersectsSegment(polygons[i], x1, y1, x2, y2)) return BoundingBoxes[i];
+		BoundingBoxAttachment intersectsSegment (double x1, double y1, double x2, double y2) {
+			List<Polygon> polygons = _polygons;
+			for (int i = 0, n = polygons.length; i < n; i++)
+				if (intersectsSegmentWithPolygon(polygons[i], x1, y1, x2, y2)) return _boundingBoxes[i];
 			return null;
 		}
 
 		/// <summary>Returns true if the polygon contains the line segment.</summary>
-		public bool IntersectsSegment (Polygon polygon, float x1, float y1, float x2, float y2) {
-			float[] vertices = polygon.Vertices;
-			int nn = polygon.Count;
+		bool intersectsSegmentWithPolygon (Polygon polygon, double x1, double y1, double x2, double y2) {
+			List<double> vertices = polygon.vertices;
+			int nn = polygon.length;
 
-			float width12 = x1 - x2, height12 = y1 - y2;
-			float det1 = x1 * y2 - y1 * x2;
-			float x3 = vertices[nn - 2], y3 = vertices[nn - 1];
+			double width12 = x1 - x2, height12 = y1 - y2;
+			double det1 = x1 * y2 - y1 * x2;
+			double x3 = vertices[nn - 2], y3 = vertices[nn - 1];
 			for (int ii = 0; ii < nn; ii += 2) {
-				float x4 = vertices[ii], y4 = vertices[ii + 1];
-				float det2 = x3 * y4 - y3 * x4;
-				float width34 = x3 - x4, height34 = y3 - y4;
-				float det3 = width12 * height34 - height12 * width34;
-				float x = (det1 * width34 - width12 * det2) / det3;
+			  double x4 = vertices[ii], y4 = vertices[ii + 1];
+			  double det2 = x3 * y4 - y3 * x4;
+			  double width34 = x3 - x4, height34 = y3 - y4;
+			  double det3 = width12 * height34 - height12 * width34;
+			  double x = (det1 * width34 - width12 * det2) / det3;
 				if (((x >= x3 && x <= x4) || (x >= x4 && x <= x3)) && ((x >= x1 && x <= x2) || (x >= x2 && x <= x1))) {
-					float y = (det1 * height34 - height12 * det2) / det3;
+				  double y = (det1 * height34 - height12 * det2) / det3;
 					if (((y >= y3 && y <= y4) || (y >= y4 && y <= y3)) && ((y >= y1 && y <= y2) || (y >= y2 && y <= y1))) return true;
 				}
 				x3 = x4;
@@ -199,18 +192,14 @@ namespace Spine {
 			return false;
 		}
 
-		public Polygon getPolygon (BoundingBoxAttachment attachment) {
-			int index = BoundingBoxes.IndexOf(attachment);
-			return index == -1 ? null : Polygons[index];
+		Polygon getPolygon (BoundingBoxAttachment attachment) {
+			int index = _boundingBoxes.indexOf(attachment);
+			return index == -1 ? null : _polygons[index];
 		}
 	}
 
-	public class Polygon {
-		public float[] Vertices { get; set; }
-		public int Count { get; set; }
-
-		public Polygon () {
-			Vertices = new float[16];
-		}
+class Polygon {
+		List<double> vertices = new List<double>(16);
+		int length;
 	}
-}
+

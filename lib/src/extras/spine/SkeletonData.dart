@@ -38,8 +38,8 @@ class SkeletonData {
   List<EventData> events = new List<EventData>();
   List<Animation> animations = new List<Animation>();
 
-  List<BoneData> get bones => bones; // Ordered parents first.
-  List<SlotData> get slots => slots; // Setup pose draw order.
+  List<BoneData> get bones => _bones; // Ordered parents first.
+  List<SlotData> get slots => _slots; // Setup pose draw order.
 
   // --- Bones.
 
