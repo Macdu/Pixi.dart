@@ -11,3 +11,4 @@ part 'spine/Bone.dart';
 part 'spine/BoneData.dart';
 part 'spine/Event.dart';
 part 'spine/EventData.dart';
+part 'spine/Skeleton.dart';
