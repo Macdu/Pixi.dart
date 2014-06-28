@@ -120,7 +120,7 @@ class SkeletonData {
   }
 
   /// <returns>May be null.</returns>
-  EventData FindEvent(String eventDataName) {
+  EventData findEvent(String eventDataName) {
     if (eventDataName == null) throw new ArgumentError("eventDataName cannot be null.");
     for (EventData eventData in events) if (eventData.name == eventDataName) return eventData;
     return null;

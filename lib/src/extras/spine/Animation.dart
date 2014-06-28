@@ -438,7 +438,7 @@ class Animation {
 		}
 
 		/// <summary>Sets the time and value of the specified keyframe.</summary>
-		void setFrame (int frameIndex, double time, double e) {
+		void setFrame (int frameIndex, double time, Event e) {
 			frames[frameIndex] = time;
 			events[frameIndex] = e;
 		}
