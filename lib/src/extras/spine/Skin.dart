@@ -1,3 +1,4 @@
+part of spine;
 /******************************************************************************
  * Spine Runtimes Software License
  * Version 2.1
@@ -28,62 +29,62 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-
-namespace Spine {
 	/// <summary>Stores attachments by slot index and attachment name.</summary>
-	public class Skin {
-		internal String name;
-		private Dictionary<KeyValuePair<int, String>, Attachment> attachments =
-			new Dictionary<KeyValuePair<int, String>, Attachment>(AttachmentComparer.Instance);
+class Skin {
+		String _name;
+		Map<_KeyValuePair<int, String>, Attachment> attachments =
+			new Map<_KeyValuePair<int, String>, Attachment>();//(AttachmentComparer.Instance);
 
-		public String Name { get { return name; } }
+		String get name => name;
 
-		public Skin (String name) {
-			if (name == null) throw new ArgumentNullException("name cannot be null.");
-			this.name = name;
+		Skin (String name) {
+			if (name == null) throw new ArgumentError("name cannot be null.");
+			this._name = name;
 		}
 
-		public void AddAttachment (int slotIndex, String name, Attachment attachment) {
-			if (attachment == null) throw new ArgumentNullException("attachment cannot be null.");
-			attachments[new KeyValuePair<int, String>(slotIndex, name)] = attachment;
+		void addAttachment (int slotIndex, String name, Attachment attachment) {
+			if (attachment == null) throw new ArgumentError("attachment cannot be null.");
+			attachments[new _KeyValuePair<int, String>(slotIndex, name)] = attachment;
 		}
 
 		/// <returns>May be null.</returns>
-		public Attachment GetAttachment (int slotIndex, String name) {
-			Attachment attachment;
-			attachments.TryGetValue(new KeyValuePair<int, String>(slotIndex, name), out attachment);
+		Attachment getAttachment (int slotIndex, String name) {
+			Attachment attachment = attachments.tryGetValue(new _KeyValuePair<int, String>(slotIndex, name));
 			return attachment;
 		}
 
-		public void FindNamesForSlot (int slotIndex, List<String> names) {
-			if (names == null) throw new ArgumentNullException("names cannot be null.");
-			foreach (KeyValuePair<int, String> key in attachments.Keys)
-				if (key.Key == slotIndex) names.Add(key.Value);
+		void findNamesForSlot (int slotIndex, List<String> names) {
+			if (names == null) throw new ArgumentError("names cannot be null.");
+			for(_KeyValuePair<int, String> key in attachments.keys)
+				if (key.key == slotIndex) names.add(key.value);
 		}
 
-		public void FindAttachmentsForSlot (int slotIndex, List<Attachment> attachments) {
-			if (attachments == null) throw new ArgumentNullException("attachments cannot be null.");
-			foreach (KeyValuePair<KeyValuePair<int, String>, Attachment> entry in this.attachments)
-				if (entry.Key.Key == slotIndex) attachments.Add(entry.Value);
+		void findAttachmentsForSlot (int slotIndex, List<Attachment> attachments) {
+			if (attachments == null) throw new ArgumentError("attachments cannot be null.");
+			this.attachments.forEach((_KeyValuePair<int, String> entry, Attachment value){
+			  if (entry.key == slotIndex) attachments.add(entry.value);
+			});
 		}
 
-		override public String ToString () {
-			return name;
+		@override 
+		String toString () {
+			return _name;
 		}
 
 		/// <summary>Attach all attachments from this skin if the corresponding attachment from the old skin is currently attached.</summary>
-		internal void AttachAll (Skeleton skeleton, Skin oldSkin) {
-			foreach (KeyValuePair<KeyValuePair<int, String>, Attachment> entry in oldSkin.attachments) {
-				int slotIndex = entry.Key.Key;
+		void attachAll (Skeleton skeleton, Skin oldSkin) {
+		  oldSkin.attachments.forEach((_KeyValuePair<int, String> entry, Attachment value){
+				int slotIndex = entry.key;
 				Slot slot = skeleton.slots[slotIndex];
-				if (slot.attachment == entry.Value) {
-					Attachment attachment = GetAttachment(slotIndex, entry.Key.Value);
-					if (attachment != null) slot.Attachment = attachment;
+				if (slot.attachment == value) {
+					Attachment attachment = getAttachment(slotIndex, entry.value);
+					if (attachment != null) slot.attachment = attachment;
 				}
-			}
+			});
 		}
+		
+}
+/*
 
 		// Avoids boxing in the dictionary.
 		private class AttachmentComparer : IEqualityComparer<KeyValuePair<int, String>> {
@@ -98,4 +99,4 @@ namespace Spine {
 			}
 		}
 	}
-}
+*/
