@@ -1,3 +1,4 @@
+part of spine;
 /******************************************************************************
  * Spine Runtimes Software License
  * Version 2.1
@@ -28,19 +29,20 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using System;
 
-namespace Spine {
-	abstract public class Attachment {
-		public String Name { get; private set; }
+abstract class Attachment {
 
-		public Attachment (String name) {
-			if (name == null) throw new ArgumentNullException("name cannot be null.");
-			Name = name;
-		}
+  String _name;
 
-		override public String ToString () {
-			return Name;
-		}
-	}
+  String get name => _name;
+
+  Attachment(String name) {
+    if (name == null) throw new ArgumentError("name cannot be null.");
+    _name = name;
+  }
+
+  @override
+  String toString() {
+    return _name;
+  }
 }

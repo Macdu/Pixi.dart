@@ -18,3 +18,5 @@ part 'spine/SkeletonJson.dart';
 part 'spine/Skin.dart';
 part 'spine/Slot.dart';
 part 'spine/SlotData.dart';
+
+part 'spine/attachments/Attachment.dart';
