@@ -1,3 +1,4 @@
+part of spine;
 /******************************************************************************
  * Spine Runtimes Software License
  * Version 2.1
@@ -28,23 +29,22 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using System;
 
-namespace Spine {
-	public class AtlasAttachmentLoader : AttachmentLoader {
-		private Atlas atlas;
+class AtlasAttachmentLoader implements AttachmentLoader {
+  
+		Atlas _atlas;
 
-		public AtlasAttachmentLoader (Atlas atlas) {
-			if (atlas == null) throw new ArgumentNullException("atlas cannot be null.");
-			this.atlas = atlas;
+		AtlasAttachmentLoader (Atlas atlas) {
+			if (atlas == null) throw new ArgumentError("atlas cannot be null.");
+			this._atlas = atlas;
 		}
 
-		public RegionAttachment NewRegionAttachment (Skin skin, String name, String path) {
-			AtlasRegion region = atlas.FindRegion(path);
+		RegionAttachment newRegionAttachment (Skin skin, String name, String path) {
+			AtlasRegion region = atlas.findRegion(path);
 			if (region == null) throw new Exception("Region not found in atlas: " + path + " (region attachment: " + name + ")");
 			RegionAttachment attachment = new RegionAttachment(name);
-			attachment.RendererObject = region;
-			attachment.SetUVs(region.u, region.v, region.u2, region.v2, region.rotate);
+			attachment.rendererObject = region;
+			attachment.setUVs(region.u, region.v, region.u2, region.v2, region.rotate);
 			attachment.regionOffsetX = region.offsetX;
 			attachment.regionOffsetY = region.offsetY;
 			attachment.regionWidth = region.width;
@@ -54,8 +54,8 @@ namespace Spine {
 			return attachment;
 		}
 
-		public MeshAttachment NewMeshAttachment (Skin skin, String name, String path) {
-			AtlasRegion region = atlas.FindRegion(path);
+		MeshAttachment newMeshAttachment (Skin skin, String name, String path) {
+			AtlasRegion region = atlas.findRegion(path);
 			if (region == null) throw new Exception("Region not found in atlas: " + path + " (mesh attachment: " + name + ")");
 			MeshAttachment attachment = new MeshAttachment(name);
 			attachment.RendererObject = region;
@@ -73,8 +73,8 @@ namespace Spine {
 			return attachment;
 		}
 
-		public SkinnedMeshAttachment NewSkinnedMeshAttachment (Skin skin, String name, String path) {
-			AtlasRegion region = atlas.FindRegion(path);
+		SkinnedMeshAttachment newSkinnedMeshAttachment (Skin skin, String name, String path) {
+			AtlasRegion region = atlas.findRegion(path);
 			if (region == null) throw new Exception("Region not found in atlas: " + path + " (skinned mesh attachment: " + name + ")");
 			SkinnedMeshAttachment attachment = new SkinnedMeshAttachment(name);
 			attachment.RendererObject = region;
@@ -92,8 +92,8 @@ namespace Spine {
 			return attachment;
 		}
 
-		public BoundingBoxAttachment NewBoundingBoxAttachment (Skin skin, String name) {
+		BoundingBoxAttachment newBoundingBoxAttachment (Skin skin, String name) {
 			return new BoundingBoxAttachment(name);
 		}
-	}
+		
 }

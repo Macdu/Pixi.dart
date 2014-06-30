@@ -21,3 +21,4 @@ part 'spine/SlotData.dart';
 
 part 'spine/attachments/Attachment.dart';
 part 'spine/attachments/AttachmentLoader.dart';
+part 'spine/attachments/AtlasAttachmentLoader.dart';
