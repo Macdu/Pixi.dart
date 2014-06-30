@@ -6,8 +6,8 @@ import 'dart:typed_data';
 import 'dart:web_gl';
 import 'dart:convert';
 
-import 'src/extras/spine/Spine.dart' as Spine;
-export 'src/extras/spine/Spine.dart';
+import 'src/extras/spine/spine.dart' as spine;
+export 'src/extras/spine/spine.dart';
 
 part 'src/core/Circle.dart';
 part 'src/core/Ellipse.dart';
@@ -27,6 +27,7 @@ part 'src/display/Stage.dart';
 part 'src/extras/Rope.dart';
 part 'src/extras/Strip.dart';
 part 'src/extras/TilingSprite.dart';
+part 'src/extras/Spine.dart';
 
 part 'src/filters/AbstractFilter.dart';
 part 'src/filters/AlphaMaskFilter.dart';

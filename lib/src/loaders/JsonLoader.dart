@@ -124,17 +124,14 @@ class JsonLoader extends Loader {
 
           image.load();
 
-        } /*else if (this.json['bones']) {
+        } else if (this.json.containsKey('bones')) {
           // spine animation
-          Spine.SkeletonJson spineJsonParser = new Spine.SkeletonJson();
-          Spine.SkeletonData skeletonData = spineJsonParser.readSkeletonData(this.json);
+          spine.SkeletonJson spineJsonParser = new spine.SkeletonJson(null);
+          spine.SkeletonData skeletonData = spineJsonParser.readSkeletonData(this.json);
           AnimCache[this.url] = skeletonData;
           this.onLoaded();
         } else {
           this.onLoaded();
-        }
-      }*/ else {
-        this.onError();
         }
       }
     }
