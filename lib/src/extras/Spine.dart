@@ -20,3 +20,4 @@ part 'spine/Slot.dart';
 part 'spine/SlotData.dart';
 
 part 'spine/attachments/Attachment.dart';
+part 'spine/attachments/AttachmentLoader.dart';

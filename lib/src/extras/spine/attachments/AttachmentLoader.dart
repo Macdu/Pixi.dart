@@ -1,3 +1,4 @@
+part of spine;
 /******************************************************************************
  * Spine Runtimes Software License
  * Version 2.1
@@ -28,20 +29,18 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using System;
 
-namespace Spine {
-	public interface AttachmentLoader {
+abstract class AttachmentLoader {
 		/// <return>May be null to not load any attachment.</return>
-		RegionAttachment NewRegionAttachment (Skin skin, String name, String path);
+		RegionAttachment newRegionAttachment (Skin skin, String name, String path);
 
 		/// <return>May be null to not load any attachment.</return>
-		MeshAttachment NewMeshAttachment (Skin skin, String name, String path);
+		MeshAttachment newMeshAttachment (Skin skin, String name, String path);
 
 		/// <return>May be null to not load any attachment.</return>
-		SkinnedMeshAttachment NewSkinnedMeshAttachment (Skin skin, String name, String path);
+		SkinnedMeshAttachment newSkinnedMeshAttachment (Skin skin, String name, String path);
 
 		/// <return>May be null to not load any attachment.</return>
-		BoundingBoxAttachment NewBoundingBoxAttachment (Skin skin, String name);
+		BoundingBoxAttachment newBoundingBoxAttachment (Skin skin, String name);
 	}
-}
+
