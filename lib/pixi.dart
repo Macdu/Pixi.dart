@@ -6,8 +6,8 @@ import 'dart:typed_data';
 import 'dart:web_gl';
 import 'dart:convert';
 
-import 'src/extras/Spine.dart' as Spine;
-export 'src/extras/Spine.dart';
+import 'src/extras/spine/Spine.dart' as Spine;
+export 'src/extras/spine/Spine.dart';
 
 part 'src/core/Circle.dart';
 part 'src/core/Ellipse.dart';

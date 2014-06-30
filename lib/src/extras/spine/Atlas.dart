@@ -189,7 +189,7 @@ class Atlas {
 		/// <summary>Returns the first region found with the specified name. This method uses string comparison to find the region, so the result
 		/// should be cached rather than calling this method multiple times.</summary>
 		/// <returns>The region, or null.</returns>
-		AtlasRegion FindRegion (String name) {
+		AtlasRegion findRegion (String name) {
 			for (int i = 0, n = regions.length; i < n; i++)
 				if (regions[i].name == name) return regions[i];
 			return null;

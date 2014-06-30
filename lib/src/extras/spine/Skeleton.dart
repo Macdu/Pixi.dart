@@ -137,7 +137,7 @@ class Skeleton {
     if (slotName == null) throw new ArgumentError("slotName cannot be null.");
     List<Slot> slots = this.slots;
     for (int i = 0,
-        n = slots.length; i < n; i++) if (slots[i].data.name.equals(slotName)) return i;
+        n = slots.length; i < n; i++) if (slots[i].data.name == slotName) return i;
     return -1;
   }
 
@@ -154,7 +154,7 @@ class Skeleton {
   /// <param name="newSkin">May be null.</param>
   void setSkin(Skin newSkin) {
     if (newSkin != null) {
-      if (skin != null) newSkin.AttachAll(this, skin); else {
+      if (skin != null) newSkin.attachAll(this, skin); else {
         List<Slot> slots = this.slots;
         for (int i = 0,
             n = slots.length; i < n; i++) {
@@ -172,7 +172,7 @@ class Skeleton {
 
   /// <returns>May be null.</returns>
   Attachment getAttachmentFromName(String slotName, String attachmentName) {
-    return getAttachment(data.FindSlotIndex(slotName), attachmentName);
+    return getAttachment(data.findSlotIndex(slotName), attachmentName);
   }
 
   /// <returns>May be null.</returns>
@@ -199,7 +199,7 @@ class Skeleton {
           attachment = getAttachment(i, attachmentName);
           if (attachment == null) throw new Exception("Attachment not found: " + attachmentName + ", for slot: " + slotName);
         }
-        slot.Attachment = attachment;
+        slot.attachment = attachment;
         return;
       }
     }

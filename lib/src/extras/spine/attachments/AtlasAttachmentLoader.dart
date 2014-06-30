@@ -40,55 +40,55 @@ class AtlasAttachmentLoader implements AttachmentLoader {
 		}
 
 		RegionAttachment newRegionAttachment (Skin skin, String name, String path) {
-			AtlasRegion region = atlas.findRegion(path);
+			AtlasRegion region = _atlas.findRegion(path);
 			if (region == null) throw new Exception("Region not found in atlas: " + path + " (region attachment: " + name + ")");
 			RegionAttachment attachment = new RegionAttachment(name);
 			attachment.rendererObject = region;
 			attachment.setUVs(region.u, region.v, region.u2, region.v2, region.rotate);
 			attachment.regionOffsetX = region.offsetX;
 			attachment.regionOffsetY = region.offsetY;
-			attachment.regionWidth = region.width;
-			attachment.regionHeight = region.height;
-			attachment.regionOriginalWidth = region.originalWidth;
-			attachment.regionOriginalHeight = region.originalHeight;
+			attachment.regionWidth = region.width.toDouble();
+			attachment.regionHeight = region.height.toDouble();
+			attachment.regionOriginalWidth = region.originalWidth.toDouble();
+			attachment.regionOriginalHeight = region.originalHeight.toDouble();
 			return attachment;
 		}
 
 		MeshAttachment newMeshAttachment (Skin skin, String name, String path) {
-			AtlasRegion region = atlas.findRegion(path);
+			AtlasRegion region = _atlas.findRegion(path);
 			if (region == null) throw new Exception("Region not found in atlas: " + path + " (mesh attachment: " + name + ")");
 			MeshAttachment attachment = new MeshAttachment(name);
-			attachment.RendererObject = region;
-			attachment.RegionU = region.u;
-			attachment.RegionV = region.v;
-			attachment.RegionU2 = region.u2;
-			attachment.RegionV2 = region.v2;
-			attachment.RegionRotate = region.rotate;
+			attachment.rendererObject = region;
+			attachment.regionU = region.u;
+			attachment.regionV = region.v;
+			attachment.regionU2 = region.u2;
+			attachment.regionV2 = region.v2;
+			attachment.regionRotate = region.rotate;
 			attachment.regionOffsetX = region.offsetX;
 			attachment.regionOffsetY = region.offsetY;
-			attachment.regionWidth = region.width;
-			attachment.regionHeight = region.height;
-			attachment.regionOriginalWidth = region.originalWidth;
-			attachment.regionOriginalHeight = region.originalHeight;
+			attachment.regionWidth = region.width.toDouble();
+			attachment.regionHeight = region.height.toDouble();
+			attachment.regionOriginalWidth = region.originalWidth.toDouble();
+			attachment.regionOriginalHeight = region.originalHeight.toDouble();
 			return attachment;
 		}
 
 		SkinnedMeshAttachment newSkinnedMeshAttachment (Skin skin, String name, String path) {
-			AtlasRegion region = atlas.findRegion(path);
+			AtlasRegion region = _atlas.findRegion(path);
 			if (region == null) throw new Exception("Region not found in atlas: " + path + " (skinned mesh attachment: " + name + ")");
 			SkinnedMeshAttachment attachment = new SkinnedMeshAttachment(name);
-			attachment.RendererObject = region;
-			attachment.RegionU = region.u;
-			attachment.RegionV = region.v;
-			attachment.RegionU2 = region.u2;
-			attachment.RegionV2 = region.v2;
-			attachment.RegionRotate = region.rotate;
+			attachment.rendererObject = region;
+			attachment.regionU = region.u;
+			attachment.regionV = region.v;
+			attachment.regionU2 = region.u2;
+			attachment.regionV2 = region.v2;
+			attachment.regionRotate = region.rotate;
 			attachment.regionOffsetX = region.offsetX;
 			attachment.regionOffsetY = region.offsetY;
-			attachment.regionWidth = region.width;
-			attachment.regionHeight = region.height;
-			attachment.regionOriginalWidth = region.originalWidth;
-			attachment.regionOriginalHeight = region.originalHeight;
+			attachment.regionWidth = region.width.toDouble();
+			attachment.regionHeight = region.height.toDouble();
+			attachment.regionOriginalWidth = region.originalWidth.toDouble();
+			attachment.regionOriginalHeight = region.originalHeight.toDouble();
 			return attachment;
 		}
 

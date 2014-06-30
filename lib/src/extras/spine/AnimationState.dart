@@ -89,7 +89,7 @@ class AnimationState {
 		}
 
 		void apply (Skeleton skeleton) {
-			List<Event> events = this.events;
+			List<Event> events = this._events;
 
 			for (int i = 0; i < _tracks.length; i++) {
 				TrackEntry current = _tracks[i];
@@ -227,7 +227,7 @@ class AnimationState {
 
       if (delay <= 0) {
         if (last != null)
-          delay += last.endTime - data.GetMix(last._animation, animation);
+          delay += last.endTime - data.getMix(last._animation, animation);
         else
           delay = 0.0;
       }

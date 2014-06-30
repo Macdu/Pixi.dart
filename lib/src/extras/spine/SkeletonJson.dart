@@ -122,11 +122,11 @@ class SkeletonJson{
   Attachment readAttachment(Skin skin,String name,Map map) {
     name = map.containsKey('name') ? map["name"] : name;
 
-    int type = AttachmentType[map.containsKey('type') ? map["type"] : "region"];
+    String type = map.containsKey('type') ? map["type"] : "region";
     String path = map.containsKey('path') ? map["path"] : name;
 
     double scale = this.scale;
-    if (type == AttachmentType['region']) {
+    if (type == 'region') {
       RegionAttachment region = this.attachmentLoader.newRegionAttachment(skin, name, path);
       if (region == null) return null;
       region.path = path;
@@ -148,13 +148,13 @@ class SkeletonJson{
 
       region.updateOffset();
       return region;
-    } else if (type == AttachmentType['mesh']) {
+    } else if (type == 'mesh') {
       MeshAttachment mesh = this.attachmentLoader.newMeshAttachment(skin, name, path);
       if (mesh == null) return null;
       mesh.path = path; 
       mesh.vertices = this.getFloatList(map, "vertices", scale);
       mesh.triangles = this.getIntList(map, "triangles");
-      mesh.regionUVs = this.getFloatList(map, "uvs", 1);
+      mesh.regionUVs = this.getFloatList(map, "uvs", 1.0);
       mesh.updateUVs();
 
       if (map.containsKey('color')) {
@@ -170,13 +170,13 @@ class SkeletonJson{
       mesh.width = (map.containsKey('width') ? map["width"] : 0) * scale;
       mesh.height = (map.containsKey('height') ? map["height"] : 0) * scale;
       return mesh;
-    } else if (type == AttachmentType['skinnedmesh']) {
+    } else if (type == 'skinnedmesh') {
       SkinnedMeshAttachment mesh = this.attachmentLoader.newSkinnedMeshAttachment(skin, name, path);
       if (mesh == null) return null;
       mesh.path = path;
 
-      List<double> uvs = this.getFloatList(map, "uvs", 1);
-      List<double> vertices = this.getFloatList(map, "vertices", 1);
+      List<double> uvs = this.getFloatList(map, "uvs", 1.0);
+      List<double> vertices = this.getFloatList(map, "vertices", 1.0);
       List<double> weights = [];
       List<int> bones = [];
       for (int i = 0, n = vertices.length; i < n; ) {
@@ -192,7 +192,7 @@ class SkeletonJson{
       }
       mesh.bones = bones;
       mesh.weights = weights;
-      mesh.triangles = this.getIntList(map, "triangles");
+      mesh.triangles = this.getFloatList(map, "triangles",1.0);
       mesh.regionUVs = uvs;
       mesh.updateUVs();
 
@@ -209,7 +209,7 @@ class SkeletonJson{
       mesh.width = (map.containsKey('width') ? map["width"] : 0) * scale;
       mesh.height = (map.containsKey('height') ? map["height"] : 0) * scale;
       return mesh;
-    } else if (type == AttachmentType['boundingbox']) {
+    } else if (type == 'boundingbox') {
       BoundingBoxAttachment attachment = this.attachmentLoader.newBoundingBoxAttachment(skin, name);
       List vertices = map["vertices"];
       for (int i = 0, n = vertices.length; i < n; i++)
@@ -324,10 +324,10 @@ class SkeletonJson{
           timeline.slotIndex = slotIndex;
           timeline.attachment = attachment;
 
-          bool isMesh = attachment.type == AttachmentType['mesh'];
+          bool isMesh = attachment is MeshAttachment;
           int vertexCount;
           if (isMesh)
-            vertexCount = attachment.vertices.length;
+            vertexCount = (attachment as MeshAttachment).vertices.length;
           else
             vertexCount = attachment.weights.length / 3 * 2;
 
@@ -337,7 +337,7 @@ class SkeletonJson{
             List vertices;
             if (!valueMap.containsKey("vertices")) {
               if (isMesh)
-                vertices = attachment.vertices;
+                vertices = (attachment as MeshAttachment).vertices;
               else {
                 vertices = [];
                 vertices.length = vertexCount;
@@ -356,7 +356,7 @@ class SkeletonJson{
                   vertices[ii + start] = verticesValue[ii] * scale;
               }
               if (isMesh) {
-                List meshVertices = attachment.vertices;
+                List meshVertices = (attachment as MeshAttachment).vertices;
                 for (int ii = 0, nn = vertices.length; ii < nn; i++)
                   vertices[ii] += meshVertices[ii];
               }

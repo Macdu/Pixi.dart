@@ -43,7 +43,7 @@ class Event {
 
 		@override
 		String toString () {
-			return _data.Name;
+			return _data.name;
 		}
 	}
 

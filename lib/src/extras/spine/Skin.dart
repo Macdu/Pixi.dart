@@ -49,8 +49,11 @@ class Skin {
 
 		/// <returns>May be null.</returns>
 		Attachment getAttachment (int slotIndex, String name) {
-			Attachment attachment = attachments.tryGetValue(new _KeyValuePair<int, String>(slotIndex, name));
-			return attachment;
+		  Attachment attachment;
+		  if(!attachments.containsKey(new _KeyValuePair<int, String>(slotIndex, name))){
+		    return null;
+		  }
+		  return attachments[new _KeyValuePair<int, String>(slotIndex, name)];
 		}
 
 		void findNamesForSlot (int slotIndex, List<String> names) {
@@ -62,7 +65,7 @@ class Skin {
 		void findAttachmentsForSlot (int slotIndex, List<Attachment> attachments) {
 			if (attachments == null) throw new ArgumentError("attachments cannot be null.");
 			this.attachments.forEach((_KeyValuePair<int, String> entry, Attachment value){
-			  if (entry.key == slotIndex) attachments.add(entry.value);
+			  if (entry.key == slotIndex) attachments.add(value);
 			});
 		}
 

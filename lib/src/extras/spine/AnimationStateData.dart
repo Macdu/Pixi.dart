@@ -61,6 +61,7 @@ class AnimationStateData {
   			if (from == null) throw new ArgumentError("Animation not found: " + fromAnimation_or_name);
   			to = skeletonData.findAnimation(toAnimation_or_name);
   			if (to == null) throw new ArgumentError("Animation not found: " + toAnimation_or_name);
+		  }
   		else if(fromAnimation_or_name is Animation && toAnimation_or_name is Animation){
   		  from = fromAnimation_or_name;
   		  to = toAnimation_or_name;
@@ -82,4 +83,4 @@ class AnimationStateData {
 			return defaultMix;
 		}
 	}
-}
+

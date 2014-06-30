@@ -422,7 +422,7 @@ class Animation {
 
 			String attachmentName = attachmentNames[frameIndex];
 			skeleton.slots[slotIndex].attachment =
-				 attachmentName == null ? null : skeleton.GetAttachment(slotIndex, attachmentName);
+				 attachmentName == null ? null : skeleton.getAttachment(slotIndex, attachmentName);
 		}
 	}
 
