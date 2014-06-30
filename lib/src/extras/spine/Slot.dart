@@ -1,3 +1,4 @@
+part of spine;
 /******************************************************************************
  * Spine Runtimes Software License
  * Version 2.1
@@ -28,75 +29,55 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using System;
+class Slot {
+		SlotData _data;
+		Bone _bone;
+		Skeleton _skeleton;
+		double r, g, b, a;
+		Attachment _attachment;
+		double _attachmentTime;
+		List<double> attachmentVertices = new List<double>(0);
+		int attachmentVerticesCount;
 
-namespace Spine {
-	public class Slot {
-		internal SlotData data;
-		internal Bone bone;
-		internal Skeleton skeleton;
-		internal float r, g, b, a;
-		internal Attachment attachment;
-		internal float attachmentTime;
-		internal float[] attachmentVertices = new float[0];
-		internal int attachmentVerticesCount;
-
-		public SlotData Data { get { return data; } }
-		public Bone Bone { get { return bone; } }
-		public Skeleton Skeleton { get { return skeleton; } }
-		public float R { get { return r; } set { r = value; } }
-		public float G { get { return g; } set { g = value; } }
-		public float B { get { return b; } set { b = value; } }
-		public float A { get { return a; } set { a = value; } }
-
+		SlotData get data => data;
+		Bone get bone => _bone;
+		Skeleton get skeleton => _skeleton;
 		/// <summary>May be null.</summary>
-		public Attachment Attachment {
-			get {
-				return attachment;
-			}
-			set {
+		Attachment get attachment => _attachment;
+		  set attachment (Attachment value){
 				attachment = value;
-				attachmentTime = skeleton.time;
+				_attachmentTime = skeleton.time;
 				attachmentVerticesCount = 0;
 			}
-		}
+		
 
-		public float AttachmentTime {
-			get {
-				return skeleton.time - attachmentTime;
-			}
-			set {
+		double get attachmentTime => _skeleton.time - _attachmentTime;
+		  set attachmentTime(double value){
 				attachmentTime = skeleton.time - value;
 			}
+		
+		Slot (SlotData data, Skeleton skeleton, Bone bone) {
+			if (data == null) throw new ArgumentError("data cannot be null.");
+			if (skeleton == null) throw new ArgumentError("skeleton cannot be null.");
+			if (bone == null) throw new ArgumentError("bone cannot be null.");
+			this._data = data;
+			this._skeleton = skeleton;
+			this._bone = bone;
+			setToSetupPose();
 		}
 
-		public float[] AttachmentVertices { get { return attachmentVertices; } set { attachmentVertices = value; } }
-		public int AttachmentVerticesCount { get { return attachmentVerticesCount; } set { attachmentVerticesCount = value; } }
-
-		public Slot (SlotData data, Skeleton skeleton, Bone bone) {
-			if (data == null) throw new ArgumentNullException("data cannot be null.");
-			if (skeleton == null) throw new ArgumentNullException("skeleton cannot be null.");
-			if (bone == null) throw new ArgumentNullException("bone cannot be null.");
-			this.data = data;
-			this.skeleton = skeleton;
-			this.bone = bone;
-			SetToSetupPose();
-		}
-
-		internal void SetToSetupPose (int slotIndex) {
+		void setToSetupPose ([int slotIndex = null]) {
+		  if(slotIndex == null)slotIndex = skeleton.data.slots.indexOf(data);
 			r = data.r;
 			g = data.g;
 			b = data.b;
 			a = data.a;
-			Attachment = data.attachmentName == null ? null : skeleton.GetAttachment(slotIndex, data.attachmentName);
+			_attachment = data.attachmentName == null ? null : skeleton.getAttachment(slotIndex, data.attachmentName);
 		}
 
-		public void SetToSetupPose () {
-			SetToSetupPose(skeleton.data.slots.IndexOf(data));
-		}
-
-		override public String ToString () {
+		@override 
+		String toString () {
 			return data.name;
 		}
-	}
 }
+
