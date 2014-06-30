@@ -25,3 +25,4 @@ part 'spine/attachments/AtlasAttachmentLoader.dart';
 part 'spine/attachments/AttachmentType.dart';
 part 'spine/attachments/BoundingBoxAttachment.dart';
 part 'spine/attachments/MeshAttachment.dart';
+part 'spine/attachments/RegionAttachment.dart';
