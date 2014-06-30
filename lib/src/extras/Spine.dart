@@ -23,3 +23,4 @@ part 'spine/attachments/Attachment.dart';
 part 'spine/attachments/AttachmentLoader.dart';
 part 'spine/attachments/AtlasAttachmentLoader.dart';
 part 'spine/attachments/AttachmentType.dart';
+part 'spine/attachments/BoundingBoxAttachment.dart';

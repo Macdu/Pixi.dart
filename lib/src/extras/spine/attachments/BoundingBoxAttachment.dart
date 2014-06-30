@@ -1,3 +1,4 @@
+part of spine;
 /******************************************************************************
  * Spine Runtimes Software License
  * Version 2.1
@@ -28,34 +29,29 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using System;
+/// <summary>Attachment that has a polygon for bounds checking.</summary>
+class BoundingBoxAttachment extends Attachment {
 
-namespace Spine {
-	/// <summary>Attachment that has a polygon for bounds checking.</summary>
-	public class BoundingBoxAttachment : Attachment {
-		internal float[] vertices;
+  List<double> vertices;
 
-		public float[] Vertices { get { return vertices; } set { vertices = value; } }
+  BoundingBoxAttachment(String name)
+      : super(name);
 
-		public BoundingBoxAttachment (string name)
-			: base(name) {
-		}
-
-		/// <param name="worldVertices">Must have at least the same length as this attachment's vertices.</param>
-		public void ComputeWorldVertices (float x, float y, Bone bone, float[] worldVertices) {
-			x += bone.worldX;
-			y += bone.worldY;
-			float m00 = bone.m00;
-			float m01 = bone.m01;
-			float m10 = bone.m10;
-			float m11 = bone.m11;
-			float[] vertices = this.vertices;
-			for (int i = 0, n = vertices.Length; i < n; i += 2) {
-				float px = vertices[i];
-				float py = vertices[i + 1];
-				worldVertices[i] = px * m00 + py * m01 + x;
-				worldVertices[i + 1] = px * m10 + py * m11 + y;
-			}
-		}
-	}
+  /// <param name="worldVertices">Must have at least the same length as this attachment's vertices.</param>
+  void computeWorldVertices(double x, double y, Bone bone, List<double> worldVertices) {
+    x += bone.worldX;
+    y += bone.worldY;
+    double m00 = bone.m00;
+    double m01 = bone.m01;
+    double m10 = bone.m10;
+    double m11 = bone.m11;
+    List<double> vertices = this.vertices;
+    for (int i = 0,
+        n = vertices.length; i < n; i += 2) {
+      double px = vertices[i];
+      double py = vertices[i + 1];
+      worldVertices[i] = px * m00 + py * m01 + x;
+      worldVertices[i + 1] = px * m10 + py * m11 + y;
+    }
+  }
 }
