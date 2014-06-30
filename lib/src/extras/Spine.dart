@@ -26,3 +26,4 @@ part 'spine/attachments/AttachmentType.dart';
 part 'spine/attachments/BoundingBoxAttachment.dart';
 part 'spine/attachments/MeshAttachment.dart';
 part 'spine/attachments/RegionAttachment.dart';
+part 'spine/attachments/SkinnedMeshAttachment.dart';
