@@ -1,3 +1,4 @@
+part of spine;
 /******************************************************************************
  * Spine Runtimes Software License
  * Version 2.1
@@ -28,8 +29,6 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-namespace Spine {
-	public enum AttachmentType {
-		region, boundingbox, mesh, skinnedmesh
-	}
-}
+Map<String,int> AttachmentType = {
+		'region' : 0, 'boundingbox' : 1, 'mesh' : 2, 'skinnedmesh' : 3
+	};
