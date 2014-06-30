@@ -1,3 +1,4 @@
+part of spine;
 /******************************************************************************
  * Spine Runtimes Software License
  * Version 2.1
@@ -28,35 +29,29 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-using System;
+class SlotData {
+  String _name;
+  BoneData _boneData;
+  double r = 1.0,
+      g = 1.0,
+      b = 1.0,
+      a = 1.0;
+  String attachmentName;
+  bool additiveBlending;
 
-namespace Spine {
-	public class SlotData {
-		internal String name;
-		internal BoneData boneData;
-		internal float r = 1, g = 1, b = 1, a = 1;
-		internal String attachmentName;
-		internal bool additiveBlending;
+  String get name => _name;
+  BoneData get boneData => _boneData;
 
-		public String Name { get { return name; } }
-		public BoneData BoneData { get { return boneData; } }
-		public float R { get { return r; } set { r = value; } }
-		public float G { get { return g; } set { g = value; } }
-		public float B { get { return b; } set { b = value; } }
-		public float A { get { return a; } set { a = value; } }
-		/// <summary>May be null.</summary>
-		public String AttachmentName { get { return attachmentName; } set { attachmentName = value; } }
-		public bool AdditiveBlending { get { return additiveBlending; } set { additiveBlending = value; } }
 
-		public SlotData (String name, BoneData boneData) {
-			if (name == null) throw new ArgumentNullException("name cannot be null.");
-			if (boneData == null) throw new ArgumentNullException("boneData cannot be null.");
-			this.name = name;
-			this.boneData = boneData;
-		}
+  SlotData(String name, BoneData boneData) {
+    if (name == null) throw new ArgumentError("name cannot be null.");
+    if (boneData == null) throw new ArgumentError("boneData cannot be null.");
+    this._name = name;
+    this._boneData = boneData;
+  }
 
-		override public String ToString () {
-			return name;
-		}
-	}
+  @override
+  String toString() {
+    return _name;
+  }
 }
